@@ -26,9 +26,10 @@ Este proyecto es una aplicación multiplataforma desarrollada como parte del pro
 - Python 3.10+
 - [Flet](https://flet.dev)
 - [MongoDB](https://www.mongodb.com/docs)
-- Librerías adicionales:
+- [PyMongo](https://pymongo.readthedocs.io/en/stable/)
+
 ```bash
-  pip install pymongo
+  pip install -r .\requirements.txt
 ```
 
 <!--

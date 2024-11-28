@@ -49,6 +49,7 @@ project/
 │   ├── config.py          # Configuración de MongoDB
 │   ├── validators.py      # Validaciones de datos
 │   └── ...
-└── README.md              # Documentación del proyecto
+├── README.md              # Documentación del proyecto
+└── requirements.txt       # Dependencias del proyecto
 -->
 

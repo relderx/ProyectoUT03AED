@@ -26,11 +26,10 @@ Este proyecto es una aplicación multiplataforma desarrollada como parte del pro
 - Python 3.10+
 - [Flet](https://flet.dev)
 - [MongoDB](https://www.mongodb.com/docs)
-<!--
 - Librerías adicionales:
 ```bash
-  pip install pymongo dnspython
-  ```-->
+  pip install pymongo
+```
 
 <!--
 project/

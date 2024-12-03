@@ -53,4 +53,3 @@ project/
 ├── README.md              # Documentación del proyecto
 └── requirements.txt       # Dependencias del proyecto
 -->
-

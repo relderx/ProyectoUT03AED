@@ -6,6 +6,27 @@
 
 Este proyecto es una aplicación multiplataforma desarrollada como parte del proyecto ABP (Aprendizaje Basado en Proyectos). Utiliza [Flet](https://flet.dev) para construir la interfaz de usuario y [MongoDB](https://www.mongodb.com/docs) como base de datos documental. La aplicación implementa funcionalidades CRUD (Crear, Leer, Actualizar, Eliminar) para gestionar datos, y está diseñada para resolver una necesidad práctica en un contexto específico.
 
+## Ventanas
+
+Las principales ventanas gráficas se reparten en el siguiente orden
+
+### Ventana principal
+
+En esta ventana se ven todos los productos de la empresa con su stockage, a parte de los botones con los que se hacen las operaciones CRUD. Estas ventanas, salen encima 
+
+Por defecto los productos están ordenados por nombre de manera descendente, pero se pueden aplicar una gran variedad de filtros para ver los productos requeridos.
+
+### Ventana de inserción
+
+En esta ventana se 
+### Ventana de actualización
+
+### Ventana de eliminación
+
+## Estructura BBDD
+
+
+
 ## Objetivos
 
 - **Diseñar** una interfaz de usuario atractiva e intuitiva.

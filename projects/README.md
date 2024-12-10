@@ -34,6 +34,12 @@ Cuando se hayan añadido todos los datos del producto se podrá hacer clic en do
 
 ### Ventana de eliminación
 
+Por defecto, el botón está desactivado, pero se activará una vez se seleccione uno o más productos/subproductos.
+
+Cuando se haga clic en el botón, se abrirá un popup de confirmación en el que se le pregunta al usuario si está seguro de hacer esta acción.
+
+Si se le dá clic a si se cierra la ventana, se borran los productos y se actualiza la ventana principal, si se le dá a no se cierra la ventana y se actualiza la ventana principal.
+
 ## Estructura BBDD
 
 ### Tabla Productos

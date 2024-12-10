@@ -27,7 +27,11 @@ En esta ventana se
 
 ### Tabla Productos
 PK: Nombre
-Atributos: Nombre, Descripción, Cantidad, Fecha de creación, Fecha de última creación
+Atributos: Nombre, Descripción, Cantidad, Categoría, Fecha de creación, Fecha de última creación
+
+### Tabla Categoría
+PK: Nombre de Categoría
+Atributos: Nombre de Categoría
 
 ### Tabla SubProductos
 PK: FK_ID-Producto, ID-Subproducto

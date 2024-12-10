@@ -22,9 +22,15 @@ Al pulsar en el botón de insertar/añadir, saldrá un popup en el que se pone l
 
 Si no se tiene seleccionado ningún producto, el botón aparecerá como insertar y al aparecer el popup ningún campo a rellenar saldrá rellenado, en caso de que se tenga seleccionado un producto (no subproducto), el botón cambiará a añadir y, al hacer clic en el botón, se auto-rellenará el apartado de categoría con el de el producto padre.
 
+Cuando se hayan añadido todos los datos del producto se podrá hacer clic en dos botones, Crear y Cancelar, si se le dá a crear se cierra la ventana, se crea el producto y se actualiza la ventana principal, si se da a cancelar se cierra la ventana y se actualiza la ventana principal.
+
 ### Ventana de actualización
 
+Por defecto, el botón está desactivado, pero se activará una vez se seleccione un solo producto.
 
+Cuando se haga clic en el botón, se abrirá un popup con los datos auto-rellenados del producto, se podrán cambiar cualquiera de los datos.
+
+Cuando se hayan añadido todos los datos del producto se podrá hacer clic en dos botones, Actualizar y Cancelar, si se le dá a actualizar se cierra la ventana, se actualizan los datos y se actualiza la ventana principal, si se da a cancelar se cierra la ventana y se actualiza la ventana principal.
 
 ### Ventana de eliminación
 

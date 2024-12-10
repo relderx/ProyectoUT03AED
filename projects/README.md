@@ -43,16 +43,19 @@ Si se le dá clic a si se cierra la ventana, se borran los productos y se actual
 ## Estructura BBDD
 
 ### Tabla Productos
-PK: Nombre
-Atributos: Nombre, Descripción, Cantidad, Categoría, Fecha de creación, Fecha de última creación
+**PK**: Nombre
+
+**Atributos**: Nombre, Descripción, Cantidad, FK_Categoría, Fecha de creación, Fecha de última creación
 
 ### Tabla Categoría
-PK: Nombre de Categoría
-Atributos: Nombre de Categoría
+**PK**: Nombre de Categoría
+
+**Atributos**: Nombre de Categoría
 
 ### Tabla SubProductos
-PK: FK_ID-Producto, ID-Subproducto
-Atributos: FK_ID-Producto, ID-Subproducto, Fecha creación
+**PK**: FK_ID-Producto, ID-Subproducto
+
+**Atributos**: FK_ID-Producto, ID-Subproducto, Fecha creación
 
 
 ## Objetivos

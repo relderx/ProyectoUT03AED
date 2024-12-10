@@ -25,6 +25,13 @@ En esta ventana se
 
 ## Estructura BBDD
 
+### Tabla Productos
+PK: Nombre
+Atributos: Nombre, Descripción, Cantidad, Fecha de creación, Fecha de última creación
+
+### Tabla SubProductos
+PK: FK_ID-Producto, ID-Subproducto
+Atributos: FK_ID-Producto, ID-Subproducto, Fecha creación
 
 
 ## Objetivos

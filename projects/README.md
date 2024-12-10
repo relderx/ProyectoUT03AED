@@ -1,12 +1,12 @@
 <!-- Por ChatGPT -->
 
-# Aplicación Multiplataforma con Flet y MongoDB
+# **Aplicación Multiplataforma con Flet y MongoDB**
 
-## Descripción del Proyecto
+## **Descripción del Proyecto**
 
 Este proyecto es una aplicación multiplataforma desarrollada como parte del proyecto ABP (Aprendizaje Basado en Proyectos). Utiliza [Flet](https://flet.dev) para construir la interfaz de usuario y [MongoDB](https://www.mongodb.com/docs) como base de datos documental. La aplicación implementa funcionalidades CRUD (Crear, Leer, Actualizar, Eliminar) para gestionar datos, y está diseñada para resolver una necesidad práctica en un contexto específico.
 
-## Ventanas
+## **Ventanas**
 
 Las principales ventanas gráficas se reparten en el siguiente orden
 
@@ -18,11 +18,11 @@ Por defecto los productos están ordenados por nombre de manera descendente, per
 
 ### Ventana de inserción
 
-Al pulsar en el botón de insertar/añadir, saldrá un popup en el que se pone los siguientes datos del producto, asignando el producto/subproducto a su respectiva categoría y producto.
+Al pulsar en el botón de insertar/añadir, saldrá un popup en el que se pone los datos del producto, asignando el producto/subproducto a su respectiva categoría y producto.
 
-Si no se tiene seleccionado ningún producto, el botón aparecerá como insertar y al aparecer el popup ningún campo a rellenar saldrá rellenado, en caso de que se tenga seleccionado un producto (no subproducto), el botón cambiará a añadir y, al hacer clic en el botón, se auto-rellenará el apartado de categoría con el de el producto padre.
+Si no se tiene seleccionado ningún producto, el botón aparecerá como insertar y al aparecer el popup ningún campo a rellenar saldrá rellenado, en caso de que se seleccione uno o más subproductos el botón se desactiva, en caso de que se tenga seleccionado un producto, el botón cambiará a añadir y, al hacer clic en el botón, se auto-rellenará el apartado de categoría con el de el producto padre.
 
-Cuando se hayan añadido todos los datos del producto se podrá hacer clic en dos botones, Crear y Cancelar, si se le dá a crear se cierra la ventana, se crea el producto y se actualiza la ventana principal, si se da a cancelar se cierra la ventana y se actualiza la ventana principal.
+Cuando se hayan añadido todos los datos del producto se podrá hacer clic en dos botones, Crear y Cancelar, si se le dá a crear se cierra la ventana, se crea/añade al producto y se actualiza la ventana principal, si se da a cancelar se cierra la ventana y se actualiza la ventana principal.
 
 ### Ventana de actualización
 
@@ -40,7 +40,7 @@ Cuando se haga clic en el botón, se abrirá un popup de confirmación en el que
 
 Si se le dá clic a si se cierra la ventana, se borran los productos y se actualiza la ventana principal, si se le dá a no se cierra la ventana y se actualiza la ventana principal.
 
-## Estructura BBDD
+## **Estructura BBDD**
 
 ### Tabla Productos
 **PK**: Nombre

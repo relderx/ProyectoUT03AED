@@ -12,7 +12,7 @@ Las principales ventanas gráficas se reparten en el siguiente orden
 
 ### Ventana principal
 
-En esta ventana se ven todos los productos de la empresa con su stockage, a parte de los botones con los que se hacen las operaciones CRUD.
+En esta ventana se ven todos los productos de la empresa con su estocaje, a parte de los botones con los que se hacen las operaciones CRUD.
 
 Por defecto los productos están ordenados por nombre de manera descendente, pero se pueden aplicar una gran variedad de filtros para ver los productos requeridos.
 

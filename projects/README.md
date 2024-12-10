@@ -20,9 +20,11 @@ Por defecto los productos están ordenados por nombre de manera descendente, per
 
 Al pulsar en el botón de insertar/añadir, saldrá un popup en el que se pone los siguientes datos del producto, asignando el producto/subproducto a su respectiva categoría y producto.
 
-Si no se tiene seleccionado ningún producto, el botón aparecerá como insertar y al aparecer el popup ningún campo a rellenar saldrá rellenado, en caso de que se tenga seleccionado un producto (no subproducto), se auto-rellenará el apartado de categoría con el de el producto padre.
+Si no se tiene seleccionado ningún producto, el botón aparecerá como insertar y al aparecer el popup ningún campo a rellenar saldrá rellenado, en caso de que se tenga seleccionado un producto (no subproducto), el botón cambiará a añadir y, al hacer clic en el botón, se auto-rellenará el apartado de categoría con el de el producto padre.
 
 ### Ventana de actualización
+
+
 
 ### Ventana de eliminación
 

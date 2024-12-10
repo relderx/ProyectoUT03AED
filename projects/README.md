@@ -12,13 +12,16 @@ Las principales ventanas gráficas se reparten en el siguiente orden
 
 ### Ventana principal
 
-En esta ventana se ven todos los productos de la empresa con su stockage, a parte de los botones con los que se hacen las operaciones CRUD. Estas ventanas, salen encima 
+En esta ventana se ven todos los productos de la empresa con su stockage, a parte de los botones con los que se hacen las operaciones CRUD.
 
 Por defecto los productos están ordenados por nombre de manera descendente, pero se pueden aplicar una gran variedad de filtros para ver los productos requeridos.
 
 ### Ventana de inserción
 
-En esta ventana se 
+Al pulsar en el botón de insertar/añadir, saldrá un popup en el que se pone los siguientes datos del producto, asignando el producto/subproducto a su respectiva categoría y producto.
+
+Si no se tiene seleccionado ningún producto, el botón aparecerá como insertar y al aparecer el popup ningún campo a rellenar saldrá rellenado, en caso de que se tenga seleccionado un producto (no subproducto), se auto-rellenará el apartado de categoría con el de el producto padre.
+
 ### Ventana de actualización
 
 ### Ventana de eliminación

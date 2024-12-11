@@ -6,21 +6,17 @@ Este proyecto es una aplicación multiplataforma diseñada para gestionar un sis
 ## Ventanas
 Las principales ventanas gráficas de la aplicación se organizarán de la siguiente manera:
 
-1. **Ventana Principal**:
-   - Muestra un resumen de los productos en el inventario.
-   - Botones para acceder a las secciones de productos, movimientos y pedidos.
-   
-2. **Ventana de Productos**:
+1. **Ventana de Principal**:
    - Visualización de todos los productos en el inventario.
    - Opciones para agregar, editar y eliminar productos.
    - Funcionalidades de búsqueda y filtrado por categoría, precio, y nombre.
    
-3. **Ventana de Movimientos de Inventario**:
+2. **Ventana de Movimientos de Inventario**:
    - Visualiza el historial de movimientos (entradas y salidas) de productos.
    - Permite registrar nuevos movimientos (entradas o salidas de inventario).
    - Búsqueda por fecha, tipo de movimiento y producto.
    
-4. **Ventana de Pedidos**:
+. **Ventana de Pedidos**:
    - Gestión de los pedidos de los clientes o proveedores.
    - Opciones para crear nuevos pedidos, ver los detalles de los existentes y actualizar el estado de los mismos.
    - Búsqueda por número de pedido, estado y cliente.

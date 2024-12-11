@@ -52,7 +52,7 @@ La base de datos se organiza en colecciones que almacenan los datos relevantes p
 
 ### Colección: Productos
 Esta colección almacena la información básica de cada producto en el inventario.
-```json
+```plaintext
 {
   "producto": "",           // string: Nombre del producto
   "descripcion": "",        // string: Descripción del producto
@@ -66,7 +66,7 @@ Esta colección almacena la información básica de cada producto en el inventar
 
 ### Colección: Movimiento de Inventario
 Esta colección registra los cambios en el inventario, ya sean entradas o salidas de productos.
-```json
+```plaintext
 {
   "producto": "",         // string: Nombre o identificador del producto
   "tipo_movimiento": "",  // string: "entrada" o "salida"
@@ -78,7 +78,7 @@ Esta colección registra los cambios en el inventario, ya sean entradas o salida
 
 ### Colección: Pedidos
 Esta colección gestiona los pedidos realizados por los clientes o a proveedores.
-```json
+```plaintext
 {
   "num_pedido": 0,          // int: Número identificador del pedido
   "cliente": {

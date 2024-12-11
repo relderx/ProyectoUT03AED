@@ -40,18 +40,59 @@ Cuando se haga clic en el botón, se abrirá un popup de confirmación en el que
 
 Si se le dá clic a si se cierra la ventana, se borran los productos y se actualiza la ventana principal, si se le dá a no se cierra la ventana y se actualiza la ventana principal.
 
-## **Estructura BBDD**
+## **Estructura BD**
 
-### Tabla Productos
-**PK**: Nombre
+### Colección: Productos
 
-**Atributos**: Nombre, Descripción, Cantidad, Categoría, Fecha de creación, Fecha de última creación
+```json
+{
+  "producto": "",           // string: Nombre del producto
+  "descripcion": "",        // string: Descripción del producto
+  "stock": 0,               // int: Cantidad en stock
+  "precio_unidad": 0.0,     // float: Precio por unidad
+  "categoria": ["",],       // array[string]: Categorías asociadas al producto
+  "fecha_creacion": "",     // string: Fecha de creación en formato ISO 8601 (YYYY-MM-DD)
+  "fecha_modificacion": ""  // string: Fecha de última modificación en formato ISO 8601
+}
 
-### Tabla SubProductos
-**PK**: FK_ID-Producto, ID-Subproducto
+```
 
-**Atributos**: FK_ID-Producto, ID-Subproducto, Fecha creación
+### Colección: Movimiento de Inventario
 
+```json
+{
+  "producto": "",         // string: Nombre o identificador del producto
+  "tipo_movimiento": "",  // string: "entrada" o "salida"
+  "cantidad": 0,          // int: Cantidad del movimiento
+  "fecha": "",            // string: Fecha en formato ISO 8601 (YYYY-MM-DD)
+  "comentario": ""        // string: Comentario opcional sobre el movimiento
+}
+
+```
+
+### Colección: Pedidos
+
+```json
+{
+  "num_pedido": 0,          // int: Número identificador del pedido
+  "cliente": {
+    "nombre": "",           // string: Nombre del cliente
+    "email": "",            // string: Correo electrónico del cliente
+    "telefono": ""          // string: Teléfono del cliente
+  },
+  "productos": [
+    {
+      "producto": "",       // string: Nombre o identificador del producto
+      "unidades": 0,        // int: Cantidad de unidades solicitadas
+      "precio_unidad": 0.0  // float: Precio unitario del producto
+    }
+  ],
+  "precio_total": 0.0,      // float: Precio total del pedido
+  "estado": "",             // string: Estado del pedido (ejemplo: "pendiente", "enviado")
+  "fecha_creacion": "",     // string: Fecha de creación en formato ISO 8601 (YYYY-MM-DD)
+  "fecha_modificacion": ""  // string: Fecha de última modificación en formato ISO 8601
+}
+```
 
 ## Objetivos
 

@@ -45,12 +45,7 @@ Si se le dá clic a si se cierra la ventana, se borran los productos y se actual
 ### Tabla Productos
 **PK**: Nombre
 
-**Atributos**: Nombre, Descripción, Cantidad, FK_Categoría, Fecha de creación, Fecha de última creación
-
-### Tabla Categoría
-**PK**: Nombre de Categoría
-
-**Atributos**: Nombre de Categoría
+**Atributos**: Nombre, Descripción, Cantidad, Categoría, Fecha de creación, Fecha de última creación
 
 ### Tabla SubProductos
 **PK**: FK_ID-Producto, ID-Subproducto

@@ -3,29 +3,51 @@
 ## Descripción del Proyecto
 Este proyecto es una aplicación multiplataforma diseñada para gestionar un sistema de inventarios, pedidos y movimientos de productos. Se desarrolla como parte del proyecto ABP (Aprendizaje Basado en Proyectos), utilizando [Flet](https://flet.dev) para la construcción de la interfaz de usuario y [MongoDB](https://www.mongodb.com/docs) como base de datos documental. La aplicación implementa funcionalidades CRUD (Crear, Leer, Actualizar, Eliminar) para gestionar productos, movimientos de inventario y pedidos, con un enfoque en la simplicidad y eficiencia.
 
-## Ventanas
+## **Ventanas**
 Las principales ventanas gráficas de la aplicación se organizarán de la siguiente manera:
 
-1. **Ventana Principal**:
-   - Muestra un resumen de los productos en el inventario.
-   - Botones para acceder a las secciones de productos, movimientos y pedidos.
-   
-2. **Ventana de Productos**:
+### **Ventana de Principal**:
    - Visualización de todos los productos en el inventario.
    - Opciones para agregar, editar y eliminar productos.
    - Funcionalidades de búsqueda y filtrado por categoría, precio, y nombre.
    
-3. **Ventana de Movimientos de Inventario**:
+### **Ventana de Movimientos de Inventario**:
    - Visualiza el historial de movimientos (entradas y salidas) de productos.
    - Permite registrar nuevos movimientos (entradas o salidas de inventario).
    - Búsqueda por fecha, tipo de movimiento y producto.
    
-4. **Ventana de Pedidos**:
+### **Ventana de Pedidos**:
    - Gestión de los pedidos de los clientes o proveedores.
    - Opciones para crear nuevos pedidos, ver los detalles de los existentes y actualizar el estado de los mismos.
    - Búsqueda por número de pedido, estado y cliente.
 
-## Estructura de la Base de Datos
+## Estructura de carpetas
+```plaintext
+project/
+├─models/                    # Modelos de datos (definición de estructuras de base de datos)
+│ ├───producto.py            # Modelo de producto
+│ ├───movimiento.py          # Modelo de movimiento de inventario
+│ └───pedido.py              # Modelo de pedido
+│
+├─services/                  # Lógica de negocio y servicios
+│ ├───inventario_service.py  # Lógica para gestionar movimientos de inventario
+│ ├───producto_service.py    # Lógica para manejar productos
+│ └───pedido_service.py      # Lógica para gestionar pedidos
+│
+├─utils/                     # Utilidades y funciones generales
+│ ├───db.py                  # Conexión y operaciones básicas con MongoDB
+│ ├───validators.py          # Funciones de validación de datos
+│ └───helpers.py             # Funciones auxiliares y generales
+│
+├─views/                     # Interfaces de usuario y vistas
+│ ├───producto_view.py       # Vistas y formularios para productos
+│ ├───inventario_view.py     # Vistas y formularios para movimientos de inventario
+│ └───pedido_view.py         # Vistas y formularios para pedidos
+│
+└─main.py                    # Archivo principal que inicia la aplicación
+```
+
+## Estructura de la base de datos
 La base de datos se organiza en colecciones que almacenan los datos relevantes para la gestión del inventario, pedidos y movimientos.
 
 ### Colección: Productos
@@ -77,20 +99,20 @@ Esta colección gestiona los pedidos realizados por los clientes o a proveedores
   "fecha_modificacion": ""  // string: Fecha de última modificación en formato ISO 8601
 }
 ```
-## Objetivos
+## **Objetivos**
 - **Diseñar** una interfaz de usuario atractiva e intuitiva.
 - **Implementar** funcionalidades CRUD con conexión a una base de datos MongoDB.
 - **Garantizar** la adaptabilidad en dispositivos de escritorio y móviles.
 - **Promover** el trabajo colaborativo en un entorno realista.
 
-## Funcionalidades
+## **Funcionalidades**
 - **Visualización de datos**: Mostrar productos, movimientos y pedidos en formato de lista con opciones de búsqueda y filtrado por diferentes criterios.
 - **Operaciones CRUD**: Implementación de operaciones de Crear, Leer, Actualizar y Eliminar productos, movimientos y pedidos.
 - **Gestión de inventario**: Registrar entradas y salidas de productos y realizar un seguimiento detallado de los movimientos.
 - **Pedidos**: Crear y gestionar pedidos de productos, actualizar su estado y calcular el precio total.
 - **Validación de datos**: Comprobar la validez de los datos ingresados (por ejemplo, correos electrónicos, fechas, cantidades).
 
-## Requisitos
+## **Requisitos**
 ### Dependencias
 - Python 3.10+
 - [Flet](https://flet.dev)

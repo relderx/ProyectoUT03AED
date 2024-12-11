@@ -23,7 +23,7 @@ Las principales ventanas gráficas de la aplicación se organizarán de la sigui
 
 ## Estructura de carpetas
 ```plaintext
-projects/
+project/
 ├─models/                    # Modelos de datos (definición de estructuras de base de datos)
 │ ├───producto.py            # Modelo de producto
 │ ├───movimiento.py          # Modelo de movimiento de inventario

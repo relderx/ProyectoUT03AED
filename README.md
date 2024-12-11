@@ -21,7 +21,33 @@ Las principales ventanas gráficas de la aplicación se organizarán de la sigui
    - Opciones para crear nuevos pedidos, ver los detalles de los existentes y actualizar el estado de los mismos.
    - Búsqueda por número de pedido, estado y cliente.
 
-## Estructura de la Base de Datos
+## Estructura de darpetas
+```plaintext
+projects/
+├─models/                    # Modelos de datos (definición de estructuras de base de datos)
+│ ├───producto.py            # Modelo de producto
+│ ├───movimiento.py          # Modelo de movimiento de inventario
+│ └───pedido.py              # Modelo de pedido
+│
+├─services/                  # Lógica de negocio y servicios
+│ ├───inventario_service.py  # Lógica para gestionar movimientos de inventario
+│ ├───producto_service.py    # Lógica para manejar productos
+│ └───pedido_service.py      # Lógica para gestionar pedidos
+│
+├─utils/                     # Utilidades y funciones generales
+│ ├───db.py                  # Conexión y operaciones básicas con MongoDB
+│ ├───validators.py          # Funciones de validación de datos
+│ └───helpers.py             # Funciones auxiliares y generales
+│
+├─views/                     # Interfaces de usuario y vistas
+│ ├───producto_view.py       # Vistas y formularios para productos
+│ ├───inventario_view.py     # Vistas y formularios para movimientos de inventario
+│ └───pedido_view.py         # Vistas y formularios para pedidos
+│
+└─main.py                    # Archivo principal que inicia la aplicación
+```
+
+## Estructura de la base de datos
 La base de datos se organiza en colecciones que almacenan los datos relevantes para la gestión del inventario, pedidos y movimientos.
 
 ### Colección: Productos

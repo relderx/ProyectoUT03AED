@@ -21,7 +21,7 @@ Las principales ventanas gráficas de la aplicación se organizarán de la sigui
    - Opciones para crear nuevos pedidos, ver los detalles de los existentes y actualizar el estado de los mismos.
    - Búsqueda por número de pedido, estado y cliente.
 
-## Estructura de darpetas
+## Estructura de carpetas
 ```plaintext
 projects/
 ├─models/                    # Modelos de datos (definición de estructuras de base de datos)

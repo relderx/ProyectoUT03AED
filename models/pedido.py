@@ -12,14 +12,14 @@ class Pedido:
 
     def to_dict(self):
         return {
-            "num_pedido": self.num_pedido,
-            "cliente": self.cliente,
-            "productos": self.productos,
-            "precio_total": self.precio_total,
-            "estado": self.estado,
-            "fecha_creacion": self.fecha_creacion,
-            "fecha_modificacion": self.fecha_modificacion
+            'num_pedido': self.num_pedido,
+            'cliente': self.cliente,
+            'productos': self.productos,
+            'precio_total': self.precio_total,
+            'estado': self.estado,
+            'fecha_creacion': self.fecha_creacion,
+            'fecha_modificacion': self.fecha_modificacion
         }
 
     def __repr__(self):
-        return f"<Pedido {self.num_pedido}, Cliente: {self.cliente['nombre']}, Estado: {self.estado}>"
+        return f'<Pedido {self.num_pedido}, Cliente: {self.cliente['nombre']}, Estado: {self.estado}>'

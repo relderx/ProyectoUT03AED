@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 
 class Movimiento:
-    def __init__(self, producto: str, tipo_movimiento: str, cantidad: int, fecha=None, comentario=""):
+    def __init__(self, producto, tipo_movimiento, cantidad, fecha=None, comentario=""):
         self.producto = producto
         self.tipo_movimiento = tipo_movimiento
         self.cantidad = cantidad

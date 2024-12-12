@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 
 class Producto:
-    def __init__(self, nombre: str, descripcion: str, stock: int, precio_unidad: float, categoria: list[str], fecha_creacion=None, fecha_modificacion=None):
+    def __init__(self, nombre, descripcion, stock, precio_unidad, categoria, fecha_creacion=None, fecha_modificacion=None):
         self.nombre = nombre
         self.descripcion = descripcion
         self.stock = stock

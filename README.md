@@ -1,12 +1,29 @@
 # Aplicación Multiplataforma con Flet y MongoDB
 
+## ¿Qué se necesita para utilizar el proyecto?
+Pullea el proyecto dentro de un enviroment de python, para crearlo se utiliza el siguiente comando:
+
+```bash
+  py -m venv nombreCarpeta
+```
+Luego entra en el enviroment, activalo e instala el flet:
+```bash
+  cd nombreCarpeta
+  .\Scripts\activate
+  pip install flet
+```
+Una vez termines, ejecuta el siguiente comando para correr la ventana principal:
+```bash
+  flet run \views\producto_view
+```
+
 ## Descripción del Proyecto
 Este proyecto es una aplicación multiplataforma diseñada para gestionar un sistema de inventarios, pedidos y movimientos de productos. Se desarrolla como parte del proyecto ABP (Aprendizaje Basado en Proyectos), utilizando [Flet](https://flet.dev) para la construcción de la interfaz de usuario y [MongoDB](https://www.mongodb.com/docs) como base de datos documental. La aplicación implementa funcionalidades CRUD (Crear, Leer, Actualizar, Eliminar) para gestionar productos, movimientos de inventario y pedidos, con un enfoque en la simplicidad y eficiencia.
 
 ## **Ventanas**
 Las principales ventanas gráficas de la aplicación se organizarán de la siguiente manera:
 
-### **Ventana de Principal**:
+### **Ventana de Productos**:
    - Visualización de todos los productos en el inventario.
    - Opciones para agregar, editar y eliminar productos.
    - Funcionalidades de búsqueda y filtrado por categoría, precio, y nombre.
@@ -23,7 +40,6 @@ Las principales ventanas gráficas de la aplicación se organizarán de la sigui
 
 ## Estructura de carpetas
 ```plaintext
-project/
 ├─models/                    # Modelos de datos (definición de estructuras de base de datos)
 │ ├───producto.py            # Modelo de producto
 │ ├───movimiento.py          # Modelo de movimiento de inventario
@@ -40,15 +56,17 @@ project/
 │ └───helpers.py             # Funciones auxiliares y generales
 │
 ├─views/                     # Interfaces de usuario y vistas
-│ ├───producto_view.py       # Vistas y formularios para productos
-│ ├───inventario_view.py     # Vistas y formularios para movimientos de inventario
-│ └───pedido_view.py         # Vistas y formularios para pedidos
+│ ├───movimiento_view.py     # Vistas y formularios para movimientos de inventario
+│ ├───pedido_view.py         # Vistas y formularios para pedidos
+│ └───producto_view.py       # Vistas y formularios para productos
 │
-└─main.py                    # Archivo principal que inicia la aplicación
+├─main.py                    # Archivo principal que inicia la aplicación
+│
+└─README.md                  # Archivo explicatorio de todo el proyecto
 ```
 
 ## Estructura de la base de datos
-La base de datos se organiza en colecciones que almacenan los datos relevantes para la gestión del inventario, pedidos y movimientos.
+La base de datos se organiza en colecciones que almacenan los datos relevantes para la gestión del productos, movimientos y pedidos.
 
 ### Colección: Productos
 Esta colección almacena la información básica de cada producto en el inventario.

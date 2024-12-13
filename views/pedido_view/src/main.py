@@ -27,10 +27,6 @@ def main(page: ft.Page):
         ft.ElevatedButton("Modificar", width=100, disabled=True),
     ], alignment=ft.MainAxisAlignment.END)
 
-    # Obtener los encabezados y datos desde la base de datos
-    # encabezados_tabla = obtener_columnas()
-    # datos_tabla = obtener_datos()
-
     # Por ahora usar datos ficticios
     encabezados_tabla = ["Producto", "Tipo de Movimiento", "Cantidad", "Fecha", "Comentario"]
     datos_tabla = [

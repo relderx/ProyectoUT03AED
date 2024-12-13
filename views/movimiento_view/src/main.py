@@ -41,11 +41,6 @@ def main(page: ft.Page):
 
     # Por ahora usar datos ficticios
     encabezados_tabla = ["Producto", "Tipo de Movimiento", "Cantidad", "Fecha", "Comentario"]
-    # datos_tabla = [
-    #     ["Producto1", "Entrada", "2", "2024-12-01", ""],
-    #     ["Producto2", "Salida", "5", "2024-12-02", ""],
-    #     ["Producto3", "Entrada", "1", "2024-12-03", ""],
-    # ]
 
 # Función para actualizar la tabla según el filtro o búsqueda
     def aplicar_filtro(e):

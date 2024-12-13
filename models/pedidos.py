@@ -1,9 +1,10 @@
 from datetime import datetime, timezone
 
 class Pedido:
-    def __init__(self, num_pedido, cliente, productos, precio_total, estado, fecha_creacion=None, fecha_modificacion=None):
+    def __init__(self, num_pedido, cliente_nombre, cliente_email, cliente_telefono, productos, precio_total, estado, fecha_creacion=None, fecha_modificacion=None):
         self.num_pedido = num_pedido
-        self.cliente = cliente  # Cliente es un diccionario con 'nombre', 'email', 'telefono'
+        # self.cliente = cliente  # Cliente es un diccionario con 'nombre', 'email', 'telefono'
+        self.cliente = {'nombre': cliente_nombre, 'email': cliente_email, 'telefono': cliente_telefono}
         self.productos = productos  # Lista de diccionarios con 'producto', 'unidades', 'precio_unidad'
         self.precio_total = precio_total
         self.estado = estado

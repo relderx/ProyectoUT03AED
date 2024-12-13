@@ -49,7 +49,7 @@ def tabulate_pedidos():
         datos_tabla.append([
             pedido.get('num_pedido', ''),
             pedido.get('cliente', {}).get('nombre', ''),
-            ", ".join([f"{producto['producto']} ({producto['unidades']} unidades)" for producto in pedido.get('productos', [])]),
+            ", ".join([f"{producto['unidades']}× {producto['producto']}" for producto in pedido.get('productos', [])]),
             pedido.get('precio_total', ''),
             pedido.get('estado', ''),
             pedido.get('fecha_creacion', ''),
@@ -57,3 +57,4 @@ def tabulate_pedidos():
         ])
 
     return datos_tabla
+

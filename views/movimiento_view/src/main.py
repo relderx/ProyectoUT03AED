@@ -9,12 +9,14 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../.
 from utils.helpers import tabulate_movimientos
 
 def main(page: ft.Page):
+    # Use default theme (no need to set explicitly)
     page.title = "Movimiento de Inventario"
     page.window_width = 1920
     page.window_height = 1080
-    page.bgcolor = ft.colors.WHITE
+    page.bgcolor = ft.colors.WHITE  # Set white background for light mode
+    page.theme_mode = "light"
 
-    encabezado = ft.Row([
+    encabezado = ft.Row([ 
         ft.Text("Movimiento de Inventario", size=30, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.LEFT),
         ft.Row(
             [
@@ -26,8 +28,8 @@ def main(page: ft.Page):
         )
     ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN)
 
-        # Botones inferiores
-    botones_inferiores = ft.Row([
+    # Botones inferiores
+    botones_inferiores = ft.Row([ 
         ft.ElevatedButton("Borrar", width=100, disabled=True),
         ft.ElevatedButton("Insertar", width=100),
         ft.ElevatedButton("Modificar", width=100, disabled=True),
@@ -49,7 +51,6 @@ def main(page: ft.Page):
                 cells=[ft.DataCell(ft.Text(dato)) for dato in fila]
             ) for fila in datos_tabla
         ],
-
     )
 
     # Campo de búsqueda
@@ -60,17 +61,13 @@ def main(page: ft.Page):
 
     # Estructura de la página
     page.add(
-        encabezado, 
-        # botones_superiores,
-
+        encabezado,
         botones_inferiores,
         ft.Divider(),
         ft.Text("Productos", size=20, weight=ft.FontWeight.BOLD),
         buscar_filtro,
         tabla,
-
         ft.Divider(),
-  
     )
 
 ft.app(target=main)

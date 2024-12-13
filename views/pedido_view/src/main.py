@@ -1,5 +1,5 @@
 import flet as ft
-from utils.db import get_productos
+# from utils.db import get_productos
 
 def main(page: ft.Page):
     page.title = "Movimiento de Inventario"

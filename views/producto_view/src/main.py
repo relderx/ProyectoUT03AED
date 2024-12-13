@@ -1,10 +1,12 @@
 import flet as ft
 
 def main(page: ft.Page):
-    page.title = "Movimiento de Inventario"
+    page.title = 'Productos'
     page.window_width = 1920
     page.window_height = 1080
     page.bgcolor = ft.colors.WHITE
+    page.theme_mode = 'light'
+    page.window_maximized = True
 
     encabezado = ft.Row([
         ft.Text("Productos", size=30, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.LEFT),

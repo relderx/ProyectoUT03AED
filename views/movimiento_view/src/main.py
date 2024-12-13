@@ -9,11 +9,12 @@ from utils.helpers import tabulate_movimientos
 
 
 def main(page: ft.Page):
-    page.title = "Movimiento de Inventario"
-    page.window.width = 1920  # Actualización de propiedades obsoletas
+    page.title = 'Movimiento de Inventario'
+    page.window.width = 1920
     page.window.height = 1080
     page.bgcolor = ft.colors.WHITE
-    page.theme_mode = "light"
+    page.theme_mode = 'light'
+    page.window_maximized = True
 
     # Encabezado
     encabezado = ft.Row([

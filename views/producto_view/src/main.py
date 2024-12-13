@@ -1,11 +1,17 @@
 import flet as ft
+from flet import NavigationBar
+import views
 
 def main(page: ft.Page):
     page.title = "Movimiento de Inventario"
     page.window_width = 1920
     page.window_height = 1080
     page.bgcolor = ft.colors.WHITE
-
+    
+    def route_change(route):
+        page.views.clear()
+        page.views.append(route)
+    page.on_route_change = route_change
     encabezado = ft.Row([
         ft.Text("Productos", size=30, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.LEFT),
         ft.Row(

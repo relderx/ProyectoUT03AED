@@ -2,12 +2,12 @@ import sys
 import os
 from pymongo import MongoClient
 
-from models.producto import Producto
-from models.movimiento import Movimiento
-from models.pedido import Pedido
-
 # Añadir la carpeta raíz del proyecto al path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from models.productos import Producto
+from models.movimientos import Movimiento
+from models.pedidos import Pedido
 
 # Establece la conexión a MongoDB
 CLIENT = MongoClient('localhost', 27017)  # Asegúrate de que MongoDB esté corriendo en localhost:27017
@@ -21,10 +21,6 @@ COLL_PED = DB['pedidos']
 def get_productos():
     '''Obtiene todos los productos de la base de datos.'''
     return COLL_PRO.find()
-
-def get_producto_by_id(producto_id):
-    '''Obtiene un producto por su ID.'''
-    return COLL_PRO.find_one({'_id': producto_id})
 
 def add_producto(producto: Producto):
     '''Inserta un producto nuevo en la base de datos.'''
@@ -46,6 +42,10 @@ def add_movimiento(movimiento: Movimiento):
     '''Inserta un nuevo movimiento de inventario.'''
     return COLL_MOV.insert_one(movimiento.to_dict())
 
+def add_many_movimientos(movimientos: list[Movimiento]):
+    '''Inserta múltiples documentos de movimientos en la colección correspondiente.'''
+    return COLL_MOV.insert_many([mov.to_dict() for mov in movimientos])
+
 def get_pedidos():
     '''Obtiene todos los pedidos de la base de datos.'''
     return COLL_PED.find()
@@ -53,8 +53,4 @@ def get_pedidos():
 def add_pedido(pedido: Pedido):
     '''Inserta un nuevo pedido en la base de datos.'''
     return COLL_PED.insert_one(pedido.to_dict())
-
-def get_pedido_by_id(pedido_id):
-    '''Obtiene un pedido por su ID.'''
-    return COLL_PED.find_one({'_id': pedido_id})
 

@@ -6,12 +6,6 @@ def main(page: ft.Page):
     page.window_height = 1080
     page.bgcolor = ft.colors.WHITE
 
-    # Encabezado
-    # encabezado = ft.Row([ft.Row(
-    #     [ft.Text("Movimiento de Inventario", size=30, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.LEFT)],width=page.window_width*0.5),
-    #     ft.Row([
-    #         ft.Row([ft.ElevatedButton("Página Principal", width=150)], alignment=ft.MainAxisAlignment.END),
-    #         ft.Row([ft.ElevatedButton("Pedidos", width=150)],  alignment=ft.MainAxisAlignment.END)])], width=page.window_width*0.5)
     encabezado = ft.Row([
         ft.Text("Movimiento de Inventario", size=30, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.LEFT),
         ft.Row(
@@ -23,12 +17,6 @@ def main(page: ft.Page):
             expand=True
         )
     ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN)
-
-
-    # Botones superiores
-    # botones_superiores = ft.Row([
-
-    # ], alignment=ft.MainAxisAlignment.END)
 
         # Botones inferiores
     botones_inferiores = ft.Row([

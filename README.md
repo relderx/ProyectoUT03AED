@@ -42,29 +42,29 @@ Las principales ventanas gráficas de la aplicación se organizarán de la sigui
 ```plaintext
 Proyecto/
 │
-├─models/                    # Modelos de datos (definición de estructuras de base de datos)
-│ ├───producto.py            # Modelo de producto
-│ ├───movimiento.py          # Modelo de movimiento de inventario
-│ └───pedido.py              # Modelo de pedido
+├─models/                     # Modelos de datos (definición de estructuras de base de datos)
+│ ├───movimientos.py          # Modelo de movimiento de inventario
+│ ├───pedidos.py              # Modelo de pedido
+│ └───productos.py            # Modelo de producto
 │
-├─services/                  # Lógica de negocio y servicios
-│ ├───inventario_service.py  # Lógica para gestionar movimientos de inventario
-│ ├───producto_service.py    # Lógica para manejar productos
-│ └───pedido_service.py      # Lógica para gestionar pedidos
+├─services/                   # Lógica de negocio y servicios
+│ ├───movimientos_service.py  # Lógica para gestionar movimientos de inventario
+│ ├───pedidos_service.py      # Lógica para gestionar pedidos
+│ └───productos_service.py    # Lógica para manejar productos
 │
-├─utils/                     # Utilidades y funciones generales
-│ ├───db.py                  # Conexión y operaciones básicas con MongoDB
-│ ├───validators.py          # Funciones de validación de datos
-│ └───helpers.py             # Funciones auxiliares y generales
+├─utils/                      # Utilidades y funciones generales
+│ ├───db.py                   # Conexión y operaciones básicas con MongoDB
+│ ├───helpers.py              # Funciones auxiliares y generales
+│ └───validators.py           # Funciones de validación de datos
 │
-├─views/                     # Interfaces de usuario y vistas
-│ ├───movimiento_view.py     # Vistas y formularios para movimientos de inventario
-│ ├───pedido_view.py         # Vistas y formularios para pedidos
-│ └───producto_view.py       # Vistas y formularios para productos
+├─views/                      # Interfaces de usuario y vistas
+│ ├───movimiento_view.py      # Vistas y formularios para movimientos de inventario
+│ ├───pedido_view.py          # Vistas y formularios para pedidos
+│ └───producto_view.py        # Vistas y formularios para productos
 │
-├─main.py                    # Archivo principal que inicia la aplicación
+├─main.py                     # Archivo principal que inicia la aplicación
 │
-└─README.md                  # Archivo explicatorio de todo el proyecto
+└─README.md                   # Archivo explicatorio de todo el proyecto
 ```
 
 ## Estructura de la base de datos

@@ -7,6 +7,7 @@ def main(page: ft.Page):
     page.window_height = 1080
     page.bgcolor = ft.colors.WHITE
     page.theme_mode = "light"
+    page.window_maximized = True
 
     # Encabezado
     encabezado = ft.Row([

@@ -12,14 +12,14 @@ class Producto:
 
     def to_dict(self):
         return {
-            "producto": self.nombre,
-            "descripcion": self.descripcion,
-            "stock": self.stock,
-            "precio_unidad": self.precio_unidad,
-            "categoria": self.categoria,
-            "fecha_creacion": self.fecha_creacion,
-            "fecha_modificacion": self.fecha_modificacion
+            'producto': self.nombre,
+            'descripcion': self.descripcion,
+            'stock': self.stock,
+            'precio_unidad': self.precio_unidad,
+            'categoria': self.categoria,
+            'fecha_creacion': self.fecha_creacion,
+            'fecha_modificacion': self.fecha_modificacion
         }
 
     def __repr__(self):
-        return f"<Producto {self.nombre}, {self.stock} unidades, ${self.precio_unidad}>"
+        return f'<Producto {self.nombre}, {self.stock} unidades, ${self.precio_unidad}>'

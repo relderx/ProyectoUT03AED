@@ -1,0 +1,52 @@
+# Ignorar archivos de Python compilados
+*.pyc
+*.pyo
+__pycache__/
+
+# Ignorar archivos de entornos virtuales
+.venv/
+venv/
+env/
+ENV/
+*.env
+
+# Ignorar configuraciones de IDE (por ejemplo, Visual Studio Code, PyCharm)
+.vscode/
+.idea/
+
+# Ignorar archivos de dependencias
+*.egg-info/
+dist/
+build/
+
+# Ignorar archivos específicos de macOS
+.DS_Store
+
+# Ignorar archivos de logs
+*.log
+
+# Ignorar archivos de bases de datos locales
+*.sqlite3
+
+# Ignorar archivos temporales
+*.bak
+*.swp
+*.tmp
+
+# Ignorar archivos generados por pruebas
+*.coverage
+*.hypothesis/
+
+# Ignorar carpetas y archivos de las vistas
+pruebaflet/.gitignore
+pruebaflet/pyproject.toml
+
+# Archivos generados por compiladores
+*.o
+*.a
+*.so
+
+# Ignorar archivos generados por sistemas de empaquetado
+*.tar.gz
+*.zip
+*.whl

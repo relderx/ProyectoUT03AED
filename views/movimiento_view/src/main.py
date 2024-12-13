@@ -1,5 +1,12 @@
+import os
+import sys
 import flet as ft
 # from flet import navigation
+
+# Añadir la carpeta raíz del proyecto al path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
+
+from utils.helpers import tabulate_movimientos
 
 def main(page: ft.Page):
     page.title = "Movimiento de Inventario"
@@ -28,11 +35,7 @@ def main(page: ft.Page):
 
     # Tabla de productos
     encabezados_tabla = ["Producto", "Tipo de Movimiento", "Cantidad", "Fecha", "Comentario"]
-    datos_tabla = [
-        ["Producto1", "Entrada", "2", "", ""],
-        ["Producto2", "Salida", "5", "", ""],
-        ["Producto3", "", "1", "", ""],
-    ]
+    datos_tabla = tabulate_movimientos()
 
     tabla = ft.DataTable(
         width=1920,

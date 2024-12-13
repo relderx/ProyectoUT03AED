@@ -7,8 +7,23 @@ def main(page: ft.Page):
     page.bgcolor = ft.colors.WHITE
 
     # Encabezado
-    encabezado = ft.Row([ft.Row(ft.Text("Movimiento de Inventario", size=30, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.LEFT),width=page.window_width*0.5),ft.Row([ft.ElevatedButton("Página Principal", width=150),
-        ft.ElevatedButton("Pedidos", width=150)]),], width=page.window_width)
+    # encabezado = ft.Row([ft.Row(
+    #     [ft.Text("Movimiento de Inventario", size=30, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.LEFT)],width=page.window_width*0.5),
+    #     ft.Row([
+    #         ft.Row([ft.ElevatedButton("Página Principal", width=150)], alignment=ft.MainAxisAlignment.END),
+    #         ft.Row([ft.ElevatedButton("Pedidos", width=150)],  alignment=ft.MainAxisAlignment.END)])], width=page.window_width*0.5)
+    encabezado = ft.Row([
+        ft.Text("Movimiento de Inventario", size=30, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.LEFT),
+        ft.Row(
+            [
+                ft.ElevatedButton("Página Principal", width=150),
+                ft.ElevatedButton("Pedidos", width=150)
+            ],
+            alignment=ft.MainAxisAlignment.END,
+            expand=True
+        )
+    ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN)
+
 
     # Botones superiores
     # botones_superiores = ft.Row([

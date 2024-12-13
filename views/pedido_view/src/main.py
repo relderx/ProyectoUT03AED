@@ -1,5 +1,5 @@
 import flet as ft
-#from utils.db import get_productos
+from utils.db import get_productos
 
 def main(page: ft.Page):
     page.title = "Movimiento de Inventario"
@@ -7,10 +7,7 @@ def main(page: ft.Page):
     page.window_height = 1080
     page.bgcolor = ft.colors.WHITE
 
-<<<<<<< HEAD
     # Encabezado
-=======
->>>>>>> a6482bd6f53e3a753e7f708efd499869dea8cd60
     encabezado = ft.Row([
         ft.Text("Movimiento de Inventario", size=30, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.LEFT),
         ft.Row(
@@ -23,11 +20,7 @@ def main(page: ft.Page):
         )
     ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN)
 
-<<<<<<< HEAD
     # Botones inferiores
-=======
-        # Botones inferiores
->>>>>>> a6482bd6f53e3a753e7f708efd499869dea8cd60
     botones_inferiores = ft.Row([
         ft.ElevatedButton("Borrar", width=100, disabled=True),
         ft.ElevatedButton("Insertar", width=100),

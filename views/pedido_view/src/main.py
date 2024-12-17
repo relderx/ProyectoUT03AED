@@ -98,6 +98,13 @@ def main(page: ft.Page):
         ],
     )
 
+    # Contenedor con scroll para la tabla
+    tabla_con_scroll = ft.Column(
+        controls=[tabla],
+        height=500,  # Puedes ajustar la altura según sea necesario
+        scroll=ft.ScrollMode.AUTO  # Habilitar el scroll vertical
+    )
+
     # Campo de búsqueda con filtro
     dropdown_filtro = ft.Dropdown(
         label='Filtrar por',
@@ -139,7 +146,7 @@ def main(page: ft.Page):
         ft.Text('Productos', size=20, weight=ft.FontWeight.BOLD),
         buscar_filtro,
         ordenar_filtro,
-        tabla,
+        tabla_con_scroll,
         ft.Divider(),
     )
 

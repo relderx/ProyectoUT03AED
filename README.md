@@ -26,23 +26,23 @@ Una vez termines, ejecuta el siguiente comando para correr la ventana principal:
 
 Este proyecto es una aplicación multiplataforma diseñada para gestionar un sistema de inventarios, pedidos y movimientos de productos. Se desarrolla como parte del proyecto ABP (Aprendizaje Basado en Proyectos), utilizando [Flet](https://flet.dev) para la construcción de la interfaz de usuario y [MongoDB](https://www.mongodb.com/docs) como base de datos documental. La aplicación implementa funcionalidades CRUD (Crear, Leer, Actualizar, Eliminar) para gestionar productos, movimientos de inventario y pedidos, con un enfoque en la simplicidad y eficiencia.
 
-## **Ventanas**
+## Ventanas
 
 Las principales ventanas gráficas de la aplicación se organizarán de la siguiente manera:
 
-### **Ventana de Productos**
+### Ventana de Productos
 
 - Visualización de todos los productos en el inventario.
 - Opciones para agregar, editar y eliminar productos.
 - Funcionalidades de búsqueda y filtrado por categoría, precio, y nombre.
 
-### **Ventana de Movimientos de Inventario**
+### Ventana de Movimientos de Inventario
 
 - Visualiza el historial de movimientos (entradas y salidas) de productos.
 - Permite registrar nuevos movimientos (entradas o salidas de inventario).
 - Búsqueda por fecha, tipo de movimiento y producto.
 
-### **Ventana de Pedidos**
+### Ventana de Pedidos
 
 - Gestión de los pedidos de los clientes o proveedores.
 - Opciones para crear nuevos pedidos, ver los detalles de los existentes y actualizar el estado de los mismos.

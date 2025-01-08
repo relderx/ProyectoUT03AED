@@ -43,45 +43,43 @@ def main(page: ft.Page):
         ['Producto10', 'Salida', 2, '2024-12-10', 'Devolución de productos defectuosos']
     ]
 
+    # Variable para mantener los datos mostrados (filtrados y/o ordenados)
+    datos_mostrados = datos_tabla.copy()  # Inicialmente, son todos los datos
+
+    # Función para actualizar la tabla
+    def actualizar_tabla(datos):
+        tabla.rows.clear()  # Limpiar las filas actuales de la tabla
+        for fila in datos:
+            tabla.rows.append(ft.DataRow(
+                cells=[ft.DataCell(ft.Text(str(dato))) for dato in fila]
+            ))
+        tabla.update()  # Actualizar la tabla visualmente
+
     # Función para filtrar datos
     def aplicar_filtro(e):
         filtro_campo = dropdown_filtro.value
         filtro_valor = input_buscar.value.strip().lower()  # Convertir a minúsculas y eliminar espacios
 
-        tabla.rows.clear()  # Limpiar las filas actuales de la tabla
+        nonlocal datos_mostrados
+        if filtro_campo == 'Sin filtro':  # Sin filtro seleccionado
+            # Mostrar filas donde el valor buscado aparece en cualquier columna
+            datos_mostrados = [fila for fila in datos_tabla if any(filtro_valor in str(dato).lower() for dato in fila)]
+        else:  # Filtrar según la columna seleccionada
+            indice = encabezados_tabla.index(filtro_campo)
+            datos_mostrados = [fila for fila in datos_tabla if filtro_valor in str(fila[indice]).lower()]
 
-        for fila in datos_tabla:
-            if filtro_campo == 'Sin filtro':  # Sin filtro seleccionado
-                # Mostrar filas donde el valor buscado aparece en cualquier columna
-                if any(filtro_valor in str(dato).lower() for dato in fila):
-                    tabla.rows.append(ft.DataRow(
-                        cells=[ft.DataCell(ft.Text(str(dato))) for dato in fila]
-                    ))
-            else:  # Filtrar según la columna seleccionada
-                indice = encabezados_tabla.index(filtro_campo)
-                # Mostrar filas donde el valor buscado aparece en la columna seleccionada
-                if filtro_valor in str(fila[indice]).lower():
-                    tabla.rows.append(ft.DataRow(
-                        cells=[ft.DataCell(ft.Text(str(dato))) for dato in fila]
-                    ))
-
-        tabla.update()  # Actualizar la tabla con los resultados filtrados
+        actualizar_tabla(datos_mostrados)  # Actualizar la tabla con los datos filtrados
 
     # Función para ordenar la tabla
     def ordenar_tabla(e):
         columna_ordenar = dropdown_ordenar.value
         indice_columna = encabezados_tabla.index(columna_ordenar)
 
-        # Ordenar los datos según la columna seleccionada
-        datos_ordenados = sorted(datos_tabla, key=lambda x: str(x[indice_columna]).lower())
+        nonlocal datos_mostrados
+        # Ordenar los datos mostrados actuales
+        datos_mostrados = sorted(datos_mostrados, key=lambda x: str(x[indice_columna]).lower())
 
-        tabla.rows.clear()  # Limpiar las filas actuales de la tabla
-        for fila in datos_ordenados:
-            tabla.rows.append(ft.DataRow(
-                cells=[ft.DataCell(ft.Text(str(dato))) for dato in fila]
-            ))
-
-        tabla.update()  # Actualizar la tabla con los datos ordenados
+        actualizar_tabla(datos_mostrados)  # Actualizar la tabla con los datos ordenados
 
     # Tabla de productos
     tabla = ft.DataTable(
@@ -126,17 +124,10 @@ def main(page: ft.Page):
     boton_ordenar = ft.ElevatedButton('Ordenar', on_click=ordenar_tabla)
 
     # Configuración de búsqueda y filtro
-    buscar_filtro = ft.Row([
-        input_buscar,
-        dropdown_filtro,
-        boton_filtrar
-    ], alignment=ft.MainAxisAlignment.END)
+    buscar_filtro = ft.Row([input_buscar, dropdown_filtro, boton_filtrar], alignment=ft.MainAxisAlignment.END)
 
     # Configuración de orden
-    ordenar_filtro = ft.Row([
-        dropdown_ordenar,
-        boton_ordenar
-    ], alignment=ft.MainAxisAlignment.END)
+    ordenar_filtro = ft.Row([dropdown_ordenar, boton_ordenar], alignment=ft.MainAxisAlignment.END)
 
     # Estructura de la página
     page.add(

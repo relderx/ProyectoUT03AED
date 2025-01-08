@@ -17,17 +17,20 @@ def main(page: ft.Page):
     
     def mostrar_vent_insertar(e):
         dialog = ft.AlertDialog(
-            title=ft.Text("Nuevo Movimiento"),
+            shape=ft.RoundedRectangleBorder(radius=5),
+            title=ft.Text("Insertar_Movimiento"),
             content=ft.Column([
-                # Aquí van los campos para ingresar los datos del nuevo movimiento
                 ft.TextField(label="Producto"),
                 ft.TextField(label="Tipo de Movimiento"),
-                # ... otros campos
+                ft.TextField(label="Cantidad"),
+                ft.TextField(label="Fecha"),
+                ft.TextField(label="Comentario"),
+                ft.Row([ft.TextField(label="Cositas"), ft.TextField(label="Más cositas")])
             ]),
             actions=[
-                ft.TextButton("Cancelar", on_click=lambda e: page.dialog.close()),
+                ft.TextButton("Cancelar", on_click=cerrar_movimiento),
                 ft.ElevatedButton("Guardar", on_click=guardar_movimiento)
-            ]
+            ],
         )
         page.dialog = dialog
         page.dialog.open = True
@@ -205,7 +208,7 @@ def main(page: ft.Page):
         encabezado,
         botones_inferiores,
         ft.Divider(),
-        ft.Text("Productos", size=20, weight=ft.FontWeight.BOLD),
+        ft.Text("Movimientos", size=30, weight=ft.FontWeight.BOLD),
         buscar_filtro,
         ordenar_filtro,
         tabla_con_scroll,  # Agregar la tabla dentro del contenedor con scroll

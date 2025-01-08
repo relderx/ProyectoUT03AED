@@ -14,7 +14,7 @@ def main(page: ft.Page):
         ft.Row(
             [
                 ft.ElevatedButton('Página Principal', width=150),
-                ft.ElevatedButton('Pedidos', width=150)
+                ft.ElevatedButton('Movimientos', width=150)
             ],
             alignment=ft.MainAxisAlignment.END,
             expand=True
@@ -37,23 +37,14 @@ def main(page: ft.Page):
     # Datos ficticios basados en la estructura del JSON
     datos_tabla = [
         {
-            "num_pedido": 1,
-            "cliente": {"nombre": "Juan Pérez", "email": "juanperez@mail.com", "telefono": "123456789"},
-            "productos": [{"producto": "Producto A", "unidades": 2, "precio_unidad": 15.0}],
-            "precio_total": 30.0,
-            "estado": "pendiente",
-            "fecha_creacion": "2025-01-01",
-            "fecha_modificacion": "2025-01-02"
-        },
-        {
-            "num_pedido": 2,
-            "cliente": {"nombre": "Ana García", "email": "anagarcia@mail.com", "telefono": "987654321"},
-            "productos": [{"producto": "Producto B", "unidades": 1, "precio_unidad": 25.0}],
-            "precio_total": 25.0,
-            "estado": "enviado",
-            "fecha_creacion": "2025-01-03",
-            "fecha_modificacion": "2025-01-04"
-        }
+            "num_pedido": i,
+            "cliente": {"nombre": f"Cliente {i}", "email": f"cliente{i}@mail.com", "telefono": f"{i*123456}"},
+            "productos": [{"producto": f"Producto {i}", "unidades": i, "precio_unidad": 10.0}],
+            "precio_total": i * 10.0,
+            "estado": "pendiente" if i % 2 == 0 else "enviado",
+            "fecha_creacion": f"2025-01-{i:02d}",
+            "fecha_modificacion": f"2025-01-{i+1:02d}"
+        } for i in range(1, 11)  # Genera 10 pedidos
     ]
 
     # Variable para mantener los datos mostrados
@@ -106,11 +97,10 @@ def main(page: ft.Page):
             fila = transformar_pedido_a_fila(pedido)
             columna_idx = encabezados_tabla.index(filtro_campo) if filtro_campo != 'Sin filtro' else None
 
-            # Filtrar por una columna específica o en toda la fila
             if columna_idx is not None:
                 if filtro_valor in str(fila[columna_idx]).lower():
                     datos_filtrados.append(pedido)
-            else:  # Sin filtro: buscar en toda la fila
+            else:
                 if any(filtro_valor in str(celda).lower() for celda in fila):
                     datos_filtrados.append(pedido)
 
@@ -123,7 +113,7 @@ def main(page: ft.Page):
         nonlocal datos_mostrados
 
         if columna_ordenar == 'Número de Pedido':
-            datos_mostrados.sort(key=lambda x: x['num_pedido'])
+            datos_mostrados.sort(key=lambda x: int(x['num_pedido']))  # Orden numérico
         elif columna_ordenar == 'Cliente':
             datos_mostrados.sort(key=lambda x: x['cliente']['nombre'].lower())
         elif columna_ordenar == 'Estado':

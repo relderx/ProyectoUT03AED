@@ -1,14 +1,9 @@
 import os
 import sys
 import flet as ft
+
 # Añadir la carpeta raíz del proyecto al path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
-from tests.add_many_movimientos import movimientos
-# from flet import navigation
-
-listMovimientos = []
-for movimiento in movimientos:
-    listMovimientos.append(movimiento.to_dict())
 
 from utils.helpers import tabulate_movimientos
 
@@ -17,7 +12,8 @@ def main(page: ft.Page):
     page.window_width = 1920
     page.window_height = 1080
     page.bgcolor = ft.colors.WHITE
-    page.theme_mode = "light"
+    page.theme_mode = 'light'
+    page.window_maximized = True
 
     # Encabezado
     encabezado = ft.Row([
@@ -39,35 +35,23 @@ def main(page: ft.Page):
         ft.ElevatedButton("Modificar", width=100, disabled=True),
     ], alignment=ft.MainAxisAlignment.END)
 
-    # Por ahora usar datos ficticios
+    # Encabezados de la tabla
     encabezados_tabla = ["Producto", "Tipo de Movimiento", "Cantidad", "Fecha", "Comentario"]
 
-# Función para actualizar la tabla según el filtro o búsqueda
-    def aplicar_filtro(e):
-        filtro_campo = dropdown_filtro.value
-        filtro_valor = input_buscar.value.lower()  # Convertir el valor de búsqueda a minúsculas
+    # Obtener datos originales de la base de datos
+    def obtener_datos():
+        return tabulate_movimientos()
 
-        tabla.rows.clear()  # Limpiar las filas actuales de la tabla
+    datos_tabla = obtener_datos()
 
-        for fila in listMovimientos:
-            if filtro_campo == "Sin filtro":  # Sin filtro seleccionado
-                # Comprobar si el valor de búsqueda está en cualquier columna de la fila
-                if any(filtro_valor in str(fila[dato]).lower() for dato in fila):  # Compara sin distinguir mayúsculas/minúsculas
-                    tabla.rows.append(ft.DataRow(
-                        cells=[ft.DataCell(ft.Text(str(fila[dato]))) for dato in fila]
-                    ))
-            else:  # Con filtro seleccionado
-                indice = encabezados_tabla.index(filtro_campo)
-                # Comprobar si el valor de búsqueda está en la columna seleccionada
-                if filtro_valor in str(fila[indice]).lower():  # Compara sin distinguir mayúsculas/minúsculas
-                    tabla.rows.append(ft.DataRow(
-                        cells=[ft.DataCell(ft.Text(str(fila[dato]))) for dato in fila]
-                    ))
+    # Crear la tabla
+    def crear_filas(datos):
+        return [
+            ft.DataRow(
+                cells=[ft.DataCell(ft.Text(str(dato))) for dato in fila]
+            ) for fila in datos
+        ]
 
-        tabla.update()  # Actualizar la tabla con los nuevos resultados filtrados
-
-
-    # Tabla de productos
     tabla = ft.DataTable(
         width=1920,
         border_radius=2,
@@ -75,40 +59,125 @@ def main(page: ft.Page):
         horizontal_lines=ft.BorderSide(2, "blue"),
         vertical_lines=ft.BorderSide(2, "blue"),
         columns=[ft.DataColumn(ft.Text(encabezado)) for encabezado in encabezados_tabla],
-        rows=[
-            ft.DataRow(
-                cells=[ft.DataCell(ft.Text(str(fila[dato]))) for dato in fila]
-            ) for fila in listMovimientos
-        ],
+        rows=crear_filas(datos_tabla),
     )
 
-    # Campo de búsqueda con filtro
+    # Contenedor con scroll para la tabla
+    tabla_con_scroll = ft.Column(
+        controls=[tabla],
+        height=500,  # Puedes ajustar la altura según sea necesario
+        scroll=ft.ScrollMode.AUTO  # Habilitar el scroll vertical
+    )
+
+    # Componentes de filtro
     dropdown_filtro = ft.Dropdown(
         label="Filtrar por",
-        options=[ft.dropdown.Option(text="Sin filtro")] + [ft.dropdown.Option(text=encabezado) for encabezado in encabezados_tabla],
+        options=[ft.dropdown.Option("Ningún filtro")] + [ft.dropdown.Option(encabezado) for encabezado in encabezados_tabla],
         width=200,
-        value="Sin filtro"  # Sin filtro seleccionado por defecto
+        value="Ningún filtro"
     )
 
     input_buscar = ft.TextField(label="Buscar", width=200)
+
+    def aplicar_filtro(e=None):  # e=None para aceptar llamadas sin evento
+        # Obtener datos originales de nuevo
+        datos = obtener_datos()
+
+        # Obtener filtro seleccionado y texto ingresado
+        filtro = dropdown_filtro.value
+        texto = input_buscar.value.lower()
+
+        # Limpiar las filas actuales de la tabla
+        tabla.rows.clear()  # Asegurarse de que no haya filas previas
+
+        # Filtrar los datos
+        datos_filtrados = []
+        if texto:  # Si hay texto ingresado
+            if filtro == "Ningún filtro":
+                # Buscar en todos los campos
+                datos_filtrados = [
+                    fila for fila in datos if any(texto in str(campo).lower() for campo in fila)
+                ]
+            else:
+                # Filtrar por campo específico
+                campo_indices = {
+                    "Producto": 0,
+                    "Tipo de Movimiento": 1,
+                    "Cantidad": 2,
+                    "Fecha": 3,
+                    "Comentario": 4
+                }
+                indice = campo_indices.get(filtro, None)
+                if indice is not None:
+                    datos_filtrados = [
+                        fila for fila in datos if texto in str(fila[indice]).lower()
+                    ]
+        else:
+            # Si no hay texto, mostrar todos los datos
+            datos_filtrados = datos
+
+        # Agregar las filas filtradas a la tabla
+        for fila in datos_filtrados:
+            tabla.rows.append(ft.DataRow(
+                cells=[ft.DataCell(ft.Text(str(dato))) for dato in fila]
+            ))
+
+        tabla.update()  # Actualizar la tabla con los resultados filtrados
+
+    # Función para ordenar la tabla
+    def ordenar_tabla(e):
+        columna_ordenar = dropdown_ordenar.value
+        indice_columna = encabezados_tabla.index(columna_ordenar)
+
+        # Ordenar los datos según la columna seleccionada
+        datos_ordenados = sorted(datos_tabla, key=lambda x: str(x[indice_columna]).lower())
+
+        tabla.rows.clear()  # Limpiar las filas actuales de la tabla
+        for fila in datos_ordenados:
+            tabla.rows.append(ft.DataRow(
+                cells=[ft.DataCell(ft.Text(str(dato))) for dato in fila]
+            ))
+
+        tabla.update()  # Actualizar la tabla con los datos ordenados
+
+    # Dropdown para ordenar la tabla
+    dropdown_ordenar = ft.Dropdown(
+        label='Ordenar por',
+        options=[ft.dropdown.Option(text=encabezado) for encabezado in encabezados_tabla],
+        width=200,
+        value=encabezados_tabla[0]  # Ordenar por la primera columna por defecto
+    )
+    boton_ordenar = ft.ElevatedButton('Ordenar', on_click=ordenar_tabla)
+
+    # Configuración de eventos
+    input_buscar.on_submit = aplicar_filtro  # Aplicar filtro al presionar Enter
     boton_filtrar = ft.ElevatedButton("Aplicar Filtro", on_click=aplicar_filtro)
 
+    # Estructura de búsqueda y filtro
     buscar_filtro = ft.Row([
-        dropdown_filtro,
         input_buscar,
+        dropdown_filtro,
         boton_filtrar
+    ], alignment=ft.MainAxisAlignment.END)
+
+    # Configuración de orden
+    ordenar_filtro = ft.Row([
+        dropdown_ordenar,
+        boton_ordenar
     ], alignment=ft.MainAxisAlignment.END)
 
     # Estructura de la página
     page.add(
-        encabezado, 
+        encabezado,
         botones_inferiores,
         ft.Divider(),
         ft.Text("Productos", size=20, weight=ft.FontWeight.BOLD),
         buscar_filtro,
-        tabla,
+        ordenar_filtro,
+        tabla_con_scroll,  # Agregar la tabla dentro del contenedor con scroll
         ft.Divider(),
     )
+
 
 ft.app(target=main)
 # import os

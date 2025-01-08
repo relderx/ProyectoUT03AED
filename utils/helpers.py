@@ -25,18 +25,24 @@ def tabulate_productos():
     return datos_tabla
 
 def tabulate_movimientos():
-    '''Convierte los datos obtenidos desde la base de datos a un formato tabular.'''
+    '''Convierte los datos obtenidos desde la base de datos a un formato tabular sin duplicados.'''
     movimientos = list(get_movimientos())  # Convertir el cursor en una lista
     datos_tabla = []
 
+    # Usar un conjunto para evitar duplicados
+    movimientos_vistos = set()
+
     for movimiento in movimientos:
-        datos_tabla.append([
+        fila = (
             movimiento.get('producto', ''),
             movimiento.get('tipo_movimiento', ''),
             movimiento.get('cantidad', ''),
             movimiento.get('fecha', ''),
             movimiento.get('comentario', '')
-        ])
+        )
+        if fila not in movimientos_vistos:  # Verificar si la fila ya existe
+            movimientos_vistos.add(fila)  # Añadir la fila al conjunto
+            datos_tabla.append(list(fila))  # Añadir la fila como lista a los datos
 
     return datos_tabla
 

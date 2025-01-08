@@ -14,6 +14,40 @@ def main(page: ft.Page):
     page.bgcolor = ft.colors.WHITE
     page.theme_mode = 'light'
     page.window_maximized = True
+    
+    def mostrar_vent_insertar(e):
+        dialog = ft.AlertDialog(
+            title=ft.Text("Nuevo Movimiento"),
+            content=ft.Column([
+                # Aquí van los campos para ingresar los datos del nuevo movimiento
+                ft.TextField(label="Producto"),
+                ft.TextField(label="Tipo de Movimiento"),
+                # ... otros campos
+            ]),
+            actions=[
+                ft.TextButton("Cancelar", on_click=lambda e: page.dialog.close()),
+                ft.ElevatedButton("Guardar", on_click=guardar_movimiento)
+            ]
+        )
+        page.dialog = dialog
+        page.dialog.open = True
+        page.update()
+
+# ... (resto de tu código)
+    def cerrar_movimiento(e):
+        page.dialog.open = False
+        page.update()
+
+    # Función para guardar el nuevo movimiento (ejemplo)
+    def guardar_movimiento(e):
+        # Obtener los datos de los campos del diálogo
+        # ...
+        # Agregar el nuevo movimiento a la base de datos o lista
+        # ...
+        page.dialog.open = False
+        page.update()
+        # Actualizar la tabla con el nuevo dato
+        # ...
 
     # Encabezado
     encabezado = ft.Row([
@@ -31,7 +65,7 @@ def main(page: ft.Page):
     # Botones inferiores
     botones_inferiores = ft.Row([
         ft.ElevatedButton("Borrar", width=100, disabled=True),
-        ft.ElevatedButton("Insertar", width=100),
+        ft.ElevatedButton("Insertar", width=100, on_click=mostrar_vent_insertar),
         ft.ElevatedButton("Modificar", width=100, disabled=True),
     ], alignment=ft.MainAxisAlignment.END)
 
@@ -177,6 +211,5 @@ def main(page: ft.Page):
         tabla_con_scroll,  # Agregar la tabla dentro del contenedor con scroll
         ft.Divider(),
     )
-
 
 ft.app(target=main)

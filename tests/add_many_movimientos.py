@@ -1,10 +1,12 @@
 import os
 import sys
-from models.movimientos import Movimiento
-from utils.db import add_many_movimientos, get_movimientos
+
 
 # Añadir la carpeta raíz del proyecto al path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from models.movimientos import Movimiento
+from utils.db import add_many_movimientos, get_movimientos
 
 # Crear 10 movimientos
 movimientos = [
@@ -27,5 +29,6 @@ movimientos_existentes = list(get_movimientos())  # Obtener todos los movimiento
 if not movimientos_existentes:
     result = add_many_movimientos(movimientos)
     print(f"Se han insertado los siguientes IDs: {result.inserted_ids}")
+    
 else:
     print("Los movimientos ya existen en la base de datos. No se insertaron nuevos movimientos.")

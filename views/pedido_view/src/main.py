@@ -1,4 +1,5 @@
 import flet as ft
+from utils.helpers import tabulate_pedidos  # Importar la función para obtener los pedidos
 
 def main(page: ft.Page):
     page.title = 'Gestión de Pedidos'
@@ -19,7 +20,7 @@ def main(page: ft.Page):
                 ft.TextField(label="Fecha"),
                 ft.TextField(label="Comentario"),
                 ft.Row([ft.TextField(label="Cositas"), ft.TextField(label="Más cositas")])
-            ], width=page.window_width*0.33, height=page.window_height*0.5),
+            ]),
             actions=[
                 ft.TextButton("Cancelar", on_click=cerrar_movimiento),
                 ft.ElevatedButton("Guardar", on_click=guardar_movimiento)
@@ -29,21 +30,15 @@ def main(page: ft.Page):
         page.dialog.open = True
         page.update()
 
-# ... (resto de tu código)
     def cerrar_movimiento(e):
         page.dialog.open = False
         page.update()
 
-    # Función para guardar el nuevo movimiento (ejemplo)
     def guardar_movimiento(e):
-        # Obtener los datos de los campos del diálogo
-        # ...
-        # Agregar el nuevo movimiento a la base de datos o lista
-        # ...
+        # Lógica para guardar el movimiento
         page.dialog.open = False
         page.update()
-        # Actualizar la tabla con el nuevo dato
-        # ...
+
     # Encabezado
     encabezado = ft.Row([
         ft.Text('Gestión de Pedidos', size=30, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.LEFT),
@@ -70,25 +65,14 @@ def main(page: ft.Page):
         'Estado', 'Fecha de Creación', 'Fecha de Modificación'
     ]
 
-    # Datos ficticios basados en la estructura del JSON
-    datos_tabla = [
-        {
-            "num_pedido": i,
-            "cliente": {"nombre": f"Cliente {i}", "email": f"cliente{i}@mail.com", "telefono": f"{i*123456}"},
-            "productos": [{"producto": f"Producto {i}", "unidades": i, "precio_unidad": 10.0}],
-            "precio_total": i * 10.0,
-            "estado": "pendiente" if i % 2 == 0 else "enviado",
-            "fecha_creacion": f"2025-01-{i:02d}",
-            "fecha_modificacion": f"2025-01-{i+1:02d}"
-        } for i in range(1, 11)  # Genera 10 pedidos
-    ]
+    # Obtener los datos de la base de datos
+    datos_tabla = tabulate_pedidos()
 
     # Variable para mantener los datos mostrados
     datos_mostrados = datos_tabla.copy()
 
-    # Función para transformar los datos de un pedido en celdas de la tabla
     def transformar_pedido_a_fila(pedido):
-        cliente_info = f"{pedido['cliente']['nombre']} ({pedido['cliente']['email']}, {pedido['cliente']['telefono']})"
+        cliente_info = f"{pedido['cliente']} ({pedido['email']})"
         productos_info = "; ".join(
             f"{p['producto']} x{p['unidades']} @ {p['precio_unidad']}€" for p in pedido['productos']
         )
@@ -151,7 +135,7 @@ def main(page: ft.Page):
         if columna_ordenar == 'Número de Pedido':
             datos_mostrados.sort(key=lambda x: int(x['num_pedido']))  # Orden numérico
         elif columna_ordenar == 'Cliente':
-            datos_mostrados.sort(key=lambda x: x['cliente']['nombre'].lower())
+            datos_mostrados.sort(key=lambda x: x['cliente'].lower())
         elif columna_ordenar == 'Estado':
             datos_mostrados.sort(key=lambda x: x['estado'].lower())
         elif columna_ordenar == 'Fecha de Creación':
@@ -198,7 +182,7 @@ def main(page: ft.Page):
         ft.Divider(),
     )
 
-    # Actualizar tabla con datos iniciales
-    actualizar_tabla(datos_mostrados)
+    # Actualizar tabla con datos de la base de datos
+    actualizar_tabla(datos_tabla)
 
 ft.app(target=main)

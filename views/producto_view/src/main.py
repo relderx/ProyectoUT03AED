@@ -25,7 +25,7 @@ def main(page: ft.Page):
                 ft.TextField(label="Fecha"),
                 ft.TextField(label="Comentario"),
                 ft.Row([ft.TextField(label="Cositas"), ft.TextField(label="Más cositas")])
-            ]),
+            ], width=page.window_width*0.33, height=page.window_height*0.5),
             actions=[
                 ft.TextButton("Cancelar", on_click=cerrar_movimiento),
                 ft.ElevatedButton("Guardar", on_click=guardar_movimiento)

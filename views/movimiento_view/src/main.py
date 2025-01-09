@@ -6,6 +6,7 @@ import flet as ft
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
 
 from utils.helpers import tabulate_movimientos
+print(tabulate_movimientos())
 
 def main(page: ft.Page):
     page.title = "Movimiento de Inventario"

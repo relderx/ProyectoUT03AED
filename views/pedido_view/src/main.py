@@ -1,6 +1,12 @@
+import os
+import sys
 import flet as ft
 
+# Añadir la carpeta raíz del proyecto al path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
 
+from utils.helpers import tabulate_pedidos
+print(tabulate_pedidos())
 def main(page: ft.Page):
     page.title = 'Gestión de Pedidos'
     page.window_width = 1920
@@ -8,43 +14,7 @@ def main(page: ft.Page):
     page.bgcolor = ft.colors.WHITE
     page.theme_mode = 'light'
     page.window_maximized = True
-    
-    def mostrar_vent_insertar(e):
-        dialog = ft.AlertDialog(
-            shape=ft.RoundedRectangleBorder(radius=5),
-            title=ft.Text("Insertar_Movimiento"),
-            content=ft.Column([
-                ft.TextField(label="Producto"),
-                ft.TextField(label="Tipo de Movimiento"),
-                ft.TextField(label="Cantidad"),
-                ft.TextField(label="Fecha"),
-                ft.TextField(label="Comentario"),
-                ft.Row([ft.TextField(label="Cositas"), ft.TextField(label="Más cositas")])
-            ]),
-            actions=[
-                ft.TextButton("Cancelar", on_click=cerrar_movimiento),
-                ft.ElevatedButton("Guardar", on_click=guardar_movimiento)
-            ],
-        )
-        page.dialog = dialog
-        page.dialog.open = True
-        page.update()
 
-# ... (resto de tu código)
-    def cerrar_movimiento(e):
-        page.dialog.open = False
-        page.update()
-
-    # Función para guardar el nuevo movimiento (ejemplo)
-    def guardar_movimiento(e):
-        # Obtener los datos de los campos del diálogo
-        # ...
-        # Agregar el nuevo movimiento a la base de datos o lista
-        # ...
-        page.dialog.open = False
-        page.update()
-        # Actualizar la tabla con el nuevo dato
-        # ...
     # Encabezado
     encabezado = ft.Row([
         ft.Text('Gestión de Pedidos', size=30, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.LEFT),
@@ -61,7 +31,7 @@ def main(page: ft.Page):
     # Botones inferiores
     botones_inferiores = ft.Row([
         ft.ElevatedButton('Borrar', width=100, disabled=True),
-        ft.ElevatedButton('Insertar', width=100, on_click=mostrar_vent_insertar),
+        ft.ElevatedButton('Insertar', width=100),
         ft.ElevatedButton('Modificar', width=100, disabled=True),
     ], alignment=ft.MainAxisAlignment.END)
 

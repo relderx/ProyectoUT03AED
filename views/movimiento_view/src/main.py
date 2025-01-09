@@ -6,6 +6,7 @@ import flet as ft
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
 
 from utils.helpers import tabulate_movimientos
+print(tabulate_movimientos())
 
 def main(page: ft.Page):
     page.title = "Movimiento de Inventario"
@@ -24,8 +25,7 @@ def main(page: ft.Page):
                 ft.TextField(label="Tipo de Movimiento"),
                 ft.TextField(label="Cantidad"),
                 ft.TextField(label="Fecha"),
-                ft.TextField(label="Comentario"),
-                ft.Row([ft.TextField(label="Cositas"), ft.TextField(label="Más cositas")])
+                ft.TextField(label="Comentario")
             ], width=page.window_width*0.33, height=page.window_height*0.5),
             actions=[
                 ft.TextButton("Cancelar", on_click=cerrar_movimiento),

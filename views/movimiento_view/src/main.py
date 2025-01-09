@@ -15,26 +15,6 @@ def main(page: ft.Page):
     page.bgcolor = ft.colors.WHITE
     page.theme_mode = 'light'
     page.window_maximized = True
-    
-    def mostrar_vent_insertar(e):
-        dialog = ft.AlertDialog(
-            shape=ft.RoundedRectangleBorder(radius=5),
-            title=ft.Text("Insertar_Movimiento"),
-            content=ft.Column([
-                ft.TextField(label="Producto"),
-                ft.TextField(label="Tipo de Movimiento"),
-                ft.TextField(label="Cantidad"),
-                ft.TextField(label="Fecha"),
-                ft.TextField(label="Comentario")
-            ], width=page.window_width*0.33, height=page.window_height*0.5),
-            actions=[
-                ft.TextButton("Cancelar", on_click=cerrar_movimiento),
-                ft.ElevatedButton("Guardar", on_click=guardar_movimiento)
-            ],
-        )
-        page.dialog = dialog
-        page.dialog.open = True
-        page.update()
 
 # ... (resto de tu código)
     def cerrar_movimiento(e):
@@ -51,6 +31,32 @@ def main(page: ft.Page):
         page.update()
         # Actualizar la tabla con el nuevo dato
         # ...
+    
+    producto = ft.TextField(label="Producto")
+    tipMovimiento = 
+    cantidad = 
+    fecha = 
+    comentario = 
+    dialog = ft.AlertDialog(
+            shape=ft.RoundedRectangleBorder(radius=5),
+            title=ft.Text("Insertar_Movimiento"),
+            content=ft.Column([
+                producto,
+                ft.TextField(label="Tipo de Movimiento"),
+                ft.TextField(label="Cantidad"),
+                ft.TextField(label="Fecha"),
+                ft.TextField(label="Comentario")
+            ], width=page.window_width*0.33, height=page.window_height*0.5),
+            actions=[
+                ft.TextButton("Cancelar", on_click=cerrar_movimiento),
+                ft.ElevatedButton("Guardar", on_click=guardar_movimiento)
+            ],
+        )
+    
+    def mostrar_vent_insertar(e):
+        page.dialog = dialog
+        page.dialog.open = True
+        page.update()
 
     # Encabezado
     encabezado = ft.Row([

@@ -24,8 +24,7 @@ def main(page: ft.Page):
                 ft.TextField(label="Tipo de Movimiento"),
                 ft.TextField(label="Cantidad"),
                 ft.TextField(label="Fecha"),
-                ft.TextField(label="Comentario"),
-                ft.Row([ft.TextField(label="Cositas"), ft.TextField(label="Más cositas")])
+                ft.TextField(label="Comentario")
             ], width=page.window_width*0.33, height=page.window_height*0.5),
             actions=[
                 ft.TextButton("Cancelar", on_click=cerrar_movimiento),

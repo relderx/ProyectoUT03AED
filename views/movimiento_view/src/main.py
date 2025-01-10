@@ -18,6 +18,7 @@ def main(page: ft.Page):
 
 # ... (resto de tu código)
     def cerrar_movimiento(e):
+        print(producto)
         page.dialog.open = False
         page.update()
 
@@ -32,20 +33,20 @@ def main(page: ft.Page):
         # Actualizar la tabla con el nuevo dato
         # ...
     
-    producto = ft.TextField(label="Producto")
-    tipMovimiento = 
-    cantidad = 
-    fecha = 
-    comentario = 
+    producto = ft.TextField(label="Producto", on_submit=guardar_movimiento)
+    tipMovimiento = ft.TextField(label="Tipo de Movimiento", on_submit=guardar_movimiento)
+    cantidad = ft.TextField(label="Cantidad", on_submit=guardar_movimiento)
+    fecha = ft.TextField(label="Fecha", on_submit=guardar_movimiento)
+    comentario = ft.TextField(label="Comentario", on_submit=guardar_movimiento)
     dialog = ft.AlertDialog(
             shape=ft.RoundedRectangleBorder(radius=5),
             title=ft.Text("Insertar_Movimiento"),
             content=ft.Column([
                 producto,
-                ft.TextField(label="Tipo de Movimiento"),
-                ft.TextField(label="Cantidad"),
-                ft.TextField(label="Fecha"),
-                ft.TextField(label="Comentario")
+                tipMovimiento,
+                cantidad,
+                fecha,
+                comentario
             ], width=page.window_width*0.33, height=page.window_height*0.5),
             actions=[
                 ft.TextButton("Cancelar", on_click=cerrar_movimiento),
@@ -57,6 +58,7 @@ def main(page: ft.Page):
         page.dialog = dialog
         page.dialog.open = True
         page.update()
+        producto.focus()
 
     # Encabezado
     encabezado = ft.Row([

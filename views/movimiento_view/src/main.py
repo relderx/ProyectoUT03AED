@@ -33,11 +33,11 @@ def main(page: ft.Page):
         # Actualizar la tabla con el nuevo dato
         # ...
     
-    producto = ft.TextField(label="Producto", on_submit=guardar_movimiento)
-    tipMovimiento = ft.TextField(label="Tipo de Movimiento", on_submit=guardar_movimiento)
-    cantidad = ft.TextField(label="Cantidad", on_submit=guardar_movimiento)
-    fecha = ft.TextField(label="Fecha", on_submit=guardar_movimiento)
-    comentario = ft.TextField(label="Comentario", on_submit=guardar_movimiento)
+    producto = ft.TextField(hint_text="Escribe el nombre del producto", hint_style=ft.TextStyle(color="#d8d8d8"),label="Producto", on_submit=guardar_movimiento)
+    tipMovimiento = ft.TextField(hint_text="Escribe el tipo de movimiento", hint_style=ft.TextStyle(color="#d8d8d8"),label="Tipo de Movimiento", on_submit=guardar_movimiento)
+    cantidad = ft.TextField(hint_text="Escribe la cantidad del producto", hint_style=ft.TextStyle(color="#d8d8d8"),label="Cantidad", on_submit=guardar_movimiento)
+    fecha = ft.TextField(hint_text="Escribe la fecha en la que se realiza la acción", hint_style=ft.TextStyle(color="#d8d8d8"),label="Fecha", on_submit=guardar_movimiento)
+    comentario = ft.TextField(hint_text="Escribe un comentario para el movimiento", hint_style=ft.TextStyle(color="#d8d8d8"),label="Comentario", on_submit=guardar_movimiento)
     dialog = ft.AlertDialog(
             shape=ft.RoundedRectangleBorder(radius=5),
             title=ft.Text("Insertar_Movimiento"),

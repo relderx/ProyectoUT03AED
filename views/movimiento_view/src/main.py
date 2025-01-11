@@ -47,19 +47,22 @@ def main(page: ft.Page):
         page.update()
 
     def guardar_movimiento(e):
-        # print(datos_tabla)
         add_movimiento(Movimiento(page.val_producto, page.val_tipMovimiento,int(page.val_cantidad),page.val_comentario))
+        datos_tabla = obtener_datos()
+        print(datos_tabla)
+        tabla.rows.clear()
+        for fila in datos_tabla:
+            tabla.rows.append(ft.DataRow(
+                cells=[ft.DataCell(ft.Text(str(dato))) for dato in fila]
+            ))
+
+        tabla.update()  
+        
         page.dialog.open = False
         page.val_producto = None
         page.val_tipMovimiento = None
         page.val_cantidad = None
         page.val_comentario = None
-        tabla.clean()
-        tabla.rows = crear_filas(datos_tabla)
-        # tabla.clean()
-        # for fila in datos_tabla:
-        #     tabla.rows.append(ft.DataRow(fila))
-        tabla.update()
         page.update()
     
     producto = ft.TextField(hint_text="Escribe el nombre del producto", hint_style=ft.TextStyle(color="#d8d8d8"),label="Producto", on_submit=guardar_movimiento)

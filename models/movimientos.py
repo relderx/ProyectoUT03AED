@@ -58,6 +58,8 @@ class Movimiento:
             'fecha': self.fecha,
             'comentario': self.comentario
         }
+    def __str__(self):
+        return f"{self.producto}, {self.cantidad}, {self.comentario}, {self.tipo_movimiento}, {self.fecha}"
 
     def __repr__(self):
         '''

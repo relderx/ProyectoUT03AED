@@ -15,12 +15,12 @@ def main(page: ft.Page):
     page.window_maximized = True
     def cerrar_y_abrir_movimiento_view(e):
         page.window_close()  # Cerrar la ventana actual
-        os.system("flet run .\\views\\movimiento_view")  # Ejecutar la página principal
+        os.system("flet run .\\views\\movimiento_view\\src")  # Ejecutar la página principal
 
     # Función para cerrar la ventana actual y abrir la ventana de pedidos
     def cerrar_y_abrir_pedidos(e):
         page.window_close()  # Cerrar la ventana actual
-        os.system("flet run .\\views\\pedido_view")  # Ejecutar la vista de pedidos
+        os.system("flet run .\\views\\pedido_view\\src")  # Ejecutar la vista de pedidos
 
 
     def mostrar_vent_insertar(e):
@@ -200,4 +200,4 @@ def main(page: ft.Page):
         ft.Divider(),
     )
 
-ft.app(target=main)
+# ft.app(target=main)

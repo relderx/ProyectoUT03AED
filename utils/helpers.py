@@ -4,10 +4,10 @@ import sys
 # Añadir la carpeta raíz del proyecto al path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from utils.db import get_productos, get_movimientos, get_pedidos
+from utils.db import get_productos, get_movimientos, get_pedidos, delete_pedido, update_pedido
 
 def tabulate_productos():
-    '''Convierte los datos obtenidos desde la base de datos a un formato tabular para productos.'''
+    """Convierte los datos obtenidos desde la base de datos a un formato tabular para productos."""
     productos = list(get_productos())  # Convertir el cursor en una lista
     datos_tabla = []
 
@@ -25,7 +25,7 @@ def tabulate_productos():
     return datos_tabla
 
 def tabulate_movimientos():
-    '''Convierte los datos obtenidos desde la base de datos a un formato tabular sin duplicados.'''
+    """Convierte los datos obtenidos desde la base de datos a un formato tabular sin duplicados."""
     movimientos = list(get_movimientos())  # Convertir el cursor en una lista
     datos_tabla = []
 
@@ -47,7 +47,7 @@ def tabulate_movimientos():
     return datos_tabla
 
 def tabulate_pedidos():
-    '''Convierte los datos obtenidos desde la base de datos a un formato tabular para pedidos.'''
+    """Convierte los datos obtenidos desde la base de datos a un formato tabular para pedidos."""
     pedidos = list(get_pedidos())  # Convertir el cursor en una lista
     datos_tabla = []
 
@@ -64,3 +64,22 @@ def tabulate_pedidos():
 
     return datos_tabla
 
+def borrar_pedido(num_pedido):
+    """
+    Elimina un pedido de la base de datos por su número.
+    """
+    try:
+        delete_pedido(num_pedido)  # Llama a la función que elimina el pedido en MongoDB
+        print(f"Pedido {num_pedido} eliminado correctamente.")
+    except Exception as e:
+        print(f"Error al eliminar el pedido {num_pedido}: {e}")
+
+def modificar_pedido(num_pedido, nuevos_datos):
+    """
+    Modifica un pedido existente en la base de datos.
+    """
+    try:
+        update_pedido(num_pedido, nuevos_datos)
+        print(f"Pedido {num_pedido} modificado correctamente.")
+    except Exception as e:
+        print(f"Error al modificar el pedido {num_pedido}: {e}")

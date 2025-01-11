@@ -58,10 +58,10 @@ def main(page: ft.Page):
         tabla.update()  
         
         page.dialog.open = False
-        page.val_producto = None
-        page.val_tipMovimiento = None
-        page.val_cantidad = None
-        page.val_comentario = None
+        producto.value = None
+        tipMovimiento.value = None
+        cantidad.value = None
+        comentario.value = None
         page.update()
     
     producto = ft.TextField(hint_text="Escribe el nombre del producto", hint_style=ft.TextStyle(color="#d8d8d8"),label="Producto", on_submit=guardar_movimiento)
@@ -71,7 +71,7 @@ def main(page: ft.Page):
     
     dialog = ft.AlertDialog(
             shape=ft.RoundedRectangleBorder(radius=5),
-            title=ft.Text("Insertar_Movimiento"),
+            title=ft.Text("Inserta un Movimiento nuevo"),
             content=ft.Column([
                 producto,
                 tipMovimiento,

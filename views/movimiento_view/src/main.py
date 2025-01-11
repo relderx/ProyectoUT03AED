@@ -55,7 +55,6 @@ def main(page: ft.Page):
             tabla.rows.append(ft.DataRow(
                 cells=[ft.DataCell(ft.Text(str(dato))) for dato in fila]
             ))
-
         tabla.update()  
         
         page.dialog.open = False

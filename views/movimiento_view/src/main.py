@@ -11,16 +11,15 @@ from models.movimientos import Movimiento
 
 def main(page: ft.Page):
     page.title = "Movimiento de Inventario"
-    page.window_width = 1920
-    page.window_height = 1080
+    page.window.width = 1920
+    page.window.height = 1080
     page.bgcolor = ft.colors.WHITE
     page.theme_mode = 'light'
-    page.window_maximized = True
+    page.window.maximized = True
     
     page.val_producto = None
     page.val_tipMovimiento = None
     page.val_cantidad = None
-    page.val_fecha = None    
     page.val_comentario = None
 
     def cambio_producto(e):
@@ -29,15 +28,10 @@ def main(page: ft.Page):
         
     def cambio_tipo_Mov(e):
         page.val_tipMovimiento = e.control.value
-        print(page.val_producto)
         page.update()
         
     def cambio_cantidad(e):
         page.val_cantidad = e.control.value
-        page.update()
-        
-    def cambio_fecha(e):
-        page.val_fecha = e.control.value
         page.update()
         
     def cambio_comentario(e):
@@ -45,22 +39,33 @@ def main(page: ft.Page):
         page.update()
         
     def cerrar_movimiento(e):
-        new_Movimiento = Movimiento(page.val_producto, page.val_tipMovimiento,int(page.val_cantidad),page.val_fecha,page.val_comentario)
-        print(new_Movimiento)
         page.dialog.open = False
+        page.val_producto = None
+        page.val_tipMovimiento = None
+        page.val_cantidad = None
+        page.val_comentario = None
         page.update()
 
     def guardar_movimiento(e):
+        # print(datos_tabla)
+        add_movimiento(Movimiento(page.val_producto, page.val_tipMovimiento,int(page.val_cantidad),page.val_comentario))
         page.dialog.open = False
+        page.val_producto = None
+        page.val_tipMovimiento = None
+        page.val_cantidad = None
+        page.val_comentario = None
+        tabla.clean()
+        tabla.rows = crear_filas(datos_tabla)
+        # tabla.clean()
+        # for fila in datos_tabla:
+        #     tabla.rows.append(ft.DataRow(fila))
+        tabla.update()
         page.update()
     
     producto = ft.TextField(hint_text="Escribe el nombre del producto", hint_style=ft.TextStyle(color="#d8d8d8"),label="Producto", on_submit=guardar_movimiento)
     tipMovimiento = ft.TextField(hint_text="Escribe el tipo de movimiento", hint_style=ft.TextStyle(color="#d8d8d8"),label="Tipo de Movimiento", on_submit=guardar_movimiento)
     cantidad = ft.TextField(hint_text="Escribe la cantidad del producto", hint_style=ft.TextStyle(color="#d8d8d8"),label="Cantidad", on_submit=guardar_movimiento)
-    fecha = ft.TextField(hint_text="Escribe la fecha en la que se realiza la acción", hint_style=ft.TextStyle(color="#d8d8d8"),label="Fecha", on_submit=guardar_movimiento)
     comentario = ft.TextField(hint_text="Escribe un comentario para el movimiento", hint_style=ft.TextStyle(color="#d8d8d8"),label="Comentario", on_submit=guardar_movimiento)
-    
-
     
     dialog = ft.AlertDialog(
             shape=ft.RoundedRectangleBorder(radius=5),
@@ -69,9 +74,8 @@ def main(page: ft.Page):
                 producto,
                 tipMovimiento,
                 cantidad,
-                fecha,
                 comentario
-            ], width=page.window_width*0.33, height=page.window_height*0.5),
+            ], width=page.window.width*0.33, height=page.window.height*0.5),
             actions=[
                 ft.TextButton("Cancelar", on_click=cerrar_movimiento),
                 ft.ElevatedButton("Guardar", on_click=guardar_movimiento)
@@ -81,7 +85,6 @@ def main(page: ft.Page):
     producto.on_change = cambio_producto
     tipMovimiento.on_change = cambio_tipo_Mov
     cantidad.on_change = cambio_cantidad
-    fecha.on_change = cambio_fecha
     comentario.on_change = cambio_comentario
     
     def mostrar_vent_insertar(e):

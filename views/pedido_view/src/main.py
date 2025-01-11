@@ -12,8 +12,6 @@ from models.pedidos import Pedido
 from utils.helpers import tabulate_pedidos
 print(tabulate_pedidos())
 
-
-
 # Global para almacenar los elementos seleccionados
 seleccionados = []
 

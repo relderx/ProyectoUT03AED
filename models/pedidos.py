@@ -121,4 +121,4 @@ class Pedido:
         '''
         Representación en cadena del pedido.'''
         
-        return (f'<Pedido {self.num_pedido}, Cliente: {self.cliente['nombre']}, Estado: {self.estado}, Precio: {self.precio_total}>')
+        return (f"<Pedido {self.num_pedido}, Cliente: {self.cliente['nombre']}, Estado: {self.estado}, Precio: {self.precio_total}>")

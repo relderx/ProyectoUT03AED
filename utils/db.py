@@ -64,11 +64,3 @@ def add_pedido(pedido: Pedido):
 def add_many_pedidos(pedidos: list[Pedido]):
     '''Inserta múltiples pedidos en la colección de pedidos.'''
     return COLL_PED.insert_many([ped.to_dict() for ped in pedidos])
-
-def update_pedido(pedido_id, pedido_data):
-    '''Actualiza un pedido existente en la colección de pedidos.'''
-    return COLL_PED.update_one({'_id': pedido_id}, {'$set': pedido_data})
-
-def delete_pedido(pedido_id):
-    '''Elimina un pedido de la colección de pedidos utilizando su ID.'''
-    return COLL_PED.delete_one({'_id': pedido_id})

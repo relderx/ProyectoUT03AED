@@ -6,7 +6,15 @@ import flet as ft
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
 
 from utils.helpers import tabulate_movimientos
-print(tabulate_movimientos())
+from utils.db import add_movimiento
+from models.movimientos import Movimiento
+
+
+val_producto = None
+val_tipMovimiento = None
+val_cantidad = None
+val_fecha = None    
+val_comentario = None
 
 def main(page: ft.Page):
     page.title = "Movimiento de Inventario"
@@ -16,28 +24,38 @@ def main(page: ft.Page):
     page.theme_mode = 'light'
     page.window_maximized = True
 
-# ... (resto de tu código)
+    def cambio_producto(e):
+        val_producto = e.control.value
+        
+    def cambio_tipo_Mov(e):
+        val_tipMovimiento = e.control.value
+        print(val_producto)
+        
+    def cambio_cantidad(e):
+        val_cantidad = e.control.value
+        
+    def cambio_fecha(e):
+        val_fecha = e.control.value
+        
+    def cambio_comentario(e):
+        val_comentario = e.control.value
+        
     def cerrar_movimiento(e):
-        print(producto)
+        print(f"{val_producto}, {val_fecha}, {val_cantidad}, {val_tipMovimiento}, {val_comentario}")
         page.dialog.open = False
         page.update()
 
-    # Función para guardar el nuevo movimiento (ejemplo)
     def guardar_movimiento(e):
-        # Obtener los datos de los campos del diálogo
-        # ...
-        # Agregar el nuevo movimiento a la base de datos o lista
-        # ...
         page.dialog.open = False
         page.update()
-        # Actualizar la tabla con el nuevo dato
-        # ...
     
     producto = ft.TextField(hint_text="Escribe el nombre del producto", hint_style=ft.TextStyle(color="#d8d8d8"),label="Producto", on_submit=guardar_movimiento)
     tipMovimiento = ft.TextField(hint_text="Escribe el tipo de movimiento", hint_style=ft.TextStyle(color="#d8d8d8"),label="Tipo de Movimiento", on_submit=guardar_movimiento)
     cantidad = ft.TextField(hint_text="Escribe la cantidad del producto", hint_style=ft.TextStyle(color="#d8d8d8"),label="Cantidad", on_submit=guardar_movimiento)
     fecha = ft.TextField(hint_text="Escribe la fecha en la que se realiza la acción", hint_style=ft.TextStyle(color="#d8d8d8"),label="Fecha", on_submit=guardar_movimiento)
     comentario = ft.TextField(hint_text="Escribe un comentario para el movimiento", hint_style=ft.TextStyle(color="#d8d8d8"),label="Comentario", on_submit=guardar_movimiento)
+
+    
     dialog = ft.AlertDialog(
             shape=ft.RoundedRectangleBorder(radius=5),
             title=ft.Text("Insertar_Movimiento"),
@@ -53,6 +71,12 @@ def main(page: ft.Page):
                 ft.ElevatedButton("Guardar", on_click=guardar_movimiento)
             ],
         )
+        
+    producto.on_change = cambio_producto
+    tipMovimiento.on_change = cambio_tipo_Mov
+    cantidad.on_change = cambio_cantidad
+    fecha.on_change = cambio_fecha
+    comentario.on_change = cambio_comentario
     
     def mostrar_vent_insertar(e):
         page.dialog = dialog

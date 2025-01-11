@@ -16,7 +16,12 @@ Luego entra en el enviroment, activalo e instala el flet:
   pip install flet
 ```
 
-Una vez termines, ejecuta el siguiente comando para correr la ventana principal:
+Por último, también instala pymongo dentro del enviroment:
+```bash
+  pip install pymongo
+```
+
+Una vez termines, ejecuta el siguiente comando para correr la ventana principal después de haber clonado el repositorio dentro del enviroment:
 
 ```bash
   flet run .\views\producto_view.py

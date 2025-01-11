@@ -2,7 +2,9 @@ import flet as ft
 from fastapi import FastAPI
 import uvicorn
 import threading
-
+ 
+# from views.movimiento_view.src.main import main as create_movimiento_page
+# from views.pedido_view.src.main import main as create_pedido_page
 from views.producto_view.src.main import main as create_producto_page
 
 # Crear la app FastAPI

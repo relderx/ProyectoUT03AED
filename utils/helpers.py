@@ -4,7 +4,7 @@ import sys
 # Añadir la carpeta raíz del proyecto al path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from utils.db import get_productos, get_movimientos, get_pedidos, delete_pedido, update_pedido
+from utils.db import get_productos, get_movimientos, get_pedidos
 
 def tabulate_productos():
     """Convierte los datos obtenidos desde la base de datos a un formato tabular para productos."""

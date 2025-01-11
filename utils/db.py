@@ -18,7 +18,6 @@ COLL_PRO = DB['productos']
 COLL_MOV = DB['movimientos']
 COLL_PED = DB['pedidos']
 
-# Funciones de productos
 def get_productos():
     '''Obtiene todos los documentos de la colección de productos.'''
     return COLL_PRO.find()
@@ -39,7 +38,6 @@ def delete_producto(producto_id):
     '''Elimina un producto de la colección de productos utilizando su ID.'''
     return COLL_PRO.delete_one({'_id': producto_id})
 
-# Funciones de movimientos
 def get_movimientos():
     '''Obtiene todos los documentos de la colección de movimientos de inventario.'''
     return COLL_MOV.find()
@@ -52,7 +50,6 @@ def add_many_movimientos(movimientos: list[Movimiento]):
     '''Inserta múltiples movimientos de inventario en la colección de movimientos.'''
     return COLL_MOV.insert_many([mov.to_dict() for mov in movimientos])
 
-# Funciones de pedidos
 def get_pedidos():
     '''Obtiene todos los documentos de la colección de pedidos.'''
     return COLL_PED.find()

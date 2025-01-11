@@ -20,4 +20,4 @@ if __name__ == "__main__":
     threading.Thread(target=run_fastapi).start()
 
     # Ejecutar Flet en tu dirección IP local
-    ft.app(target=create_producto_page, view=ft.AppView.WEB_BROWSER, host="0.0.0.0", port=8550)
+    ft.app(target=create_producto_page, view=ft.AppView.WEB_BROWSER, host="0.0.0.0", port=80)

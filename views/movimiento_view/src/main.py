@@ -49,8 +49,8 @@ def main(page: ft.Page):
     def guardar_movimiento(e):
         add_movimiento(Movimiento(page.val_producto, page.val_tipMovimiento,int(page.val_cantidad),page.val_comentario))
         datos_tabla = obtener_datos()
-        print(datos_tabla)
         tabla.rows.clear()
+        
         for fila in datos_tabla:
             tabla.rows.append(ft.DataRow(
                 cells=[ft.DataCell(ft.Text(str(dato))) for dato in fila]

@@ -5,103 +5,16 @@ import flet as ft
 # Añadir la carpeta raíz del proyecto al path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
 
-from utils.helpers import tabulate_movimientos
-from utils.db import add_pedido
-from models.pedidos import Pedido
-
 from utils.helpers import tabulate_pedidos
-
-# Global para almacenar los elementos seleccionados
-seleccionados = []
+print(tabulate_pedidos())
 
 def main(page: ft.Page):
     page.title = "Gestión de Pedidos"
-    page.window.width = 1920
-    page.window.height = 1080
+    page.window_width = 1920
+    page.window_height = 1080
     page.bgcolor = ft.colors.WHITE
     page.theme_mode = 'light'
-    page.window.maximizable = True
-    
-    page.val_numPed = None
-    page.val_cliente = None
-    page.val_producto = None
-    page.val_comentario = None
-
-    def cambio_producto(e):
-        page.val_numPed = e.control.value
-        page.update()
-        
-    def cambio_tipo_Mov(e):
-        page.val_cliente = e.control.value
-        page.update()
-        
-    def cambio_cantidad(e):
-        page.val_producto = e.control.value
-        page.update()
-        
-    def cambio_comentario(e):
-        page.val_comentario = e.control.value
-        page.update()
-        
-    def cerrar_movimiento(e):
-        page.dialog.open = False
-        page.val_numPed = None
-        page.val_cliente = None
-        page.val_producto = None
-        page.val_comentario = None
-        page.update()
-
-    def guardar_movimiento(e):
-        add_pedido(Pedido(page.val_numPed, page.val_cliente,int(page.val_producto),page.val_comentario))
-        datos_tabla = obtener_datos()
-        tabla.rows.clear()
-        
-        for fila in datos_tabla:
-            tabla.rows.append(ft.DataRow(
-                cells=[ft.DataCell(ft.Text(str(dato))) for dato in fila]
-            ))
-        tabla.update()  
-        
-        page.dialog.open = False
-        page.val_numPed = None
-        page.val_cliente = None
-        page.val_producto = None
-        page.val_comentario = None
-        page.update()
-    
-    producto = ft.TextField(hint_text="Escribe el nombre del producto", hint_style=ft.TextStyle(color="#d8d8d8"),label="Producto", on_submit=guardar_movimiento)
-    tipMovimiento = ft.TextField(hint_text="Escribe el tipo de movimiento", hint_style=ft.TextStyle(color="#d8d8d8"),label="Tipo de Movimiento", on_submit=guardar_movimiento)
-    cantidad = ft.TextField(hint_text="Escribe la cantidad del producto", hint_style=ft.TextStyle(color="#d8d8d8"),label="Cantidad", on_submit=guardar_movimiento)
-    comentario = ft.TextField(hint_text="Escribe un comentario para el movimiento", hint_style=ft.TextStyle(color="#d8d8d8"),label="Comentario", on_submit=guardar_movimiento)
-    producto = ft.TextField(hint_text="Escribe el nombre del producto", hint_style=ft.TextStyle(color="#d8d8d8"),label="Producto", on_submit=guardar_movimiento)
-    producto = ft.TextField(hint_text="Escribe el nombre del producto", hint_style=ft.TextStyle(color="#d8d8d8"),label="Producto", on_submit=guardar_movimiento)
-    producto = ft.TextField(hint_text="Escribe el nombre del producto", hint_style=ft.TextStyle(color="#d8d8d8"),label="Producto", on_submit=guardar_movimiento)
-    
-    dialog = ft.AlertDialog(
-            shape=ft.RoundedRectangleBorder(radius=5),
-            title=ft.Text("Insertar_Movimiento"),
-            content=ft.Column([
-                producto,
-                tipMovimiento,
-                cantidad,
-                comentario
-            ], width=page.window.width*0.33, height=page.window.height*0.5),
-            actions=[
-                ft.TextButton("Cancelar", on_click=cerrar_movimiento),
-                ft.ElevatedButton("Guardar", on_click=guardar_movimiento)
-            ],
-        )
-        
-    producto.on_change = cambio_producto
-    tipMovimiento.on_change = cambio_tipo_Mov
-    cantidad.on_change = cambio_cantidad
-    comentario.on_change = cambio_comentario
-    
-    def mostrar_vent_insertar(e):
-        page.dialog = dialog
-        page.dialog.open = True
-        page.update()
-        producto.focus()
+    page.window_maximized = True
 
     # Encabezado
     encabezado = ft.Row([
@@ -117,9 +30,9 @@ def main(page: ft.Page):
     ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN)
 
     # Botones inferiores
-    boton_borrar = ft.ElevatedButton("Borrar", width=100, disabled=True, on_click=lambda e: borrar_elementos(e))
+    boton_borrar = ft.ElevatedButton("Borrar", width=100, disabled=True)
     boton_insertar = ft.ElevatedButton("Insertar", width=100, on_click=lambda e: mostrar_vent_insertar(e))
-    boton_modificar = ft.ElevatedButton("Modificar", width=100, disabled=True, on_click=lambda e: mostrar_vent_modificar(e))
+    boton_modificar = ft.ElevatedButton("Modificar", width=100, disabled=True)
 
     botones_inferiores = ft.Row([
         boton_borrar,
@@ -129,7 +42,7 @@ def main(page: ft.Page):
 
     # Encabezados de la tabla
     encabezados_tabla = [
-        "Seleccionar", "Número de Pedido", "Cliente", "Productos", "Precio Total",
+        "Número de Pedido", "Cliente", "Productos", "Precio Total",
         "Estado", "Fecha de Creación", "Fecha de Modificación"
     ]
 
@@ -143,21 +56,9 @@ def main(page: ft.Page):
     def crear_filas(datos):
         return [
             ft.DataRow(
-                cells=[ft.DataCell(ft.Checkbox(on_change=lambda e, fila=fila: actualizar_seleccion(e, fila)))]+
-                [ft.DataCell(ft.Text(str(dato))) for dato in fila]
+                cells=[ft.DataCell(ft.Text(str(dato))) for dato in fila]
             ) for fila in datos
         ]
-
-    # Actualizar la selección de los elementos
-    def actualizar_seleccion(e, fila):
-        if e.control.value:
-            seleccionados.append(fila)
-        else:
-            seleccionados.remove(fila)
-        # Activar/desactivar los botones según la selección
-        boton_borrar.disabled = len(seleccionados) == 0
-        boton_modificar.disabled = len(seleccionados) != 1
-        page.update()
 
     tabla = ft.DataTable(
         width=1920,
@@ -247,7 +148,7 @@ def main(page: ft.Page):
             estado,
             fecha_creacion,
             fecha_modificacion
-        ], width=page.window.width * 0.33, height=page.window_height * 0.5),
+        ], width=page.window_width * 0.33, height=page.window_height * 0.5),
         actions=[
             ft.TextButton("Cancelar", on_click=lambda e: cerrar_dialogo(e)),
             ft.ElevatedButton("Guardar", on_click=lambda e: guardar_pedido(e))
@@ -297,63 +198,6 @@ def main(page: ft.Page):
             ))
 
         tabla.update()
-
-    # Lista para almacenar los elementos seleccionados
-    seleccionados = []
-
-    # Función para manejar la eliminación de los pedidos seleccionados
-    def borrar_elementos(e):
-        global datos_tabla, seleccionados
-
-        # Verificar si hay elementos seleccionados
-        if not seleccionados:
-            print("No hay elementos seleccionados para borrar.")
-            return
-
-        # Eliminar los elementos seleccionados de la base de datos
-        for fila in seleccionados:
-            num_pedido = fila[0]  # Suponemos que el primer valor es el número de pedido
-            try:
-                borrar_pedido(num_pedido)  # Elimina de la base de datos
-                print(f"Pedido {num_pedido} eliminado correctamente.")
-            except Exception as ex:
-                print(f"Error al eliminar el pedido {num_pedido}: {ex}")
-
-        # Actualizar los datos en la tabla: eliminar los pedidos seleccionados de la lista
-        datos_tabla = [fila for fila in datos_tabla if fila[0] not in [pedido[0] for pedido in seleccionados]]
-
-        # Limpiar la lista de seleccionados
-        seleccionados.clear()
-
-        # Limpiar y actualizar la tabla
-        tabla.rows.clear()
-        tabla.rows.extend(crear_filas(datos_tabla))
-        tabla.update()
-
-        # Desactivar el botón de borrar después de la eliminación
-        boton_borrar.disabled = True
-        page.update()
-
-    def mostrar_vent_modificar(e):
-        # Verificar si hay solo un elemento seleccionado
-        if len(seleccionados) == 1:
-            fila_modificar = seleccionados[0]
-            # Asignar valores actuales al formulario de modificación
-            numero_pedido.value = fila_modificar[0]
-            cliente.value = fila_modificar[1]
-            productos.value = fila_modificar[2]
-            precio_total.value = fila_modificar[3]
-            estado.value = fila_modificar[4]
-            fecha_creacion.value = fila_modificar[5]
-            fecha_modificacion.value = fila_modificar[6]
-
-            page.dialog = dialog
-            page.dialog.title = "Modificar Pedido"
-            page.dialog.open = True
-            page.update()
-        else:
-            # No permitir modificar si hay más de un elemento seleccionado
-            print("Debe seleccionar solo un elemento para modificar")
 
     # Estructura de la página
     page.add(

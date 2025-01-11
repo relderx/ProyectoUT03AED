@@ -63,23 +63,3 @@ def tabulate_pedidos():
         ])
 
     return datos_tabla
-
-def borrar_pedido(num_pedido):
-    """
-    Elimina un pedido de la base de datos por su número.
-    """
-    try:
-        delete_pedido(num_pedido)  # Llama a la función que elimina el pedido en MongoDB
-        print(f"Pedido {num_pedido} eliminado correctamente.")
-    except Exception as e:
-        print(f"Error al eliminar el pedido {num_pedido}: {e}")
-
-def modificar_pedido(num_pedido, nuevos_datos):
-    """
-    Modifica un pedido existente en la base de datos.
-    """
-    try:
-        update_pedido(num_pedido, nuevos_datos)
-        print(f"Pedido {num_pedido} modificado correctamente.")
-    except Exception as e:
-        print(f"Error al modificar el pedido {num_pedido}: {e}")

@@ -15,10 +15,11 @@ def main(page: ft.Page):
                     '/',
                     [
                         ft.AppBar(
-                            leading=ft.IconButton(ft.icons.HOME, on_click=lambda _: page.go('/'),
+                            
                             title=ft.Text('Sistema de gestión de inventario'),
                             bgcolor=ft.colors.SURFACE_VARIANT,
-                            center_title=True
+                            center_title=True,
+                            leading=ft.IconButton(ft.icons.HOME, on_click=lambda _: page.go('/')
                             ),
                         ),
                         ft.ElevatedButton('Visit Store', on_click=lambda _: page.go('/store')),
@@ -42,4 +43,4 @@ def main(page: ft.Page):
     page.go(page.route)
 
 if __name__ == '__main__':
-    'ft'.app(target=main, view=ft.AppView.WEB_BROWSER, host='', port=80)
+    ft.app(target=main, view=ft.AppView.WEB_BROWSER, host='', port=80)

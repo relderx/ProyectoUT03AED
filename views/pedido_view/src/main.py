@@ -5,6 +5,10 @@ import flet as ft
 # Añadir la carpeta raíz del proyecto al path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
 
+from utils.helpers import tabulate_movimientos
+from utils.db import add_pedido
+from models.pedidos import Pedido
+
 from utils.helpers import tabulate_pedidos
 print(tabulate_pedidos())
 
@@ -15,6 +19,136 @@ def main(page: ft.Page):
     page.bgcolor = ft.colors.WHITE
     page.theme_mode = 'light'
     page.window_maximized = True
+    
+    page.val_producto = None
+    page.val_tipMovimiento = None
+    page.val_cantidad = None
+    page.val_comentario = None
+
+    def cambio_producto(e):
+        page.val_producto = e.control.value
+        page.update()
+        
+    def cambio_tipo_Mov(e):
+        page.val_tipMovimiento = e.control.value
+        page.update()
+        
+    def cambio_cantidad(e):
+        page.val_cantidad = e.control.value
+        page.update()
+        
+    def cambio_comentario(e):
+        page.val_comentario = e.control.value
+        page.update()
+        
+    def cerrar_movimiento(e):
+        page.dialog.open = False
+        page.val_producto = None
+        page.val_tipMovimiento = None
+        page.val_cantidad = None
+        page.val_comentario = None
+        page.update()
+
+    def guardar_movimiento(e):
+        add_pedido(Pedido(page.val_producto, page.val_tipMovimiento,int(page.val_cantidad),page.val_comentario))
+        datos_tabla = obtener_datos()
+        tabla.rows.clear()
+        
+        for fila in datos_tabla:
+            tabla.rows.append(ft.DataRow(
+                cells=[ft.DataCell(ft.Text(str(dato))) for dato in fila]
+            ))
+        tabla.update()  
+        
+        page.dialog.open = False
+        producto.value = None
+        tipMovimiento.value = None
+        cantidad.value = None
+        comentario.value = None
+        page.update()
+        
+    def cerrar_borrar(e):
+        page.dialog.open = False
+
+    def guardar_borrar(e):
+        page.dialog.open = False
+        
+    def cerrar_modificar(e):
+        page.dialog.open = False
+
+    def guardar_modificar(e):
+        page.dialog.open = False
+    
+    producto = ft.TextField(hint_text="Escribe el nombre del producto", hint_style=ft.TextStyle(color="#d8d8d8"),label="Producto", on_submit=guardar_movimiento)
+    tipMovimiento = ft.TextField(hint_text="Escribe el tipo de movimiento", hint_style=ft.TextStyle(color="#d8d8d8"),label="Tipo de Movimiento", on_submit=guardar_movimiento)
+    cantidad = ft.TextField(hint_text="Escribe la cantidad del producto", hint_style=ft.TextStyle(color="#d8d8d8"),label="Cantidad", on_submit=guardar_movimiento)
+    comentario = ft.TextField(hint_text="Escribe un comentario para el movimiento", hint_style=ft.TextStyle(color="#d8d8d8"),label="Comentario", on_submit=guardar_movimiento)
+    
+    dialogInser = ft.AlertDialog(
+            shape=ft.RoundedRectangleBorder(radius=5),
+            title=ft.Text("Inserta un Movimiento nuevo"),
+            content=ft.Column([
+                producto,
+                tipMovimiento,
+                cantidad,
+                comentario
+            ], width=page.window.width*0.33, height=page.window.height*0.5),
+            actions=[
+                ft.TextButton("Cancelar", on_click=cerrar_movimiento),
+                ft.ElevatedButton("Guardar", on_click=guardar_movimiento)
+            ],
+    )
+    dialogBor = ft.AlertDialog(
+            shape=ft.RoundedRectangleBorder(radius=5),
+            title=ft.Text("¿Quieres borrar el/los movimientos?"),
+            content=ft.Column([
+                producto,
+                tipMovimiento,
+                cantidad,
+                comentario
+            ], width=page.window.width*0.33, height=page.window.height*0.5),
+            actions=[
+                ft.TextButton("Si", on_click=cerrar_borrar),
+                ft.ElevatedButton("No", on_click=guardar_borrar)
+            ],
+    )
+    dialogMod = ft.AlertDialog(
+            shape=ft.RoundedRectangleBorder(radius=5),
+            title=ft.Text("Modificar un Movimiento nuevo"),
+            content=ft.Column([
+                producto,
+                tipMovimiento,
+                cantidad,
+                comentario
+            ], width=page.window.width*0.33, height=page.window.height*0.5),
+            actions=[
+                ft.TextButton("Cancelar", on_click=cerrar_modificar),
+                ft.ElevatedButton("Guardar", on_click=guardar_modificar)
+            ],
+    )
+        
+    producto.on_change = cambio_producto
+    tipMovimiento.on_change = cambio_tipo_Mov
+    cantidad.on_change = cambio_cantidad
+    comentario.on_change = cambio_comentario
+    
+    def mostrar_vent_insertar(e):
+        page.dialog = dialogInser
+        page.dialog.open = True
+        page.update()
+        producto.focus()
+    
+    def mostrar_vent_borrar(e):
+        page.dialog = dialogBor
+        page.dialog.open = True
+        page.update()
+        producto.focus()
+    
+    def mostrar_vent_modificar(e):
+        page.dialog = dialogMod
+        page.dialog.open = True
+        page.update()
+        producto.focus()
 
     # Encabezado
     encabezado = ft.Row([
@@ -30,14 +164,10 @@ def main(page: ft.Page):
     ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN)
 
     # Botones inferiores
-    boton_borrar = ft.ElevatedButton("Borrar", width=100, disabled=True)
-    boton_insertar = ft.ElevatedButton("Insertar", width=100, on_click=lambda e: mostrar_vent_insertar(e))
-    boton_modificar = ft.ElevatedButton("Modificar", width=100, disabled=True)
-
     botones_inferiores = ft.Row([
-        boton_borrar,
-        boton_insertar,
-        boton_modificar
+        ft.ElevatedButton("Borrar", width=100, disabled=True, on_click=mostrar_vent_borrar),
+        ft.ElevatedButton("Insertar", width=100, on_click=mostrar_vent_insertar),
+        ft.ElevatedButton("Modificar", width=100, disabled=True, on_click=mostrar_vent_modificar),
     ], alignment=ft.MainAxisAlignment.END)
 
     # Encabezados de la tabla

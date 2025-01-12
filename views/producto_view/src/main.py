@@ -23,9 +23,9 @@ def main(page: ft.Page):
     page.val_precio_unitario = None
     page.val_categorias = None
 
-    def cerrar_y_abrir_producto_view(e):
+    def cerrar_y_abrir_movimientos(e):
         page.window_close()  # Cerrar la ventana actual
-        os.system("flet run .\\views\\producto_view\\src")  # Ejecutar la página principal
+        os.system("flet run .\\views\\movimiento_view\\src")  # Ejecutar la página principal
 
     def cerrar_y_abrir_pedidos(e):
         page.window_close()  # Cerrar la ventana actual
@@ -177,6 +177,7 @@ def main(page: ft.Page):
     encabezado = ft.Row([ 
         ft.Text("Gestión de Productos", size=30, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.LEFT),
         ft.Row([ 
+            ft.ElevatedButton("Movimientos", width=150, on_click=cerrar_y_abrir_movimientos),
             ft.ElevatedButton("Pedidos", width=150, on_click=cerrar_y_abrir_pedidos)
         ], alignment=ft.MainAxisAlignment.END, expand=True)
     ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN)
@@ -213,12 +214,17 @@ def main(page: ft.Page):
     tabla = ft.DataTable(
         width=1920,
         border_radius=2,
+        show_checkbox_column=True,
         border=ft.border.all(2, "red"),
         horizontal_lines=ft.BorderSide(2, "blue"),
         vertical_lines=ft.BorderSide(2, "blue"),
         columns=[ft.DataColumn(ft.Text(encabezado)) for encabezado in encabezados_tabla],
-        rows=crear_filas(datos_tabla),
+        rows=crear_filas(datos_tabla)
     )
+    
+    def seleccionados(e):
+        print(e)
+    ft.DataRow.on_select_changed = seleccionados
 
     tabla_con_scroll = ft.Column(
         controls=[tabla],

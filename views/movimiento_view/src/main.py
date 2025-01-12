@@ -10,7 +10,7 @@ from utils.db import add_movimiento
 from models.movimientos import Movimiento
 
 def main(page: ft.Page):
-    page.title = "Movimiento de Inventario"
+    page.title = "Movimientos del Inventario"
     page.window.width = 1920
     page.window.height = 1080
     page.bgcolor = ft.colors.WHITE

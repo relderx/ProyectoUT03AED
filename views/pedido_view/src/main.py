@@ -20,12 +20,11 @@ def main(page: ft.Page):
     page.window_maximized = True
     
     page.val_num_pedido = None
-    page.val_cliente = None
+    page.val_nombre_cliente = None
+    page.val_email_cliente = None
+    page.val_telefono_cliente = None
     page.val_productos = None
-    page.val_precio_total = None
     page.val_estado = None
-    page.val_fech_creacion = None
-    page.val_fech_modificacion = None
     
     def cerrar_y_abrir_movimiento_view(e):
         page.window_close()  # Cerrar la ventana actual
@@ -39,8 +38,11 @@ def main(page: ft.Page):
     def cambio_num_pedido(e):
         page.val_num_pedido = e.control.value
         page.update()
-        
+    
+    # Tengo que hacer uno de cada control de cliente
     def cambio_cliente(e):
+        page.val_cliente = e.control.value
+        page.val_cliente = e.control.value
         page.val_cliente = e.control.value
         page.update()
         
@@ -65,13 +67,12 @@ def main(page: ft.Page):
         page.update()
         
     def cerra_insertar(e):
-        page.val_num_pedido = None
-        page.val_cliente = None
-        page.val_productos = None
-        page.val_precio_total = None
-        page.val_estado = None
-        page.val_fech_creacion = None
-        page.val_fech_modificacion = None
+        page.dialog.open = False
+        num_pedido.value = None
+        for cli in cliente.controls:
+            cli.value = None
+        productos.value = None
+        estado.value = None
         page.update()
 
     def guardar_insertar(e):
@@ -86,13 +87,11 @@ def main(page: ft.Page):
         tabla.update()  
         
         page.dialog.open = False
-        num_pedido.value() = None
-        cliente.value = None
-        page.val_productos = None
-        page.val_precio_total = None
-        page.val_estado = None
-        page.val_fech_creacion = None
-        page.val_fech_modificacion = None
+        num_pedido.value = None
+        for cli in cliente.controls:
+            cli.value = None
+        productos.value = None
+        estado.value = None
         page.update()
         
     def cerrar_borrar(e):
@@ -145,28 +144,26 @@ def main(page: ft.Page):
         page.update()
         num_pedido.focus()
     
-    def mostrar_vent_borrar(e):
-        page.dialog = dialogBor
-        page.dialog.open = True
-        page.update()
-        num_pedido.focus()
+    # def mostrar_vent_borrar(e):
+    #     page.dialog = dialogBor
+    #     page.dialog.open = True
+    #     page.update()
+    #     num_pedido.focus()
     
-    def mostrar_vent_modificar(e):
-        page.dialog = dialogMod
-        page.dialog.open = True
-        page.update()
-        num_pedido.focus()
+    # def mostrar_vent_modificar(e):
+    #     page.dialog = dialogMod
+    #     page.dialog.open = True
+    #     page.update()
+    #     num_pedido.focus()
     
     num_pedido = ft.TextField(hint_text="Escribe el número del pedido", hint_style=ft.TextStyle(color="#d8d8d8"),label="Número de pedido", on_submit=guardar_insertar)
-    cliente = ft.Column([ft.TextField(hint_text="Escribe el nombre del cliente", hint_style=ft.TextStyle(color="#d8d8d8"),label="Nombre", on_submit=guardar_insertar),
-                         ft.TextField(hint_text="Escribe el email del cliente", hint_style=ft.TextStyle(color="#d8d8d8"),label="Email", on_submit=guardar_insertar),
-                         ft.TextField(hint_text="Escribe el teléfono del cliente", hint_style=ft.TextStyle(color="#d8d8d8"),label="Teléfono", on_submit=guardar_insertar)])
-    cont_producto = 0
-    for producto in page.val_productos.split(","):
-        cont_producto += 1
-    productos = ft.Column(ft.Row([ft.TextField(hint_text="Escribe la nombre del producto", hint_style=ft.TextStyle(color="#d8d8d8"),label="Producto", on_submit=guardar_insertar),
-                                  ft.TextField(hint_text="Escribe las unidades solicitadas", hint_style=ft.TextStyle(color="#d8d8d8"),label="Unidades", on_submit=guardar_insertar),
-                                  ft.TextField(hint_text="Escribe el precio por unidad", hint_style=ft.TextStyle(color="#d8d8d8"),label="Precio unitario", on_submit=guardar_insertar)]) for producto in range(cont_producto))
+    
+    nombre_cliente = ft.TextField(hint_text="Escribe el nombre del cliente", hint_style=ft.TextStyle(color="#d8d8d8"),label="Nombre del Cliente", on_submit=guardar_insertar)
+    email_cliente = ft.TextField(hint_text="Escribe el email del cliente", hint_style=ft.TextStyle(color="#d8d8d8"),label="Email del Cliente", on_submit=guardar_insertar)
+    telefono_cliente = ft.TextField(hint_text="Escribe el teléfono del cliente", hint_style=ft.TextStyle(color="#d8d8d8"),label="Teléfono del Cliente", on_submit=guardar_insertar)
+    cliente = ft.Column([nombre_cliente,email_cliente, telefono_cliente])
+    
+    productos = ft.TextField(hint_text="Escribe los productos", hint_style=ft.TextStyle(color="#d8d8d8"),label="Productos", on_submit=guardar_insertar)
     estado = ft.TextField(hint_text="Escribe el estado del pedido", hint_style=ft.TextStyle(color="#d8d8d8"),label="Estado", on_submit=guardar_insertar)
     
     dialogInser = ft.AlertDialog(
@@ -183,37 +180,39 @@ def main(page: ft.Page):
                 ft.ElevatedButton("Guardar", on_click=guardar_insertar)
             ],
     )
-    dialogBor = ft.AlertDialog(
-            shape=ft.RoundedRectangleBorder(radius=5),
-            title=ft.Text("¿Quieres borrar el/los pedidos?"),
-            content=ft.Column([
-                num_pedido,
-                tipMovimiento,
-                cantidad,
-                comentario
-            ], width=page.window.width*0.33, height=page.window.height*0.5),
-            actions=[
-                ft.TextButton("Si", on_click=cerrar_borrar),
-                ft.ElevatedButton("No", on_click=guardar_borrar)
-            ],
-    )
-    dialogMod = ft.AlertDialog(
-            shape=ft.RoundedRectangleBorder(radius=5),
-            title=ft.Text("Modificar un pedido nuevo"),
-            content=ft.Column([
-                num_pedido,
-                tipMovimiento,
-                cantidad,
-                comentario
-            ], width=page.window.width*0.33, height=page.window.height*0.5),
-            actions=[
-                ft.TextButton("Cancelar", on_click=cerrar_modificar),
-                ft.ElevatedButton("Guardar", on_click=guardar_modificar)
-            ],
-    )
+    # dialogBor = ft.AlertDialog(
+    #         shape=ft.RoundedRectangleBorder(radius=5),
+    #         title=ft.Text("Borrar Pedidos"),
+    #         content=ft.Column([
+    #             num_pedido,
+    #             tipMovimiento,
+    #             cantidad,
+    #             comentario
+    #         ], width=page.window.width*0.33, height=page.window.height*0.5),
+    #         actions=[
+    #             ft.TextButton("Si", on_click=guardar_borrar),
+    #             ft.ElevatedButton("No", on_click=cerrar_borrar)
+    #         ],
+    # )
+    # dialogMod = ft.AlertDialog(
+    #         shape=ft.RoundedRectangleBorder(radius=5),
+    #         title=ft.Text("Modificar un pedido nuevo"),
+    #         content=ft.Column([
+    #             num_pedido,
+    #             tipMovimiento,
+    #             cantidad,
+    #             comentario
+    #         ], width=page.window.width*0.33, height=page.window.height*0.5),
+    #         actions=[
+    #             ft.TextButton("Cancelar", on_click=cerrar_modificar),
+    #             ft.ElevatedButton("Guardar", on_click=guardar_modificar)
+    #         ],
+    # )
         
     num_pedido.on_change = cambio_num_pedido
-    tipMovimiento.on_change = cambio_cliente
+    nombre_cliente.on_change = cambio_cliente
+    email_cliente.on_change = cambio_cliente
+    telefono_cliente.on_change = cambio_cliente
     cantidad.on_change = cambio_productos
     comentario.on_change = cambio_precio_total
 
@@ -228,9 +227,11 @@ def main(page: ft.Page):
 
     # Botones inferiores
     botones_inferiores = ft.Row([
-        ft.ElevatedButton("Borrar", width=100, disabled=True, on_click=mostrar_vent_borrar),
+        # ft.ElevatedButton("Borrar", width=100, disabled=True, on_click=mostrar_vent_borrar),
+        ft.ElevatedButton("Borrar", width=100, disabled=True),
         ft.ElevatedButton("Insertar", width=100, on_click=mostrar_vent_insertar),
-        ft.ElevatedButton("Modificar", width=100, disabled=True, on_click=mostrar_vent_modificar),
+        # ft.ElevatedButton("Modificar", width=100, disabled=True, on_click=mostrar_vent_modificar),
+        ft.ElevatedButton("Modificar", width=100, disabled=True),
     ], alignment=ft.MainAxisAlignment.END)
 
     # Encabezados de la tabla

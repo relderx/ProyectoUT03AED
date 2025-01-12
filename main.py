@@ -16,11 +16,11 @@ def main_view(page: ft.Page):
                     "/",
                     [
                         ft.AppBar(
-                            title=ft.Text("Sistema de gestión de inventario", weight=ft.FontWeight.BOLD, size=38),
-                            bgcolor=ft.colors.SURFACE_VARIANT,
+                            title=ft.Text("Sistema de gestión de inventario", weight=ft.FontWeight.BOLD, size=36),
+                            bgcolor=ft.Colors.INVERSE_PRIMARY,
                             center_title=True,
-                            leading=ft.IconButton(ft.icons.HOME, on_click=lambda _: page.go("/")),  # Botón Home
-                            actions=[ft.IconButton(ft.icons.BRIGHTNESS_6, on_click=lambda _: toggle_theme()), # Botón de cambio de tema (Light <-> Dark)
+                            leading=ft.IconButton(ft.Icons.HOME, on_click=lambda _: page.go("/")),  # Botón Home
+                            actions=[ft.IconButton(ft.Icons.BRIGHTNESS_6, on_click=lambda _: toggle_theme()), # Botón de cambio de tema (Light <-> Dark)
                             ],
                         ),
                         
@@ -66,4 +66,4 @@ def main_view(page: ft.Page):
 
 
 if __name__ == '__main__':
-    print('Inicia la aplicación desde \'app.py\'.')
+    ft.app(target=main_view, view=ft.AppView.WEB_BROWSER, host='', port=80)

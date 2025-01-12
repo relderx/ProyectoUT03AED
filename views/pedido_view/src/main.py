@@ -10,7 +10,6 @@ from utils.db import add_pedido
 from models.pedidos import Pedido
 
 from utils.helpers import tabulate_pedidos
-add_pedido(Pedido("P0011",{"nombre":"Cliente Z","email":"clientez@prueba.com","telefono":"123123123"},[{"producto":"teclado","unidades":6,"precio_unidad":5.5},{"producto":"teclado","unidades":6,"precio_unidad":5.5}],"enviado"))
 
 def main(page: ft.Page):
     page.title = "Gestión de Pedidos"
@@ -22,11 +21,12 @@ def main(page: ft.Page):
     
     page.val_num_pedido = None
     page.val_cliente = None
-    page.val_cantidad = None
-    page.val_comentario = None
-    page.val_comentario = None
-    page.val_comentario = None
-    page.val_comentario = None
+    page.val_productos = None
+    page.val_precio_total = None
+    page.val_estado = None
+    page.val_fech_creacion = None
+    page.val_fech_modificacion = None
+    
     def cerrar_y_abrir_movimiento_view(e):
         page.window_close()  # Cerrar la ventana actual
         os.system("flet run .\\views\\movimiento_view\\src")  # Ejecutar la página principal
@@ -36,31 +36,45 @@ def main(page: ft.Page):
         page.window_close()  # Cerrar la ventana actual
         os.system("flet run .\\views\\producto_view\\src")  # Ejecutar la vista de pedidos
 
-    def cambio_producto(e):
-        page.val_producto = e.control.value
+    def cambio_num_pedido(e):
+        page.val_num_pedido = e.control.value
         page.update()
         
-    def cambio_tipo_Mov(e):
-        page.val_tipMovimiento = e.control.value
+    def cambio_cliente(e):
+        page.val_cliente = e.control.value
         page.update()
         
-    def cambio_cantidad(e):
-        page.val_cantidad = e.control.value
+    def cambio_productos(e):
+        page.val_productos = e.control.value
         page.update()
         
-    def cambio_comentario(e):
-        page.val_comentario = e.control.value
+    def cambio_precio_total(e):
+        page.val_precio_total = e.control.value
         page.update()
         
-    def cerrar_movimiento(e):
-        page.dialog.open = False
-        page.val_producto = None
-        page.val_tipMovimiento = None
-        page.val_cantidad = None
-        page.val_comentario = None
+    def cambio_estado(e):
+        page.val_estado = e.control.value
+        page.update()
+        
+    def cambio_fech_creacion(e):
+        page.val_fech_creacion = e.control.value
+        page.update()
+        
+    def cambio_fech_modificacion(e):
+        page.val_fech_modificacion = e.control.value
+        page.update()
+        
+    def cerra_insertar(e):
+        page.val_num_pedido = None
+        page.val_cliente = None
+        page.val_productos = None
+        page.val_precio_total = None
+        page.val_estado = None
+        page.val_fech_creacion = None
+        page.val_fech_modificacion = None
         page.update()
 
-    def guardar_movimiento(e):
+    def guardar_insertar(e):
         add_pedido(Pedido(page.val_producto, page.val_tipMovimiento,int(page.val_cantidad),page.val_comentario))
         datos_tabla = obtener_datos()
         tabla.rows.clear()
@@ -72,48 +86,108 @@ def main(page: ft.Page):
         tabla.update()  
         
         page.dialog.open = False
-        producto.value = None
-        tipMovimiento.value = None
-        cantidad.value = None
-        comentario.value = None
+        num_pedido.value() = None
+        cliente.value = None
+        page.val_productos = None
+        page.val_precio_total = None
+        page.val_estado = None
+        page.val_fech_creacion = None
+        page.val_fech_modificacion = None
         page.update()
         
     def cerrar_borrar(e):
         page.dialog.open = False
+        page.val_num_pedido = None
+        page.val_cliente = None
+        page.val_productos = None
+        page.val_precio_total = None
+        page.val_estado = None
+        page.val_fech_creacion = None
+        page.val_fech_modificacion = None
+        page.update()
 
     def guardar_borrar(e):
         page.dialog.open = False
+        page.val_num_pedido = None
+        page.val_cliente = None
+        page.val_productos = None
+        page.val_precio_total = None
+        page.val_estado = None
+        page.val_fech_creacion = None
+        page.val_fech_modificacion = None
+        page.update()
         
     def cerrar_modificar(e):
         page.dialog.open = False
+        page.val_num_pedido = None
+        page.val_cliente = None
+        page.val_productos = None
+        page.val_precio_total = None
+        page.val_estado = None
+        page.val_fech_creacion = None
+        page.val_fech_modificacion = None
+        page.update()
 
     def guardar_modificar(e):
         page.dialog.open = False
+        page.val_num_pedido = None
+        page.val_cliente = None
+        page.val_productos = None
+        page.val_precio_total = None
+        page.val_estado = None
+        page.val_fech_creacion = None
+        page.val_fech_modificacion = None
+        page.update()
     
-    producto = ft.TextField(hint_text="Escribe el nombre del producto", hint_style=ft.TextStyle(color="#d8d8d8"),label="Producto", on_submit=guardar_movimiento)
-    tipMovimiento = ft.TextField(hint_text="Escribe el tipo de movimiento", hint_style=ft.TextStyle(color="#d8d8d8"),label="Tipo de Movimiento", on_submit=guardar_movimiento)
-    cantidad = ft.TextField(hint_text="Escribe la cantidad del producto", hint_style=ft.TextStyle(color="#d8d8d8"),label="Cantidad", on_submit=guardar_movimiento)
-    comentario = ft.TextField(hint_text="Escribe un comentario para el movimiento", hint_style=ft.TextStyle(color="#d8d8d8"),label="Comentario", on_submit=guardar_movimiento)
+    def mostrar_vent_insertar(e):
+        page.dialog = dialogInser
+        page.dialog.open = True
+        page.update()
+        num_pedido.focus()
+    
+    def mostrar_vent_borrar(e):
+        page.dialog = dialogBor
+        page.dialog.open = True
+        page.update()
+        num_pedido.focus()
+    
+    def mostrar_vent_modificar(e):
+        page.dialog = dialogMod
+        page.dialog.open = True
+        page.update()
+        num_pedido.focus()
+    
+    num_pedido = ft.TextField(hint_text="Escribe el número del pedido", hint_style=ft.TextStyle(color="#d8d8d8"),label="Número de pedido", on_submit=guardar_insertar)
+    cliente = ft.Column([ft.TextField(hint_text="Escribe el nombre del cliente", hint_style=ft.TextStyle(color="#d8d8d8"),label="Nombre", on_submit=guardar_insertar),
+                         ft.TextField(hint_text="Escribe el email del cliente", hint_style=ft.TextStyle(color="#d8d8d8"),label="Email", on_submit=guardar_insertar),
+                         ft.TextField(hint_text="Escribe el teléfono del cliente", hint_style=ft.TextStyle(color="#d8d8d8"),label="Teléfono", on_submit=guardar_insertar)])
+    cont_producto = 0
+    for producto in page.val_productos.split(","):
+        cont_producto += 1
+    productos = ft.Column(ft.Row([ft.TextField(hint_text="Escribe la nombre del producto", hint_style=ft.TextStyle(color="#d8d8d8"),label="Producto", on_submit=guardar_insertar),
+                                  ft.TextField(hint_text="Escribe las unidades solicitadas", hint_style=ft.TextStyle(color="#d8d8d8"),label="Unidades", on_submit=guardar_insertar),
+                                  ft.TextField(hint_text="Escribe el precio por unidad", hint_style=ft.TextStyle(color="#d8d8d8"),label="Precio unitario", on_submit=guardar_insertar)]) for producto in range(cont_producto))
+    estado = ft.TextField(hint_text="Escribe el estado del pedido", hint_style=ft.TextStyle(color="#d8d8d8"),label="Estado", on_submit=guardar_insertar)
     
     dialogInser = ft.AlertDialog(
             shape=ft.RoundedRectangleBorder(radius=5),
             title=ft.Text("Inserta un pedido nuevo"),
             content=ft.Column([
-                producto,
-                tipMovimiento,
-                cantidad,
-                comentario
+                num_pedido,
+                cliente,
+                productos,
+                estado
             ], width=page.window.width*0.33, height=page.window.height*0.5),
             actions=[
-                ft.TextButton("Cancelar", on_click=cerrar_movimiento),
-                ft.ElevatedButton("Guardar", on_click=guardar_movimiento)
+                ft.TextButton("Cancelar", on_click=cerra_insertar),
+                ft.ElevatedButton("Guardar", on_click=guardar_insertar)
             ],
     )
     dialogBor = ft.AlertDialog(
             shape=ft.RoundedRectangleBorder(radius=5),
             title=ft.Text("¿Quieres borrar el/los pedidos?"),
             content=ft.Column([
-                producto,
+                num_pedido,
                 tipMovimiento,
                 cantidad,
                 comentario
@@ -127,7 +201,7 @@ def main(page: ft.Page):
             shape=ft.RoundedRectangleBorder(radius=5),
             title=ft.Text("Modificar un pedido nuevo"),
             content=ft.Column([
-                producto,
+                num_pedido,
                 tipMovimiento,
                 cantidad,
                 comentario
@@ -138,28 +212,10 @@ def main(page: ft.Page):
             ],
     )
         
-    producto.on_change = cambio_producto
-    tipMovimiento.on_change = cambio_tipo_Mov
-    cantidad.on_change = cambio_cantidad
-    comentario.on_change = cambio_comentario
-    
-    def mostrar_vent_insertar(e):
-        page.dialog = dialogInser
-        page.dialog.open = True
-        page.update()
-        producto.focus()
-    
-    def mostrar_vent_borrar(e):
-        page.dialog = dialogBor
-        page.dialog.open = True
-        page.update()
-        producto.focus()
-    
-    def mostrar_vent_modificar(e):
-        page.dialog = dialogMod
-        page.dialog.open = True
-        page.update()
-        producto.focus()
+    num_pedido.on_change = cambio_num_pedido
+    tipMovimiento.on_change = cambio_cliente
+    cantidad.on_change = cambio_productos
+    comentario.on_change = cambio_precio_total
 
     # Encabezado
     encabezado = ft.Row([
@@ -188,7 +244,6 @@ def main(page: ft.Page):
         return tabulate_pedidos()
 
     datos_tabla = obtener_datos()
-    print(datos_tabla)
 
     # Crear la tabla
     def crear_filas(datos):
@@ -265,48 +320,6 @@ def main(page: ft.Page):
         dropdown_filtro,
         boton_filtrar
     ], alignment=ft.MainAxisAlignment.END)
-
-    # Diálogo de inserción
-    numero_pedido = ft.TextField(hint_text="Número de Pedido", label="Número de Pedido")
-    cliente = ft.TextField(hint_text="Cliente", label="Cliente")
-    productos = ft.TextField(hint_text="Productos", label="Productos")
-    precio_total = ft.TextField(hint_text="Precio Total", label="Precio Total")
-    estado = ft.TextField(hint_text="Estado", label="Estado")
-    fecha_creacion = ft.TextField(hint_text="Fecha de Creación", label="Fecha de Creación")
-    fecha_modificacion = ft.TextField(hint_text="Fecha de Modificación", label="Fecha de Modificación")
-
-    dialog = ft.AlertDialog(
-        shape=ft.RoundedRectangleBorder(radius=5),
-        title=ft.Text("Insertar Pedido"),
-        content=ft.Column([
-            numero_pedido,
-            cliente,
-            productos,
-            precio_total,
-            estado,
-            fecha_creacion,
-            fecha_modificacion
-        ], width=page.window_width * 0.33, height=page.window_height * 0.5),
-        actions=[
-            ft.TextButton("Cancelar", on_click=lambda e: cerrar_dialogo(e)),
-            ft.ElevatedButton("Guardar", on_click=lambda e: guardar_pedido(e))
-        ],
-    )
-
-    def mostrar_vent_insertar(e):
-        page.dialog = dialog
-        page.dialog.open = True
-        page.update()
-
-    def cerrar_dialogo(e):
-        page.dialog.open = False
-        page.update()
-
-    def guardar_pedido(e):
-        # Lógica para guardar pedido
-        print("Pedido guardado")
-        page.dialog.open = False
-        page.update()
 
     # Configuración de orden
     dropdown_ordenar = ft.Dropdown(

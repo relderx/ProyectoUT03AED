@@ -48,10 +48,10 @@ def main(page: ft.Page):
         
     def cerrar_movimiento(e):
         page.dialog.open = False
-        page.val_producto = None
-        page.val_tipMovimiento = None
-        page.val_cantidad = None
-        page.val_comentario = None
+        producto.value = None
+        tipMovimiento.value = None
+        cantidad.value = None
+        comentario.value = None
         page.update()
 
     def guardar_movimiento(e):

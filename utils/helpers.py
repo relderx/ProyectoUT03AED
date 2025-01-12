@@ -12,15 +12,12 @@ def tabulate_productos():
     datos_tabla = []
 
     for producto in productos:
-        categorias = ""
-        for categoria in producto.get('categoria', ''):
-            categorias += f"{categoria} "
         datos_tabla.append([
             producto.get('producto', ''),
             producto.get('descripcion', ''),
             producto.get('stock', ''),
             producto.get('precio_unidad', ''),
-            categorias,
+            producto.get('categoria', ''),
             producto.get('fecha_creacion', ''),
             producto.get('fecha_modificacion', '')
         ])

@@ -205,6 +205,7 @@ def main(page: ft.Page):
     def seleccionar_producto(e):
         # Obtener el índice de la fila seleccionada
         row_index = e.control.data
+        print(e)
         if e.control.value:
             productos_seleccionados.append(datos_tabla[row_index])  # Agregar el producto a la lista de seleccionados
         else:

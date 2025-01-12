@@ -10,7 +10,7 @@ from utils.db import add_pedido
 from models.pedidos import Pedido
 
 from utils.helpers import tabulate_pedidos
-print(tabulate_pedidos())
+add_pedido(Pedido("P0011",{"nombre":"Cliente Z","email":"clientez@prueba.com","telefono":"123123123"},[{"producto":"teclado","unidades":6,"precio_unidad":5.5},{"producto":"teclado","unidades":6,"precio_unidad":5.5}],"enviado"))
 
 def main(page: ft.Page):
     page.title = "Gestión de Pedidos"
@@ -20,9 +20,12 @@ def main(page: ft.Page):
     page.theme_mode = 'light'
     page.window_maximized = True
     
-    page.val_producto = None
-    page.val_tipMovimiento = None
+    page.val_num_pedido = None
+    page.val_cliente = None
     page.val_cantidad = None
+    page.val_comentario = None
+    page.val_comentario = None
+    page.val_comentario = None
     page.val_comentario = None
 
     def cambio_producto(e):
@@ -86,7 +89,7 @@ def main(page: ft.Page):
     
     dialogInser = ft.AlertDialog(
             shape=ft.RoundedRectangleBorder(radius=5),
-            title=ft.Text("Inserta un Movimiento nuevo"),
+            title=ft.Text("Inserta un pedido nuevo"),
             content=ft.Column([
                 producto,
                 tipMovimiento,
@@ -100,7 +103,7 @@ def main(page: ft.Page):
     )
     dialogBor = ft.AlertDialog(
             shape=ft.RoundedRectangleBorder(radius=5),
-            title=ft.Text("¿Quieres borrar el/los movimientos?"),
+            title=ft.Text("¿Quieres borrar el/los pedidos?"),
             content=ft.Column([
                 producto,
                 tipMovimiento,
@@ -114,7 +117,7 @@ def main(page: ft.Page):
     )
     dialogMod = ft.AlertDialog(
             shape=ft.RoundedRectangleBorder(radius=5),
-            title=ft.Text("Modificar un Movimiento nuevo"),
+            title=ft.Text("Modificar un pedido nuevo"),
             content=ft.Column([
                 producto,
                 tipMovimiento,
@@ -181,6 +184,7 @@ def main(page: ft.Page):
         return tabulate_pedidos()
 
     datos_tabla = obtener_datos()
+    print(datos_tabla)
 
     # Crear la tabla
     def crear_filas(datos):

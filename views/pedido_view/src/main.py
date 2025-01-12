@@ -70,7 +70,13 @@ def main(page: ft.Page):
 
     def guardar_insertar(e):
         todos_productos = []
-        for 
+        for producto in productos.value.split(","):
+            proInsert = {}
+            sep_producto = producto.split(" x ")
+            sep_info_producto = sep_producto[1].split(" (")
+            proInsert.update({"producto":f"{sep_producto[0]}","unidades":int(sep_info_producto[0]),"precio_unidad":float(sep_info_producto[1])})
+            todos_productos.insert(0,proInsert)
+            
         add_pedido(Pedido(page.val_num_pedido, {
             "nombre":f"{page.val_nombre_cliente}",
             "email":f"{page.val_email_cliente}",
@@ -163,8 +169,8 @@ def main(page: ft.Page):
     telefono_cliente = ft.TextField(hint_text="Escribe el teléfono del cliente", hint_style=ft.TextStyle(color="#d8d8d8"),label="Teléfono del Cliente", on_submit=guardar_insertar)
     cliente = ft.Column([nombre_cliente,email_cliente, telefono_cliente])
     
-    productos = ft.TextField(hint_text="Escribe los productos", hint_style=ft.TextStyle(color="#d8d8d8"),label="Productos", on_submit=guardar_insertar)
-    estado = ft.TextField(hint_text="Escribe el estado del pedido", hint_style=ft.TextStyle(color="#d8d8d8"),label="Estado", on_submit=guardar_insertar)
+    productos = ft.TextField(hint_text="Escribe los productos", hint_style=ft.TextStyle(color="#d8d8d8"), helper_text="El producto tiene que tener un formato de este tipo: nombre_producto x num_unidades (precio_unidad)\nSi se quiere añadir más productos, separalos por comas de la siguiente manera: \nnombre_producto x num_unidades (precio_unidad),nombre_producto x num_unidades (precio_unidad)",label="Productos", on_submit=guardar_insertar)
+    estado = ft.TextField(hint_text="Escribe el estado del pedido", hint_style=ft.TextStyle(color="#d8d8d8"), helper_text="Tiene que ser uno de los siguientes: 'pendientes, enviado, entregado o cancelado'",label="Estado", on_submit=guardar_insertar)
     
     dialogInser = ft.AlertDialog(
             shape=ft.RoundedRectangleBorder(radius=5),

@@ -27,6 +27,14 @@ def main(page: ft.Page):
     page.val_comentario = None
     page.val_comentario = None
     page.val_comentario = None
+    def cerrar_y_abrir_movimiento_view(e):
+        page.window_close()  # Cerrar la ventana actual
+        os.system("flet run .\\views\\movimiento_view\\src")  # Ejecutar la página principal
+
+    # Función para cerrar la ventana actual y abrir la ventana de pedidos
+    def cerrar_y_abrir_producto(e):
+        page.window_close()  # Cerrar la ventana actual
+        os.system("flet run .\\views\\producto_view\\src")  # Ejecutar la vista de pedidos
 
     def cambio_producto(e):
         page.val_producto = e.control.value
@@ -155,15 +163,11 @@ def main(page: ft.Page):
 
     # Encabezado
     encabezado = ft.Row([
-        ft.Text("Gestión de Pedidos", size=30, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.LEFT),
-        ft.Row(
-            [
-                ft.ElevatedButton("Página Principal", width=150),
-                ft.ElevatedButton("Movimientos", width=150)
-            ],
-            alignment=ft.MainAxisAlignment.END,
-            expand=True
-        )
+        ft.Text("Gestión de pedidos", size=30, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.LEFT),
+        ft.Row([
+            ft.ElevatedButton("Movimiento", width=150, on_click=cerrar_y_abrir_movimiento_view),
+            ft.ElevatedButton("Productos", width=150, on_click=cerrar_y_abrir_producto)
+        ], alignment=ft.MainAxisAlignment.END, expand=True)
     ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN)
 
     # Botones inferiores

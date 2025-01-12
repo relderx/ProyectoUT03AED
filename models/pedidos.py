@@ -63,11 +63,7 @@ class Pedido:
         '''
         Calcula el precio total del pedido sumando (unidades * precio_unidad) de cada producto.'''
         
-        precio_total = 0
-        for p in self._productos:
-            precio_total += p['unidades'] * p['precio_unidad']
-        
-        return precio_total
+        return sum(p['unidades'] * p['precio_unidad'] for p in self._productos)
 
     @property
     def productos(self):

@@ -90,6 +90,12 @@ def main(page: ft.Page):
         page.dialog.open = False
 
     def guardar_borrar(e):
+        # Borra los productos seleccionados
+        for pid in productos_seleccionados:
+            # Eliminar el producto de la base de datos
+            # Implementa la función para eliminar el producto
+            # delete_producto(pid)
+            pass
         page.dialog.open = False
 
     def cerrar_modificar(e):
@@ -120,20 +126,15 @@ def main(page: ft.Page):
             ],
     )
     dialogBor = ft.AlertDialog(
-            shape=ft.RoundedRectangleBorder(radius=5),
-            title=ft.Text("¿Quieres borrar el/los productos?"),
-            content=ft.Column([ 
-                producto,
-                descripcion,
-                stock_disponible,
-                precio_unitario,
-                categorias
-            ], width=page.window.width*0.33, height=page.window.height*0.5),
-            actions=[ 
-                ft.TextButton("Si", on_click=cerrar_borrar),
-                ft.ElevatedButton("No", on_click=guardar_borrar)
-            ],
+        shape=ft.RoundedRectangleBorder(radius=5),
+        title=ft.Text("¿Quieres borrar el/los productos?"),
+        content=ft.Text("Estás seguro de que deseas eliminar los productos seleccionados?"),
+        actions=[ 
+            ft.TextButton("No", on_click=cerrar_borrar),
+            ft.ElevatedButton("Sí", on_click=guardar_borrar)
+        ],
     )
+
     dialogMod = ft.AlertDialog(
             shape=ft.RoundedRectangleBorder(radius=5),
             title=ft.Text("Modificar un Producto"),
@@ -189,6 +190,7 @@ def main(page: ft.Page):
 
    # Encabezados de la tabla
     encabezados_tabla = [
+        "Seleccionar",  # Columna para el checkbox
         "Nombre del Producto", 
         "Descripción", 
         "Stock Disponible", 
@@ -198,17 +200,36 @@ def main(page: ft.Page):
         "Última Modificación"
     ]
 
+    productos_seleccionados = []  # Lista para almacenar los productos seleccionados
+
     def obtener_datos():
         return tabulate_productos()
 
     datos_tabla = obtener_datos()
 
-    def crear_filas(datos):
-        return [
-            ft.DataRow(
-                cells=[ft.DataCell(ft.Text(str(dato))) for dato in fila]
-            ) for fila in datos
-        ]
+    def crear_filas(productos, datos):
+        rows = []
+        for producto, fila in zip(productos, datos):
+            cells = [
+                ft.DataCell(
+                    ft.Checkbox(
+                        on_change=lambda e, pid=producto[0]: actualizar_seleccion(e, pid)
+                    )
+                ),  # Checkbox para selección
+                *[ft.DataCell(ft.Text(str(dato))) for dato in fila]
+            ]
+            rows.append(ft.DataRow(cells=cells))
+        return rows
+
+    def actualizar_seleccion(e, pid):
+        if e.control.value:
+            productos_seleccionados.append(pid)
+        else:
+            productos_seleccionados.remove(pid)
+
+        # Habilitar o deshabilitar el botón "Borrar" según si hay productos seleccionados
+        botones_inferiores.controls[0].disabled = not bool(productos_seleccionados)
+        page.update()
 
     tabla = ft.DataTable(
         width=1920,
@@ -217,7 +238,7 @@ def main(page: ft.Page):
         horizontal_lines=ft.BorderSide(2, "blue"),
         vertical_lines=ft.BorderSide(2, "blue"),
         columns=[ft.DataColumn(ft.Text(encabezado)) for encabezado in encabezados_tabla],
-        rows=crear_filas(datos_tabla),
+        rows=crear_filas(datos_tabla, datos_tabla),
     )
 
     tabla_con_scroll = ft.Column(
@@ -280,47 +301,19 @@ def main(page: ft.Page):
             # Si es una columna de texto, ordenar alfabéticamente
             datos_ordenados = sorted(datos_tabla, key=lambda x: str(x[indice_columna]).lower())
 
-        # Limpiar las filas de la tabla
         tabla.rows.clear()
-
-        # Añadir las filas ordenadas a la tabla
         for fila in datos_ordenados:
             tabla.rows.append(ft.DataRow(
                 cells=[ft.DataCell(ft.Text(str(dato))) for dato in fila]
             ))
 
-        # Actualizar la tabla
         tabla.update()
-
-    dropdown_ordenar = ft.Dropdown(
-        label='Ordenar por',
-        options=[ft.dropdown.Option(text=encabezado) for encabezado in encabezados_tabla],
-        width=200,
-        value=encabezados_tabla[0]
-    )
-    boton_ordenar = ft.ElevatedButton('Ordenar', on_click=ordenar_tabla)
-
-    input_buscar.on_submit = aplicar_filtro
-    boton_filtrar = ft.ElevatedButton("Aplicar Filtro", on_click=aplicar_filtro)
-
-    buscar_filtro = ft.Row([
-        input_buscar,
-        dropdown_filtro,
-        boton_filtrar
-    ], alignment=ft.MainAxisAlignment.END)
-
-    ordenar_filtro = ft.Row([
-        dropdown_ordenar,
-        boton_ordenar
-    ], alignment=ft.MainAxisAlignment.END)
 
     page.add(
         encabezado,
         botones_inferiores,
         ft.Divider(),
         ft.Text("Productos", size=30, weight=ft.FontWeight.BOLD),
-        buscar_filtro,
-        ordenar_filtro,
         tabla_con_scroll,
         ft.Divider(),
     )

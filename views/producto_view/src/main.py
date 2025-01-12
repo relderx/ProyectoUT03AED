@@ -200,4 +200,4 @@ def main(page: ft.Page):
         ft.Divider(),
     )
 
-# ft.app(target=main)
+ft.app(target=main)

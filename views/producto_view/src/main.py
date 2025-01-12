@@ -18,8 +18,6 @@ def main(page: ft.Page):
     page.window.maximized = True
     
     page.val_producto = None
-    page.val_categoria = None
-    page.val_precio = None
     page.val_descripcion = None
     page.val_stock_disponible = None
     page.val_precio_unitario = None
@@ -37,20 +35,14 @@ def main(page: ft.Page):
         page.val_producto = e.control.value
         page.update()
 
-    def cambio_categoria(e):
-        page.val_categoria = e.control.value
     def cambio_descripcion(e):
         page.val_descripcion = e.control.value
         page.update()
 
-    def cambio_precio(e):
-        page.val_precio = e.control.value
     def cambio_stock_disponible(e):
         page.val_stock_disponible = e.control.value
         page.update()
 
-    def cambio_descripcion(e):
-        page.val_descripcion = e.control.value
     def cambio_precio_unitario(e):
         page.val_precio_unitario = e.control.value
         page.update()
@@ -61,10 +53,6 @@ def main(page: ft.Page):
 
     def cerrar_producto(e):
         page.dialog.open = False
-        page.val_producto = None
-        page.val_categoria = None
-        page.val_precio = None
-        page.val_descripcion = None
         producto.value = None
         descripcion.value = None
         stock_disponible.value = None
@@ -72,48 +60,26 @@ def main(page: ft.Page):
         categorias.value = None
         page.update()
 
-    def guardar_producto(e):
-        # Crear un objeto Producto con los valores del formulario
-        nuevo_producto = Producto(
-    
     def guardar_insertar(e):
         add_producto(Producto(
             page.val_producto, 
-            page.val_categoria, 
-            float(page.val_precio), 
-            page.val_descripcion
-        )
-
-        # Agregar el nuevo producto a la base de datos
-        add_producto(nuevo_producto)
             page.val_descripcion, 
             int(page.val_stock_disponible), 
             float(page.val_precio_unitario),
             [categoria for categoria in page.val_categorias.split(",")]
         ))
 
-        # Obtener los datos actualizados de los productos
         datos_tabla = obtener_datos()
-
-        # Limpiar las filas de la tabla
         tabla.rows.clear()
-
-        # Añadir las filas actualizadas a la tabla
         for fila in datos_tabla:
             tabla.rows.append(ft.DataRow(
                 cells=[ft.DataCell(ft.Text(str(dato))) for dato in fila]
             ))
-
-        # Actualizar la tabla
         tabla.update()
         
-        # Cerrar el diálogo
         page.dialog.open = False
         
-        # Limpiar los campos de entrada
         producto.value = None
-        categoria.value = None
-        precio.value = None
         descripcion.value = None
         stock_disponible.value = None
         precio_unitario.value = None
@@ -132,10 +98,6 @@ def main(page: ft.Page):
     def guardar_modificar(e):
         page.dialog.open = False
     
-    producto = ft.TextField(hint_text="Escribe el nombre del producto", hint_style=ft.TextStyle(color="#d8d8d8"),label="Producto", on_submit=guardar_producto)
-    categoria = ft.TextField(hint_text="Escribe la categoría del producto", hint_style=ft.TextStyle(color="#d8d8d8"),label="Categoría", on_submit=guardar_producto)
-    precio = ft.TextField(hint_text="Escribe el precio del producto", hint_style=ft.TextStyle(color="#d8d8d8"),label="Precio", on_submit=guardar_producto)
-    descripcion = ft.TextField(hint_text="Escribe una descripción del producto", hint_style=ft.TextStyle(color="#d8d8d8"),label="Descripción", on_submit=guardar_producto)
     producto = ft.TextField(hint_text="Escribe el nombre del producto", hint_style=ft.TextStyle(color="#d8d8d8"),label="Producto", on_submit=guardar_insertar)
     descripcion = ft.TextField(hint_text="Escribe la descripción del producto", hint_style=ft.TextStyle(color="#d8d8d8"),label="Descripción", on_submit=guardar_insertar)
     stock_disponible = ft.TextField(hint_text="Escribe el stock del producto", hint_style=ft.TextStyle(color="#d8d8d8"),label="Stock del producto", on_submit=guardar_insertar)
@@ -147,9 +109,6 @@ def main(page: ft.Page):
             title=ft.Text("Insertar un Producto nuevo"),
             content=ft.Column([ 
                 producto,
-                categoria,
-                precio,
-                descripcion
                 descripcion,
                 stock_disponible,
                 precio_unitario,
@@ -157,7 +116,6 @@ def main(page: ft.Page):
             ], width=page.window.width*0.33, height=page.window.height*0.5),
             actions=[ 
                 ft.TextButton("Cancelar", on_click=cerrar_producto),
-                ft.ElevatedButton("Guardar", on_click=guardar_producto)
                 ft.ElevatedButton("Guardar", on_click=guardar_insertar)
             ],
     )
@@ -166,9 +124,6 @@ def main(page: ft.Page):
             title=ft.Text("¿Quieres borrar el/los productos?"),
             content=ft.Column([ 
                 producto,
-                categoria,
-                precio,
-                descripcion
                 descripcion,
                 stock_disponible,
                 precio_unitario,
@@ -184,9 +139,6 @@ def main(page: ft.Page):
             title=ft.Text("Modificar un Producto"),
             content=ft.Column([ 
                 producto,
-                categoria,
-                precio,
-                descripcion
                 descripcion,
                 stock_disponible,
                 precio_unitario,
@@ -199,8 +151,6 @@ def main(page: ft.Page):
     )
         
     producto.on_change = cambio_producto
-    categoria.on_change = cambio_categoria
-    precio.on_change = cambio_precio
     descripcion.on_change = cambio_descripcion
     stock_disponible.on_change = cambio_stock_disponible
     precio_unitario.on_change = cambio_precio_unitario

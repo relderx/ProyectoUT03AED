@@ -39,31 +39,24 @@ def main(page: ft.Page):
         page.val_num_pedido = e.control.value
         page.update()
     
-    # Tengo que hacer uno de cada control de cliente
-    def cambio_cliente(e):
-        page.val_cliente = e.control.value
-        page.val_cliente = e.control.value
-        page.val_cliente = e.control.value
+    def cambio_nombre_cliente(e):
+        page.val_nombre_cliente = e.control.value
+        page.update()
+        
+    def cambio_email_cliente(e):
+        page.val_email_cliente = e.control.value
+        page.update()
+        
+    def cambio_telefono_cliente(e):
+        page.val_email_cliente = e.control.value
         page.update()
         
     def cambio_productos(e):
         page.val_productos = e.control.value
         page.update()
         
-    def cambio_precio_total(e):
-        page.val_precio_total = e.control.value
-        page.update()
-        
     def cambio_estado(e):
         page.val_estado = e.control.value
-        page.update()
-        
-    def cambio_fech_creacion(e):
-        page.val_fech_creacion = e.control.value
-        page.update()
-        
-    def cambio_fech_modificacion(e):
-        page.val_fech_modificacion = e.control.value
         page.update()
         
     def cerra_insertar(e):
@@ -76,7 +69,14 @@ def main(page: ft.Page):
         page.update()
 
     def guardar_insertar(e):
-        add_pedido(Pedido(page.val_producto, page.val_tipMovimiento,int(page.val_cantidad),page.val_comentario))
+        todos_productos = []
+        for 
+        add_pedido(Pedido(page.val_num_pedido, {
+            "nombre":f"{page.val_nombre_cliente}",
+            "email":f"{page.val_email_cliente}",
+            "telefono":f"{page.val_telefono_cliente}"},
+        todos_productos,page.val_estado))
+        
         datos_tabla = obtener_datos()
         tabla.rows.clear()
         
@@ -210,11 +210,11 @@ def main(page: ft.Page):
     # )
         
     num_pedido.on_change = cambio_num_pedido
-    nombre_cliente.on_change = cambio_cliente
-    email_cliente.on_change = cambio_cliente
-    telefono_cliente.on_change = cambio_cliente
-    cantidad.on_change = cambio_productos
-    comentario.on_change = cambio_precio_total
+    nombre_cliente.on_change = cambio_nombre_cliente
+    email_cliente.on_change = cambio_email_cliente
+    telefono_cliente.on_change = cambio_telefono_cliente
+    productos.on_change = cambio_productos
+    estado.on_change = cambio_estado
 
     # Encabezado
     encabezado = ft.Row([

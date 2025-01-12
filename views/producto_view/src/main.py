@@ -188,8 +188,9 @@ def main(page: ft.Page):
         ft.ElevatedButton("Modificar", width=100, disabled=True, on_click=mostrar_vent_modificar),
     ], alignment=ft.MainAxisAlignment.END)
 
-   # Encabezados de la tabla
+    # Encabezados de la tabla
     encabezados_tabla = [
+        "Seleccionar",  # Nueva columna para los checkboxes
         "Nombre del Producto", 
         "Descripción", 
         "Stock Disponible", 
@@ -199,6 +200,16 @@ def main(page: ft.Page):
         "Última Modificación"
     ]
 
+    productos_seleccionados = []
+
+    def seleccionar_producto(e):
+        # Obtener el índice de la fila seleccionada
+        row_index = e.control.data
+        if e.control.value:
+            productos_seleccionados.append(datos_tabla[row_index])  # Agregar el producto a la lista de seleccionados
+        else:
+            productos_seleccionados.remove(datos_tabla[row_index])  # Eliminar el producto de la lista
+
     def obtener_datos():
         return tabulate_productos()
 
@@ -207,8 +218,16 @@ def main(page: ft.Page):
     def crear_filas(datos):
         return [
             ft.DataRow(
-                cells=[ft.DataCell(ft.Text(str(dato))) for dato in fila]
-            ) for fila in datos
+                cells=[
+                    ft.DataCell(
+                        ft.Checkbox(
+                            on_change=seleccionar_producto,
+                            data=index  # Asignamos el índice de la fila al checkbox
+                        )
+                    ),
+                    *[ft.DataCell(ft.Text(str(dato))) for dato in fila]
+                ]
+            ) for index, fila in enumerate(datos)
         ]
 
     tabla = ft.DataTable(
@@ -296,34 +315,43 @@ def main(page: ft.Page):
     dropdown_ordenar = ft.Dropdown(
         label='Ordenar por',
         options=[ft.dropdown.Option(text=encabezado) for encabezado in encabezados_tabla],
+        value=encabezados_tabla[1],  # Por defecto, ordenar por "Producto"
         width=200,
-        value=encabezados_tabla[0]
+        on_change=ordenar_tabla
     )
+
     boton_ordenar = ft.ElevatedButton('Ordenar', on_click=ordenar_tabla)
 
-    input_buscar.on_submit = aplicar_filtro
+
+    # Configuración de eventos
+    input_buscar.on_submit = aplicar_filtro  # Aplicar filtro al presionar Enter
     boton_filtrar = ft.ElevatedButton("Aplicar Filtro", on_click=aplicar_filtro)
 
+
+    # Estructura de búsqueda y filtro
     buscar_filtro = ft.Row([
         input_buscar,
         dropdown_filtro,
         boton_filtrar
     ], alignment=ft.MainAxisAlignment.END)
 
+    # Configuración de orden
     ordenar_filtro = ft.Row([
         dropdown_ordenar,
         boton_ordenar
     ], alignment=ft.MainAxisAlignment.END)
 
+
     page.add(
         encabezado,
         botones_inferiores,
         ft.Divider(),
-        ft.Text("Productos", size=30, weight=ft.FontWeight.BOLD),
+        ft.Text("Movimientos", size=30, weight=ft.FontWeight.BOLD),
         buscar_filtro,
         ordenar_filtro,
-        tabla_con_scroll,
+        tabla_con_scroll,  # Agregar la tabla dentro del contenedor con scroll
         ft.Divider(),
     )
+
 
 ft.app(target=main)

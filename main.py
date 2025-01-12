@@ -1,17 +1,6 @@
 import flet as ft
 from store import store_view  # Importas la vista desde otro archivo
 
-class UI(ft.UserControl):
-    def __init__(self, page: ft.Page):
-        super().__init__(expand=True)
-        
-        self.container = ft.ResponsiveRow(
-            
-        )
-        
-    def build(self):
-        return super().container
-
 def main_view(page: ft.Page):
     page.title = 'Sistema de gestión de inventario'
     page.theme_mode = ft.ThemeMode.SYSTEM
@@ -37,9 +26,9 @@ def main_view(page: ft.Page):
                         
                         ft.Row(
                             [
-                                ft.ElevatedButton("Gestionar Inventario", on_click=lambda _: page.go("/store")),
-                                ft.ElevatedButton("Gestionar Movimientos de inventario", on_click=lambda _: page.go("/store")),
-                                ft.ElevatedButton("Gestionar Pedidos", on_click=lambda _: page.go("/store")),
+                                ft.ElevatedButton("Gestionar Inventario", on_click=lambda _: page.go("/inventario")),
+                                ft.ElevatedButton("Gestionar Movimientos de inventario", on_click=lambda _: page.go("/movimientos")),
+                                ft.ElevatedButton("Gestionar Pedidos", on_click=lambda _: page.go("/pedidos")),
                             ],
                             alignment=ft.MainAxisAlignment.CENTER,  # Centra los botones horizontalmente
                         ),
@@ -47,9 +36,14 @@ def main_view(page: ft.Page):
                 )
             )
 
-        # Vista de la tienda
-        if page.route == "/store":
-            page.views.append(store_view(page))  # Llamas a la vista desde el archivo 'store.py'
+        if page.route == "/inventario":
+            page.views.append(store_view(page))
+            
+        if page.route == "/movimientos":
+            page.views.append(store_view(page))
+            
+        if page.route == "/pedidos":
+            page.views.append(store_view(page))
         
         page.update()
 
@@ -70,4 +64,6 @@ def main_view(page: ft.Page):
     page.on_view_pop = view_pop
     page.go(page.route)
 
-ft.app(main_view, view=ft.AppView.WEB_BROWSER, host='', port=80)
+
+if __name__ == '__main__':
+    print('Inicia la aplicación desde \'app.py\'.')

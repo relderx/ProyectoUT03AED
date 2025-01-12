@@ -309,12 +309,42 @@ def main(page: ft.Page):
 
         tabla.update()
 
+    # Dropdown para ordenar la tabla
+    dropdown_ordenar = ft.Dropdown(
+        label='Ordenar por',
+        options=[ft.dropdown.Option(text=encabezado) for encabezado in encabezados_tabla],
+        width=200,
+        value=encabezados_tabla[0]  # Ordenar por la primera columna por defecto
+    )
+    boton_ordenar = ft.ElevatedButton('Ordenar', on_click=ordenar_tabla)
+
+    # Configuración de eventos
+    input_buscar.on_submit = aplicar_filtro  # Aplicar filtro al presionar Enter
+    boton_filtrar = ft.ElevatedButton("Aplicar Filtro", on_click=aplicar_filtro)
+
+
+    # Estructura de búsqueda y filtro
+    buscar_filtro = ft.Row([
+        input_buscar,
+        dropdown_filtro,
+        boton_filtrar
+    ], alignment=ft.MainAxisAlignment.END)
+
+    # Configuración de orden
+    ordenar_filtro = ft.Row([
+        dropdown_ordenar,
+        boton_ordenar
+    ], alignment=ft.MainAxisAlignment.END)
+
+
     page.add(
         encabezado,
         botones_inferiores,
         ft.Divider(),
-        ft.Text("Productos", size=30, weight=ft.FontWeight.BOLD),
-        tabla_con_scroll,
+        ft.Text("Movimientos", size=30, weight=ft.FontWeight.BOLD),
+        buscar_filtro,
+        ordenar_filtro,
+        tabla_con_scroll,  # Agregar la tabla dentro del contenedor con scroll
         ft.Divider(),
     )
 

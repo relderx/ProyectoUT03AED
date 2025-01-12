@@ -1,37 +1,65 @@
 import flet as ft
 from store import store_view  # Importas la vista desde otro archivo
 
-def main(page: ft.Page):
+class UI(ft.UserControl):
+    def __init__(self, page: ft.Page):
+        super().__init__(expand=True)
+        
+        self.container = ft.ResponsiveRow(
+            
+        )
+        
+    def build(self):
+        return super().container
+
+def main_view(page: ft.Page):
     page.title = 'Sistema de gestión de inventario'
-    page.theme_mode = 'light'
+    page.theme_mode = ft.ThemeMode.SYSTEM
+    page.adaptive = True
 
     def route_change(route):
         page.views.clear()
 
         # Vista principal
-        if page.route == '/':
+        if page.route == "/":
             page.views.append(
                 ft.View(
-                    '/',
+                    "/",
                     [
                         ft.AppBar(
-                            
-                            title=ft.Text('Sistema de gestión de inventario'),
+                            title=ft.Text("Sistema de gestión de inventario", weight=ft.FontWeight.BOLD, size=38),
                             bgcolor=ft.colors.SURFACE_VARIANT,
                             center_title=True,
-                            leading=ft.IconButton(ft.icons.HOME, on_click=lambda _: page.go('/')
-                            ),
+                            leading=ft.IconButton(ft.icons.HOME, on_click=lambda _: page.go("/")),  # Botón Home
+                            actions=[ft.IconButton(ft.icons.BRIGHTNESS_6, on_click=lambda _: toggle_theme()), # Botón de cambio de tema (Light <-> Dark)
+                            ],
                         ),
-                        ft.ElevatedButton('Visit Store', on_click=lambda _: page.go('/store')),
+                        
+                        ft.Row(
+                            [
+                                ft.ElevatedButton("Gestionar Inventario", on_click=lambda _: page.go("/store")),
+                                ft.ElevatedButton("Gestionar Movimientos de inventario", on_click=lambda _: page.go("/store")),
+                                ft.ElevatedButton("Gestionar Pedidos", on_click=lambda _: page.go("/store")),
+                            ],
+                            alignment=ft.MainAxisAlignment.CENTER,  # Centra los botones horizontalmente
+                        ),
                     ],
                 )
             )
 
         # Vista de la tienda
-        if page.route == '/store':
+        if page.route == "/store":
             page.views.append(store_view(page))  # Llamas a la vista desde el archivo 'store.py'
         
         page.update()
+
+    def toggle_theme():
+        # Cambiar entre 'light' y 'dark' al hacer clic
+        if page.theme_mode == 'light':
+            page.theme_mode = 'dark'
+        else:
+            page.theme_mode = 'light'
+        page.update()  # Actualiza la vista para reflejar el cambio de tema
 
     def view_pop(view):
         page.views.pop()
@@ -42,5 +70,4 @@ def main(page: ft.Page):
     page.on_view_pop = view_pop
     page.go(page.route)
 
-if __name__ == '__main__':
-    ft.app(target=main, view=ft.AppView.WEB_BROWSER, host='', port=80)
+ft.app(main_view, view=ft.AppView.WEB_BROWSER, host='', port=80)

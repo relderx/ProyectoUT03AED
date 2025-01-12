@@ -1,6 +1,6 @@
 import flet as ft
 
-from views.producto_view.src.main import main as create_producto_page
+from main import main_view
 
 if __name__ == "__main__":
-    ft.app(target=create_producto_page, view=ft.AppView.WEB_BROWSER, host='localhost', port=80)
+    ft.app(target=main_view, view=ft.AppView.WEB_BROWSER, host='', port=80)

@@ -9,12 +9,13 @@ from utils.helpers import tabulate_productos
 from utils.db import add_producto
 from models.productos import Producto
 
-def producto_view(page: ft.Page):
-    def toggle_theme():
-        page.theme_mode = 'dark' if page.theme_mode == 'light' else 'light'
-        page.update()  # Actualiza la vista para reflejar el cambio de tema
-    
+def main(page: ft.Page):
     page.title = "Gestión de Productos"
+    page.window.width = 1920
+    page.window.height = 1080
+    page.bgcolor = ft.colors.WHITE
+    page.theme_mode = 'light'
+    page.window.maximized = True
     
     page.val_producto = None
     page.val_descripcion = None
@@ -344,14 +345,30 @@ def producto_view(page: ft.Page):
         boton_ordenar
     ], alignment=ft.MainAxisAlignment.END)
 
+    def ordenar_tabla(e):
+        columna_ordenar = dropdown_ordenar.value
+        indice_columna = encabezados_tabla.index(columna_ordenar)
+
+        datos_ordenados = sorted(datos_tabla, key=lambda x: str(x[indice_columna]).lower())
+
+        tabla.rows.clear()
+        for fila in datos_ordenados:
+            tabla.rows.append(ft.DataRow(
+                cells=[ft.DataCell(ft.Text(str(dato))) for dato in fila]
+            ))
+
+        tabla.update()
 
     page.add(
         encabezado,
         botones_inferiores,
         ft.Divider(),
-        ft.Text("Movimientos", size=30, weight=ft.FontWeight.BOLD),
+        ft.Text("Producto", size=30, weight=ft.FontWeight.BOLD),
         buscar_filtro,
         ordenar_filtro,
         tabla_con_scroll,  # Agregar la tabla dentro del contenedor con scroll
         ft.Divider(),
     )
+
+
+ft.app(target=main)

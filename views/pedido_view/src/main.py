@@ -11,12 +11,13 @@ from models.pedidos import Pedido
 
 from utils.helpers import tabulate_pedidos
 
-def pedido_view(page: ft.Page):
-    def toggle_theme():
-        page.theme_mode = 'dark' if page.theme_mode == 'light' else 'light'
-        page.update()  # Actualiza la vista para reflejar el cambio de tema
-        
+def main(page: ft.Page):
     page.title = "Gestión de Pedidos"
+    page.window_width = 1920
+    page.window_height = 1080
+    page.bgcolor = ft.colors.WHITE
+    page.theme_mode = 'light'
+    page.window_maximized = True
     
     page.val_num_pedido = None
     page.val_nombre_cliente = None
@@ -355,25 +356,17 @@ def pedido_view(page: ft.Page):
             ))
 
         tabla.update()
-        
-    return ft.View(
-        "/pedidos",
-        [
-            ft.AppBar(
-                title=ft.Text("Gestión de Pedidos", weight=ft.FontWeight.BOLD, size=36),
-                bgcolor=ft.Colors.INVERSE_PRIMARY,
-                center_title=True,
-                leading=ft.IconButton(ft.Icons.HOME, on_click=lambda _: page.go("/")),  # Botón Home
-                actions=[ft.IconButton(ft.Icons.BRIGHTNESS_6, on_click=lambda _: toggle_theme()), # Botón de cambio de tema (Light <-> Dark)
-                ],
-            ),
-            encabezado,
-            botones_inferiores,
-            ft.Divider(),
-            ft.Text("Pedidos", size=30, weight=ft.FontWeight.BOLD),
-            buscar_filtro,
-            ordenar_filtro,
-            tabla_con_scroll,
-            ft.Divider()
-        ],
+
+    # Estructura de la página
+    page.add(
+        encabezado,
+        botones_inferiores,
+        ft.Divider(),
+        ft.Text("Pedidos", size=30, weight=ft.FontWeight.BOLD),
+        buscar_filtro,
+        ordenar_filtro,
+        tabla_con_scroll,
+        ft.Divider()
     )
+
+ft.app(target=main)

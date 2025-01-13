@@ -9,13 +9,13 @@ from utils.helpers import tabulate_productos
 from utils.db import add_producto
 from models.productos import Producto
 
-def main(page: ft.Page):
+def producto_view(page: ft.Page):
     page.title = "Gestión de Productos"
-    page.window.width = 1920
-    page.window.height = 1080
-    page.bgcolor = ft.colors.WHITE
-    page.theme_mode = 'light'
-    page.window.maximized = True
+    
+    def toggle_theme():
+        # Cambiar entre 'light' y 'dark' al hacer clic
+        page.theme_mode = 'dark' if page.theme_mode == 'light' else 'light'
+        page.update()  # Actualiza la vista para reflejar el cambio de tema
     
     page.val_producto = None
     page.val_descripcion = None
@@ -358,6 +358,28 @@ def main(page: ft.Page):
             ))
 
         tabla.update()
+        
+    return ft.View(
+        "/inventario",
+        [
+            ft.AppBar(
+                title=ft.Text("Gestión de Productos", weight=ft.FontWeight.BOLD, size=36),
+                bgcolor=ft.Colors.INVERSE_PRIMARY,
+                center_title=True,
+                leading=ft.IconButton(ft.Icons.HOME, on_click=lambda _: page.go("/")),  # Botón Home
+                actions=[ft.IconButton(ft.Icons.BRIGHTNESS_6, on_click=lambda _: toggle_theme()), # Botón de cambio de tema (Light <-> Dark)
+                ],
+            ),
+            encabezado,
+            botones_inferiores,
+            ft.Divider(),
+            ft.Text("Producto", size=30, weight=ft.FontWeight.BOLD),
+            buscar_filtro,
+            ordenar_filtro,
+            tabla_con_scroll,  # Agregar la tabla dentro del contenedor con scroll
+            ft.Divider(),
+        ]
+    )
 
     page.add(
         encabezado,
@@ -371,4 +393,4 @@ def main(page: ft.Page):
     )
 
 
-ft.app(target=main)
+# ft.app(target=producto_view)

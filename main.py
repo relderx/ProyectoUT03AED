@@ -1,6 +1,10 @@
 import flet as ft
 from store import store_view  # Importas la vista desde otro archivo
 
+from views.movimiento_view.src.main import movimiento_view
+from views.producto_view.src.main import producto_view
+from views.pedido_view.src.main import pedido_view
+
 def main_view(page: ft.Page):
     page.title = 'Sistema de gestión de inventario'
     page.theme_mode = ft.ThemeMode.SYSTEM
@@ -37,22 +41,19 @@ def main_view(page: ft.Page):
             )
 
         if page.route == "/inventario":
-            page.views.append(store_view(page))
+            page.views.append(producto_view(page))
             
         if page.route == "/movimientos":
-            page.views.append(store_view(page))
+            page.views.append(movimiento_view(page))
             
         if page.route == "/pedidos":
-            page.views.append(store_view(page))
+            page.views.append(pedido_view(page))
         
         page.update()
 
     def toggle_theme():
         # Cambiar entre 'light' y 'dark' al hacer clic
-        if page.theme_mode == 'light':
-            page.theme_mode = 'dark'
-        else:
-            page.theme_mode = 'light'
+        page.theme_mode = 'dark' if page.theme_mode == 'light' else 'light'
         page.update()  # Actualiza la vista para reflejar el cambio de tema
 
     def view_pop(view):

@@ -9,13 +9,16 @@ from utils.helpers import tabulate_movimientos
 from utils.db import add_movimiento
 from models.movimientos import Movimiento
 
-def main(page: ft.Page):
-    page.title = "Movimiento de Inventario"
-    page.window.width = 1920
-    page.window.height = 1080
-    page.bgcolor = ft.colors.WHITE
-    page.theme_mode = 'light'
-    page.window.maximized = True
+def movimiento_view(page: ft.Page):
+    def toggle_theme():
+        # Cambiar entre 'light' y 'dark' al hacer clic
+        if page.theme_mode == 'light':
+            page.theme_mode = 'dark'
+        else:
+            page.theme_mode = 'light'
+        page.update()  # Actualiza la vista para reflejar el cambio de tema
+        
+    page.title = "Gestión de Movimientos de Inventario"
     
     page.val_producto = None
     page.val_tipMovimiento = None
@@ -302,15 +305,23 @@ def main(page: ft.Page):
     ], alignment=ft.MainAxisAlignment.END)
 
     # Estructura de la página
-    page.add(
-        encabezado,
-        botones_inferiores,
-        ft.Divider(),
-        ft.Text("Movimientos", size=30, weight=ft.FontWeight.BOLD),
-        buscar_filtro,
-        ordenar_filtro,
-        tabla_con_scroll,  # Agregar la tabla dentro del contenedor con scroll
-        ft.Divider(),
+    return ft.View(
+        "/movimientos",
+        [
+            ft.AppBar(
+                title=ft.Text("Movimientos de Inventario", weight=ft.FontWeight.BOLD, size=36),
+                bgcolor=ft.Colors.INVERSE_PRIMARY,
+                center_title=True,
+                leading=ft.IconButton(ft.Icons.HOME, on_click=lambda _: page.go("/")),  # Botón Home
+                actions=[ft.IconButton(ft.Icons.BRIGHTNESS_6, on_click=lambda _: toggle_theme())], # Botón de cambio de tema (Light <-> Dark)],
+            ),
+            encabezado,
+            botones_inferiores,
+            ft.Divider(),
+            ft.Text("Movimientos", size=30, weight=ft.FontWeight.BOLD),
+            buscar_filtro,
+            ordenar_filtro,
+            tabla_con_scroll,  # Agregar la tabla dentro del contenedor con scroll
+            ft.Divider(),
+        ]
     )
-
-ft.app(target=main)

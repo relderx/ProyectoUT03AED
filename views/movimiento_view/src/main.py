@@ -11,11 +11,7 @@ from models.movimientos import Movimiento
 
 def movimiento_view(page: ft.Page):
     def toggle_theme():
-        # Cambiar entre 'light' y 'dark' al hacer clic
-        if page.theme_mode == 'light':
-            page.theme_mode = 'dark'
-        else:
-            page.theme_mode = 'light'
+        page.theme_mode = 'dark' if page.theme_mode == 'light' else 'light'
         page.update()  # Actualiza la vista para reflejar el cambio de tema
         
     page.title = "Gestión de Movimientos de Inventario"

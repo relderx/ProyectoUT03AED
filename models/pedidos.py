@@ -1,7 +1,6 @@
 from datetime import datetime, timezone
 
 class Pedido:
-    # Estados permitidos para los pedidos
     VALID_STATES = {'pendiente', 'enviado', 'entregado', 'cancelado'}
 
     def __init__(self, num_pedido: str, cliente: dict, productos: list[dict], estado: str):

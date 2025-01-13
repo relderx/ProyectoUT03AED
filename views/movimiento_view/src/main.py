@@ -15,7 +15,6 @@ def movimiento_view(page: ft.Page):
         page.update()
 
     page.title = "Gestión de Movimientos de Inventario"
-    page.scroll = ft.ScrollMode.ALWAYS
 
     def close_and_open_view(view_path):
         page.window_close()
@@ -100,12 +99,6 @@ def movimiento_view(page: ft.Page):
         rows=crear_filas(obtener_datos())
     )
 
-    tabla_con_scroll = ft.Column(
-        controls=[tabla],
-        height=500,
-        scroll=ft.ScrollMode.AUTO
-    )
-
     dropdown_filtro = ft.Dropdown(
         label="Filtrar por",
         options=[ft.dropdown.Option("Ningún filtro")] + [ft.dropdown.Option(encabezado) for encabezado in encabezados_tabla],
@@ -122,7 +115,7 @@ def movimiento_view(page: ft.Page):
         tabla.rows.clear()
 
         if texto:
-            if filtro == "Ningún filtro":
+            if (filtro == "Ningún filtro"):
                 datos_filtrados = [fila for fila in datos if any(texto in str(campo).lower() for campo in fila)]
             else:
                 campo_indices = {"Producto": 0, "Tipo de Movimiento": 1, "Cantidad": 2, "Fecha": 3, "Comentario": 4}
@@ -176,7 +169,7 @@ def movimiento_view(page: ft.Page):
                         ft.Text("Movimientos", size=30, weight=ft.FontWeight.BOLD),
                         buscar_filtro,
                         ordenar_filtro,
-                        tabla_con_scroll,
+                        tabla,
                         ft.Divider()
                     ],
                     scroll=ft.ScrollMode.AUTO

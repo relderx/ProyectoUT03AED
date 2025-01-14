@@ -21,6 +21,7 @@ def movimiento_view(page: ft.Page):
     page.val_tipMovimiento = None
     page.val_cantidad = None
     page.val_comentario = None
+    
     def cerrar_y_abrir_producto_view(e):
         page.window_close()  # Cerrar la ventana actual
         os.system("flet run .\\views\\producto_view\\src")  # Ejecutar la página principal
@@ -193,13 +194,6 @@ def movimiento_view(page: ft.Page):
         rows=crear_filas(datos_tabla),
     )
 
-    # Contenedor con scroll para la tabla
-    tabla_con_scroll = ft.Column(
-        controls=[tabla],
-        height=500,  # Puedes ajustar la altura según sea necesario
-        scroll=ft.ScrollMode.AUTO  # Habilitar el scroll vertical
-    )
-
     # Componentes de filtro
     dropdown_filtro = ft.Dropdown(
         label="Filtrar por",
@@ -224,7 +218,7 @@ def movimiento_view(page: ft.Page):
         # Filtrar los datos
         datos_filtrados = []
         if texto:  # Si hay texto ingresado
-            if filtro == "Ningún filtro":
+            if (filtro == "Ningún filtro"):
                 # Buscar en todos los campos
                 datos_filtrados = [
                     fila for fila in datos if any(texto in str(campo).lower() for campo in fila)
@@ -314,9 +308,10 @@ def movimiento_view(page: ft.Page):
             ft.Text("Movimientos", size=30, weight=ft.FontWeight.BOLD),
             buscar_filtro,
             ordenar_filtro,
-            tabla_con_scroll,  # Agregar la tabla dentro del contenedor con scroll
+            tabla,  # Agregar la tabla directamente
             ft.Divider(),
-        ]
+        ],
+        scroll=ft.ScrollMode.AUTO  # Habilitar el scroll para la página
     )
 
 # ft.app(target=main)

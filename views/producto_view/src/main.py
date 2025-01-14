@@ -58,7 +58,7 @@ def producto_view(page: ft.Page):
         newCategorias = []
         for categoria in page.val_categorias.split(","):
             newCategorias.append(categoria.strip())
-        add_producto(Producto(page.val_producto, page.val_descripcion, int(page.val_stock_disponible), int(page.val_precio_unitario), newCategorias))
+        add_producto(Producto(page.val_producto, page.val_descripcion, int(page.val_stock_disponible), float(page.val_precio_unitario), newCategorias))
         actualizar_tabla()
         cerrar_dialogo(e)
 

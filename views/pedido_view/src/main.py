@@ -210,10 +210,6 @@ def pedido_view(page: ft.Page):
         dialog_borrar.open = True
         page.update()
 
-    # Encabezado
-    encabezado = ft.Row([
-        ft.Text("Gestión de pedidos", size=30, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.LEFT)
-    ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN)
 
     boton_borrar = ft.ElevatedButton("Borrar", width=100, disabled=True, on_click=mostrar_vent_borrar)
     boton_modificar = ft.ElevatedButton("Modificar", width=100, on_click=mostrar_vent_modificar, disabled=True)
@@ -223,6 +219,11 @@ def pedido_view(page: ft.Page):
         boton_modificar
     ], alignment=ft.MainAxisAlignment.END
     )
+    
+    # Encabezado
+    encabezado = ft.Row([
+        ft.Text("Gestión de pedidos", size=30, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.LEFT)
+    ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN)
     
     # Encabezados de la tabla
     encabezados_tabla = [

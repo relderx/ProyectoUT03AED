@@ -57,11 +57,14 @@ def producto_view(page: ft.Page):
         cerrar_dialogo(e)
 
     def borrar_productos(e):
+        # Borrar los productos seleccionados
         for producto_id in productos_seleccionados_ids:
-            delete_producto(producto_id)  # Pasa solo el ID
+            delete_producto(producto_id)  # Elimina por ID
         actualizar_tabla()
+        # Limpia los productos seleccionados y habilita/deshabilita botones
         productos_seleccionados_ids.clear()
         boton_borrar.disabled = True
+        boton_modificar.disabled = True  # Asegurarse de que "Modificar" esté deshabilitado
         page.update()
 
     def obtener_datos():
@@ -104,14 +107,23 @@ def producto_view(page: ft.Page):
         ],
     )
 
-    def mostrar_vent_insertar(e):
-        producto.on_change = cambio_producto
-        descripcion.on_change = cambio_descripcion
-        stock_disponible.on_change = cambio_stock_disponible
-        precio_unitario.on_change = cambio_precio_unitario
-        categorias.on_change = cambio_categorias
+    # def mostrar_vent_insertar(e):
+    #     producto.on_change = cambio_producto
+    #     descripcion.on_change = cambio_descripcion
+    #     stock_disponible.on_change = cambio_stock_disponible
+    #     precio_unitario.on_change = cambio_precio_unitario
+    #     categorias.on_change = cambio_categorias
 
-        dialog_insertar = ft.AlertDialog(
+    def mostrar_vent_insertar(e):
+        # Resetea los valores de los inputs antes de abrir el diálogo
+        producto.value = ""
+        descripcion.value = ""
+        stock_disponible.value = ""
+        precio_unitario.value = ""
+        categorias.value = ""
+
+    # Configura el diálogo
+        page.dialog = ft.AlertDialog(
             shape=ft.RoundedRectangleBorder(radius=5),
             title=ft.Text("Insertar un Producto nuevo"),
             content=ft.Column([
@@ -126,9 +138,8 @@ def producto_view(page: ft.Page):
                 ft.ElevatedButton("Guardar", on_click=guardar_insertar)
             ],
         )
-
-        page.dialog = dialog_insertar
-        dialog_insertar.open = True
+        # Abre el diálogo
+        page.dialog.open = True
         page.update()
         producto.focus()
 

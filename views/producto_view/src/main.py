@@ -45,13 +45,7 @@ def producto_view(page: ft.Page):
         page.update()
 
     def guardar_insertar(e):
-        add_producto(Producto(
-            page.val_producto,
-            page.val_descripcion,
-            int(page.val_stock_disponible),
-            float(page.val_precio_unitario),
-            [categoria.strip() for categoria in page.val_categorias.split(",")]
-        ))
+        add_producto(Producto(page.val_producto, page.val_descripcion, int(page.val_stock_disponible), int(page.val_precio_unitario), page.val_categorias))
         actualizar_tabla()
         cerrar_producto(e)
 
@@ -73,12 +67,6 @@ def producto_view(page: ft.Page):
         tabla.update()
         
         page.dialog.open = False
-        
-        producto.value = None
-        descripcion.value = None
-        stock_disponible.value = None
-        precio_unitario.value = None
-        categorias.value = None
         page.update()
 
     def cerrar_borrar(e):
@@ -131,12 +119,6 @@ def producto_view(page: ft.Page):
     )
     
     def mostrar_vent_insertar(e):
-        producto = ft.TextField(hint_text="Escribe el nombre del producto", hint_style=ft.TextStyle(color="#d8d8d8"), label="Producto", on_submit=guardar_insertar)
-        descripcion = ft.TextField(hint_text="Escribe la descripción del producto", hint_style=ft.TextStyle(color="#d8d8d8"), label="Descripción", on_submit=guardar_insertar)
-        stock_disponible = ft.TextField(hint_text="Escribe el stock del producto", hint_style=ft.TextStyle(color="#d8d8d8"), label="Stock del producto", on_submit=guardar_insertar)
-        precio_unitario = ft.TextField(hint_text="Escribe el precio del producto por unidad", hint_style=ft.TextStyle(color="#d8d8d8"), label="Precio unitario", on_submit=guardar_insertar)
-        categorias = ft.TextField(hint_text="Escribe las categorías del producto", hint_style=ft.TextStyle(color="#d8d8d8"), helper_text="Separa cada categoría comas y sin espacios", label="Categorías del producto", on_submit=guardar_insertar)
-        
         producto.on_change = cambio_producto
         descripcion.on_change = cambio_descripcion
         stock_disponible.on_change = cambio_stock_disponible
@@ -154,8 +136,8 @@ def producto_view(page: ft.Page):
                     precio_unitario,
                     categorias
                 ],
-                # width=page.window.width * 0.33,
-                # height=page.window.height * 0.5
+                width=650,
+                height=650
             ),
             actions=[
                 ft.TextButton("Cancelar", on_click=cerrar_producto),
@@ -184,8 +166,9 @@ def producto_view(page: ft.Page):
         ft.Text("Gestión de Productos", size=30, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.LEFT)
     ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN)
 
+    boton_borrar = ft.ElevatedButton("Borrar", width=100, disabled=True, on_click=mostrar_vent_borrar)
     botones_inferiores = ft.Row([ 
-        ft.ElevatedButton("Borrar", width=100, disabled=True, on_click=mostrar_vent_borrar),
+        boton_borrar,
         ft.ElevatedButton("Insertar", width=100, on_click=mostrar_vent_insertar),
         ft.ElevatedButton("Modificar", width=100, disabled=True, on_click=mostrar_vent_modificar),
     ], alignment=ft.MainAxisAlignment.END)
@@ -201,8 +184,6 @@ def producto_view(page: ft.Page):
         "Fecha de Creación", 
         "Última Modificación"
     ]
-
-    productos_seleccionados = []
 
     def seleccionar_producto(e):
         producto_id = e.control.data  # Recibe el ID del producto directamente del checkbox
@@ -224,50 +205,15 @@ def producto_view(page: ft.Page):
 
     datos_tabla = obtener_datos()
 
-    encabezado = ft.Row([
-        ft.Text("Gestión de Productos", size=30, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.LEFT),
-    ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN)
-
-    boton_borrar = ft.ElevatedButton("Borrar", width=100, disabled=True, on_click=borrar_productos)
-
-    botones_inferiores = ft.Row([
-        boton_borrar,
-        ft.ElevatedButton("Insertar", width=100, on_click=lambda _: mostrar_vent_insertar()),
-        ft.ElevatedButton("Modificar", width=100, disabled=True, on_click=lambda _: None),
-    ], alignment=ft.MainAxisAlignment.END)
-
     tabla = ft.DataTable(
-        columns=[
-            ft.DataColumn(ft.Text("Seleccionar")),
-            ft.DataColumn(ft.Text("Nombre del Producto")),
-            ft.DataColumn(ft.Text("Descripción")),
-            ft.DataColumn(ft.Text("Stock Disponible")),
-            ft.DataColumn(ft.Text("Precio por Unidad")),
-            ft.DataColumn(ft.Text("Categorías")),
-            ft.DataColumn(ft.Text("Fecha de Creación")),
-            ft.DataColumn(ft.Text("Última Modificación")),
-        ],
+        width=1920,
+        border_radius=2,
+        border=ft.border.all(2, "red"),
+        horizontal_lines=ft.BorderSide(2, "blue"),
+        vertical_lines=ft.BorderSide(2, "blue"),
+        columns=[ft.DataColumn(ft.Text(encabezado)) for encabezado in encabezados_tabla],
         rows=crear_filas(datos_tabla),
     )
-
-    def mostrar_vent_insertar():
-        dialog_insertar = ft.AlertDialog(
-            title=ft.Text("Insertar Producto"),
-            content=ft.Column([
-                ft.TextField(label="Producto", on_change=cambio_producto),
-                ft.TextField(label="Descripción", on_change=cambio_descripcion),
-                ft.TextField(label="Stock", on_change=cambio_stock_disponible),
-                ft.TextField(label="Precio", on_change=cambio_precio_unitario),
-                ft.TextField(label="Categorías", on_change=cambio_categorias),
-            ]),
-            actions=[
-                ft.TextButton("Cancelar", on_click=cerrar_producto),
-                ft.ElevatedButton("Guardar", on_click=guardar_insertar)
-            ],
-        )
-        page.dialog = dialog_insertar
-        dialog_insertar.open = True
-        page.update()
 
     input_buscar = ft.TextField(label="Buscar", width=200)
     dropdown_filtro = ft.Dropdown(

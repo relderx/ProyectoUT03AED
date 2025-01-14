@@ -73,7 +73,10 @@ def producto_view(page: ft.Page):
         tabla.rows.clear()
         for fila in datos_tabla:
             tabla.rows.append(ft.DataRow(
-                cells=[ft.DataCell(ft.Text(str(dato))) for dato in fila]
+                cells=[
+                    ft.DataCell(ft.Checkbox()),  # Agregar checkbox
+                    *[ft.DataCell(ft.Text(str(dato))) for dato in fila]
+                ]
             ))
         tabla.update()
         

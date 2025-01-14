@@ -32,11 +32,11 @@ def add_many_productos(producto: list[Producto]):
 
 def update_producto(producto_id, producto_data):
     '''Actualiza un producto existente en la colección de productos.'''
-    return COLL_PRO.update_one({'_id': producto_id}, {'$set': producto_data})
+    return COLL_PRO.update_one({'producto': producto_id}, {'$set': producto_data})
 
 def delete_producto(producto_id):
     '''Elimina un producto de la colección de productos utilizando su ID.'''
-    return COLL_PRO.delete_one({'_id': producto_id})
+    return COLL_PRO.delete_one({'producto': producto_id})
 
 def get_movimientos():
     '''Obtiene todos los documentos de la colección de movimientos de inventario.'''

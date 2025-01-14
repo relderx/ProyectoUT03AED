@@ -23,14 +23,6 @@ def producto_view(page: ft.Page):
     page.val_precio_unitario = None
     page.val_categorias = None
 
-    def cerrar_y_abrir_movimientos(e):
-        page.window_close()  # Cerrar la ventana actual
-        os.system("flet run .\\views\\movimiento_view\\src")  # Ejecutar la página principal
-
-    def cerrar_y_abrir_pedidos(e):
-        page.window_close()  # Cerrar la ventana actual
-        os.system("flet run .\\views\\pedido_view\\src")  # Ejecutar la vista de pedidos
-
     def cambio_producto(e):
         page.val_producto = e.control.value
         page.update()

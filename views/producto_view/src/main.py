@@ -45,11 +45,6 @@ def producto_view(page: ft.Page):
 
     def cerrar_producto(e):
         page.dialog.open = False
-        producto.value = None
-        descripcion.value = None
-        stock_disponible.value = None
-        precio_unitario.value = None
-        categorias.value = None
         page.update()
 
     def guardar_insertar(e):
@@ -73,12 +68,6 @@ def producto_view(page: ft.Page):
         tabla.update()
         
         page.dialog.open = False
-        
-        producto.value = None
-        descripcion.value = None
-        stock_disponible.value = None
-        precio_unitario.value = None
-        categorias.value = None
         page.update()
 
     def cerrar_borrar(e):
@@ -130,13 +119,7 @@ def producto_view(page: ft.Page):
             ],
     )
     
-    def mostrar_vent_insertar(e):
-        producto = ft.TextField(hint_text="Escribe el nombre del producto", hint_style=ft.TextStyle(color="#d8d8d8"), label="Producto", on_submit=guardar_insertar)
-        descripcion = ft.TextField(hint_text="Escribe la descripción del producto", hint_style=ft.TextStyle(color="#d8d8d8"), label="Descripción", on_submit=guardar_insertar)
-        stock_disponible = ft.TextField(hint_text="Escribe el stock del producto", hint_style=ft.TextStyle(color="#d8d8d8"), label="Stock del producto", on_submit=guardar_insertar)
-        precio_unitario = ft.TextField(hint_text="Escribe el precio del producto por unidad", hint_style=ft.TextStyle(color="#d8d8d8"), label="Precio unitario", on_submit=guardar_insertar)
-        categorias = ft.TextField(hint_text="Escribe las categorías del producto", hint_style=ft.TextStyle(color="#d8d8d8"), helper_text="Separa cada categoría comas y sin espacios", label="Categorías del producto", on_submit=guardar_insertar)
-        
+    def mostrar_vent_insertar(e):        
         producto.on_change = cambio_producto
         descripcion.on_change = cambio_descripcion
         stock_disponible.on_change = cambio_stock_disponible

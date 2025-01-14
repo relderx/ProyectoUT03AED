@@ -49,10 +49,6 @@ def movimiento_view(page: ft.Page):
         
     def cerrar_movimiento(e):
         page.dialog.open = False
-        producto.value = None
-        tipMovimiento.value = None
-        cantidad.value = None
-        comentario.value = None
         page.update()
 
     def guardar_movimiento(e):
@@ -67,10 +63,6 @@ def movimiento_view(page: ft.Page):
         tabla.update()  
         
         page.dialog.open = False
-        producto.value = None
-        tipMovimiento.value = None
-        cantidad.value = None
-        comentario.value = None
         page.update()
         
     def cerrar_borrar(e):
@@ -90,20 +82,6 @@ def movimiento_view(page: ft.Page):
     cantidad = ft.TextField(hint_text="Escribe la cantidad del producto", hint_style=ft.TextStyle(color="#d8d8d8"),label="Cantidad", on_submit=guardar_movimiento)
     comentario = ft.TextField(hint_text="Escribe un comentario para el movimiento", hint_style=ft.TextStyle(color="#d8d8d8"),label="Comentario", on_submit=guardar_movimiento)
     
-    dialogInser = ft.AlertDialog(
-            shape=ft.RoundedRectangleBorder(radius=5),
-            title=ft.Text("Inserta un Movimiento nuevo"),
-            content=ft.Column([
-                producto,
-                tipMovimiento,
-                cantidad,
-                comentario
-            ], width=page.window.width*0.33, height=page.window.height*0.5),
-            actions=[
-                ft.TextButton("Cancelar", on_click=cerrar_movimiento),
-                ft.ElevatedButton("Guardar", on_click=guardar_movimiento)
-            ],
-    )
     dialogBor = ft.AlertDialog(
             shape=ft.RoundedRectangleBorder(radius=5),
             title=ft.Text("¿Quieres borrar el/los movimientos?"),
@@ -112,7 +90,10 @@ def movimiento_view(page: ft.Page):
                 tipMovimiento,
                 cantidad,
                 comentario
-            ], width=page.window.width*0.33, height=page.window.height*0.5),
+            ], 
+            width=650, 
+            height=650
+            ),
             actions=[
                 ft.TextButton("Si", on_click=cerrar_borrar),
                 ft.ElevatedButton("No", on_click=guardar_borrar)
@@ -132,13 +113,29 @@ def movimiento_view(page: ft.Page):
                 ft.ElevatedButton("Guardar", on_click=guardar_modificar)
             ],
     )
-        
-    producto.on_change = cambio_producto
-    tipMovimiento.on_change = cambio_tipo_Mov
-    cantidad.on_change = cambio_cantidad
-    comentario.on_change = cambio_comentario
     
     def mostrar_vent_insertar(e):
+        producto.on_change = cambio_producto
+        tipMovimiento.on_change = cambio_tipo_Mov
+        cantidad.on_change = cambio_cantidad
+        comentario.on_change = cambio_comentario
+        dialogInser = ft.AlertDialog(
+                shape=ft.RoundedRectangleBorder(radius=5),
+                title=ft.Text("Inserta un Movimiento nuevo"),
+                content=ft.Column([
+                    producto,
+                    tipMovimiento,
+                    cantidad,
+                    comentario
+                ],
+                width=650,
+                height=650
+                ),
+                actions=[
+                    ft.TextButton("Cancelar", on_click=cerrar_movimiento),
+                    ft.ElevatedButton("Guardar", on_click=guardar_movimiento)
+                ],
+        )
         page.dialog = dialogInser
         page.dialog.open = True
         page.update()

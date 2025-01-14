@@ -150,7 +150,10 @@ def pedido_view(page: ft.Page):
                     cliente,
                     productos,
                     estado
-                ], width=page.window.width*0.33, height=page.window.height*0.5),
+                ],
+                width=650,
+                height=650
+                ),
                 actions=[
                     ft.TextButton("Cancelar", on_click=cerra_insertar),
                     ft.ElevatedButton("Guardar", on_click=guardar_insertar)

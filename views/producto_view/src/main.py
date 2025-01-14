@@ -137,8 +137,8 @@ def producto_view(page: ft.Page):
                     precio_unitario,
                     categorias
                 ],
-                # width=page.window.width * 0.33,
-                # height=page.window.height * 0.5
+                width=650,
+                height=650
             ),
             actions=[
                 ft.TextButton("Cancelar", on_click=cerrar_producto),

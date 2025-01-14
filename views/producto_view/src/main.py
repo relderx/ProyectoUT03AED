@@ -30,7 +30,7 @@ def producto_view(page: ft.Page):
             # Si no hay filtro o búsqueda, restablecer datos originales
             datos_filtrados = datos_originales
         else:
-            # Filtrar los datos según el criterio seleccionado
+            # Filtrar los datos según el criterio seleccionado (omitiendo la columna "Seleccionar")
             indice_columna = encabezados_tabla.index(filtro_seleccionado) - 1
             datos_filtrados = [
                 fila for fila in datos_originales
@@ -42,6 +42,17 @@ def producto_view(page: ft.Page):
         tabla.rows.extend(crear_filas(datos_filtrados))
         tabla.update()
 
+    def aplicar_orden(e):
+        orden_seleccionado = orden_dropdown.value
+        if orden_seleccionado:
+            indice_columna = encabezados_tabla.index(orden_seleccionado) - 1
+            datos_ordenados = sorted(
+                datos_originales,
+                key=lambda x: float(x[indice_columna]) if str(x[indice_columna]).replace('.', '', 1).isdigit() else str(x[indice_columna]).lower()
+            )
+            tabla.rows.clear()
+            tabla.rows.extend(crear_filas(datos_ordenados))
+            tabla.update()
 
     def toggle_theme():
         page.theme_mode = 'dark' if page.theme_mode == 'light' else 'light'
@@ -351,6 +362,16 @@ def producto_view(page: ft.Page):
     )
     boton_aplicar_filtro = ft.ElevatedButton("Aplicar Filtro", on_click=aplicar_filtro)
 
+    orden_dropdown = ft.Dropdown(
+        label="Ordenar por",
+        options=[
+            ft.dropdown.Option(encabezado) for encabezado in encabezados_tabla[1:]
+        ],
+        width=200,
+        value="Nombre del Producto"
+    )
+    boton_aplicar_orden = ft.ElevatedButton("Ordenar", on_click=aplicar_orden)
+
     buscar_filtro = ft.Row([
         texto_buscar,
         filtro_dropdown,
@@ -358,19 +379,8 @@ def producto_view(page: ft.Page):
     ], alignment=ft.MainAxisAlignment.END)
 
     ordenar_filtro = ft.Row([
-        ft.Dropdown(
-            label='Ordenar por',
-            options=[
-                ft.dropdown.Option("Nombre del Producto"),
-                ft.dropdown.Option("Descripción"),
-                ft.dropdown.Option("Stock Disponible"),
-                ft.dropdown.Option("Precio por Unidad"),
-                ft.dropdown.Option("Categorías")
-            ],
-            width=200,
-            value="Nombre del Producto"
-        ),
-        ft.ElevatedButton('Ordenar')
+        orden_dropdown,
+        boton_aplicar_orden
     ], alignment=ft.MainAxisAlignment.END)
 
     return ft.View(

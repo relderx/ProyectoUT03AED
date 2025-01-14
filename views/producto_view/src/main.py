@@ -104,21 +104,21 @@ def producto_view(page: ft.Page):
     precio_unitario = ft.TextField(hint_text="Escribe el precio del producto por unidad", hint_style=ft.TextStyle(color="#d8d8d8"),label="Precio unitario", on_submit=guardar_insertar)
     categorias = ft.TextField(hint_text="Escribe las categorías del producto", hint_style=ft.TextStyle(color="#d8d8d8"), helper_text="Separa cada categoría comas y sin espacios",label="Categorías del producto", on_submit=guardar_insertar)
     
-    dialogInser = ft.AlertDialog(
-            shape=ft.RoundedRectangleBorder(radius=5),
-            title=ft.Text("Insertar un Producto nuevo"),
-            content=ft.Column([ 
-                producto,
-                descripcion,
-                stock_disponible,
-                precio_unitario,
-                categorias
-            ], width=page.window.width*0.33, height=page.window.height*0.5),
-            actions=[ 
-                ft.TextButton("Cancelar", on_click=cerrar_producto),
-                ft.ElevatedButton("Guardar", on_click=guardar_insertar)
-            ],
-    )
+    # dialogInser = ft.AlertDialog(
+    #         shape=ft.RoundedRectangleBorder(radius=5),
+    #         title=ft.Text("Insertar un Producto nuevo"),
+    #         content=ft.Column([ 
+    #             producto,
+    #             descripcion,
+    #             stock_disponible,
+    #             precio_unitario,
+    #             categorias
+    #         ], width=page.window.width*0.33, height=page.window.height*0.5),
+    #         actions=[ 
+    #             ft.TextButton("Cancelar", on_click=cerrar_producto),
+    #             ft.ElevatedButton("Guardar", on_click=guardar_insertar)
+    #         ],
+    # )
     dialogBor = ft.AlertDialog(
             shape=ft.RoundedRectangleBorder(radius=5),
             title=ft.Text("¿Quieres borrar el/los productos?"),
@@ -149,16 +149,42 @@ def producto_view(page: ft.Page):
                 ft.ElevatedButton("Guardar", on_click=guardar_modificar)
             ],
     )
-        
-    producto.on_change = cambio_producto
-    descripcion.on_change = cambio_descripcion
-    stock_disponible.on_change = cambio_stock_disponible
-    precio_unitario.on_change = cambio_precio_unitario
-    categorias.on_change = cambio_categorias
     
     def mostrar_vent_insertar(e):
+        producto = ft.TextField(hint_text="Escribe el nombre del producto", hint_style=ft.TextStyle(color="#d8d8d8"), label="Producto", on_submit=guardar_insertar)
+        descripcion = ft.TextField(hint_text="Escribe la descripción del producto", hint_style=ft.TextStyle(color="#d8d8d8"), label="Descripción", on_submit=guardar_insertar)
+        stock_disponible = ft.TextField(hint_text="Escribe el stock del producto", hint_style=ft.TextStyle(color="#d8d8d8"), label="Stock del producto", on_submit=guardar_insertar)
+        precio_unitario = ft.TextField(hint_text="Escribe el precio del producto por unidad", hint_style=ft.TextStyle(color="#d8d8d8"), label="Precio unitario", on_submit=guardar_insertar)
+        categorias = ft.TextField(hint_text="Escribe las categorías del producto", hint_style=ft.TextStyle(color="#d8d8d8"), helper_text="Separa cada categoría comas y sin espacios", label="Categorías del producto", on_submit=guardar_insertar)
+        
+        producto.on_change = cambio_producto
+        descripcion.on_change = cambio_descripcion
+        stock_disponible.on_change = cambio_stock_disponible
+        precio_unitario.on_change = cambio_precio_unitario
+        categorias.on_change = cambio_categorias
+        
+        dialogInser = ft.AlertDialog(
+            shape=ft.RoundedRectangleBorder(radius=5),
+            title=ft.Text("Insertar un Producto nuevo"),
+            content=ft.Column(
+                [
+                    producto,
+                    descripcion,
+                    stock_disponible,
+                    precio_unitario,
+                    categorias
+                ],
+                # width=page.window.width * 0.33,
+                # height=page.window.height * 0.5
+            ),
+            actions=[
+                ft.TextButton("Cancelar", on_click=cerrar_producto),
+                ft.ElevatedButton("Guardar", on_click=guardar_insertar)
+            ],
+        )
+        
         page.dialog = dialogInser
-        page.dialog.open = True
+        dialogInser.open = True
         page.update()
         producto.focus()
     

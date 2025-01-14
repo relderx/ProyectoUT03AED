@@ -68,9 +68,9 @@ def producto_view(page: ft.Page):
             updated_data = {
                 "producto": page.val_producto,
                 "descripcion": page.val_descripcion,
-                "stock_disponible": int(page.val_stock_disponible),
-                "precio_unitario": int(page.val_precio_unitario),
-                "categorias": [categoria.strip() for categoria in page.val_categorias.split(",")]
+                "stock": int(page.val_stock_disponible),
+                "precio_unidad": int(page.val_precio_unitario),
+                "categoria": [categoria.strip() for categoria in page.val_categorias.split(",")]
             }
             update_producto(producto_id, updated_data)
             actualizar_tabla()

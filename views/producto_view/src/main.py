@@ -45,6 +45,7 @@ def producto_view(page: ft.Page):
         page.update()
 
     def guardar_insertar(e):
+        print(page.val_producto)
         newCategorias = []
         for categoria in page.val_categorias.split(","):
             newCategorias.append(categoria.strip())
@@ -121,6 +122,13 @@ def producto_view(page: ft.Page):
         stock_disponible.value = ""
         precio_unitario.value = ""
         categorias.value = ""
+        
+        producto.on_change = cambio_producto
+        descripcion.on_change = cambio_descripcion
+        stock_disponible.on_change = cambio_stock_disponible
+        precio_unitario.on_change = cambio_precio_unitario
+        categorias.on_change = cambio_categorias
+        
 
     # Configura el diálogo
         page.dialog = ft.AlertDialog(

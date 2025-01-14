@@ -2,7 +2,7 @@ import os
 import sys
 import flet as ft
 from utils.helpers import tabulate_productos
-from utils.db import add_producto, delete_producto
+from utils.db import add_producto, delete_producto, update_producto
 from models.productos import Producto
 
 def producto_view(page: ft.Page):
@@ -42,6 +42,15 @@ def producto_view(page: ft.Page):
 
     def cerrar_dialogo(e):
         page.dialog.open = False
+        # Deshabilitar el botón "Modificar" después de cerrar el diálogo
+        productos_seleccionados_ids.clear()  # Limpia la selección
+        boton_modificar.disabled = True
+        boton_borrar.disabled = True
+        page.update()
+
+    def mostrar_notificacion(mensaje):
+        page.snack_bar = ft.SnackBar(ft.Text(mensaje), bgcolor=ft.colors.GREEN)
+        page.snack_bar.open = True
         page.update()
 
     def guardar_insertar(e):
@@ -54,8 +63,18 @@ def producto_view(page: ft.Page):
         cerrar_dialogo(e)
 
     def guardar_modificar(e):
-        # Aquí implementa la lógica para modificar un producto existente.
-        cerrar_dialogo(e)
+        if productos_seleccionados_ids:
+            producto_id = productos_seleccionados_ids[0]
+            updated_data = {
+                "producto": page.val_producto,
+                "descripcion": page.val_descripcion,
+                "stock_disponible": int(page.val_stock_disponible),
+                "precio_unitario": int(page.val_precio_unitario),
+                "categorias": [categoria.strip() for categoria in page.val_categorias.split(",")]
+            }
+            update_producto(producto_id, updated_data)
+            actualizar_tabla()
+            cerrar_dialogo(e)
 
     def borrar_productos(e):
         # Borrar los productos seleccionados
@@ -151,13 +170,81 @@ def producto_view(page: ft.Page):
         page.update()
         producto.focus()
 
-    def mostrar_vent_modificar(e):
-        producto.on_change = cambio_producto
-        descripcion.on_change = cambio_descripcion
-        stock_disponible.on_change = cambio_stock_disponible
-        precio_unitario.on_change = cambio_precio_unitario
-        categorias.on_change = cambio_categorias
+    def obtener_datos_producto(producto_id):
+        datos = obtener_datos()  # Obtener todos los productos (puedes ajustar esta parte según tu estructura)
+        for fila in datos:
+            if fila[0] == producto_id:  # Suponiendo que el ID es la primera columna
+                return {
+                    "producto": fila[0],  # Nombre del producto
+                    "descripcion": fila[1],  # Descripción
+                    "stock_disponible": fila[2],  # Stock disponible
+                    "precio_unitario": fila[3],  # Precio por unidad
+                    "categorias": fila[4].split(",")  # Categorías separadas por comas
+                }
+        raise ValueError(f"Producto con ID {producto_id} no encontrado.")
 
+
+    def mostrar_vent_modificar(e):
+        global producto_seleccionado_data
+        if len(productos_seleccionados_ids) != 1:
+            mostrar_notificacion("Selecciona un único producto para modificar.")
+            return
+
+        producto_id = productos_seleccionados_ids[0]
+        producto_seleccionado_data = next(
+            (producto for producto in obtener_datos() if producto[0] == producto_id), None
+        )
+        if not producto_seleccionado_data:
+            mostrar_notificacion("No se encontró el producto seleccionado.")
+            return
+
+        # Cargar los datos actuales en las variables
+        page.val_producto = producto_seleccionado_data[0]  # Asegúrate de que el índice sea correcto
+        page.val_descripcion = producto_seleccionado_data[1]
+        page.val_stock_disponible = str(producto_seleccionado_data[2])
+        page.val_precio_unitario = str(producto_seleccionado_data[3])
+        page.val_categorias = producto_seleccionado_data[4]
+
+        # Crear el cuadro de diálogo para modificar
+        dialog_modificar = ft.AlertDialog(
+            title=ft.Text("Modificar Producto"),
+            content=ft.Column([
+                ft.TextField(
+                    label="Nombre del Producto",
+                    value=page.val_producto,
+                    on_change=lambda e: cambio_producto(e),
+                    hint_text="Nombre del producto"
+                ),
+                ft.TextField(
+                    label="Descripción",
+                    value=page.val_descripcion,
+                    on_change=lambda e: cambio_descripcion(e),
+                    hint_text="Descripción del producto"
+                ),
+                ft.TextField(
+                    label="Stock Disponible",
+                    value=page.val_stock_disponible,
+                    on_change=lambda e: cambio_stock_disponible(e),
+                    hint_text="Cantidad disponible"
+                ),
+                ft.TextField(
+                    label="Precio por Unidad",
+                    value=page.val_precio_unitario,
+                    on_change=lambda e: cambio_precio_unitario(e),
+                    hint_text="Precio del producto"
+                ),
+                ft.TextField(
+                    label="Categorías",
+                    value=page.val_categorias,
+                    on_change=lambda e: cambio_categorias(e),
+                    hint_text="Categorías separadas por comas"
+                ),
+            ]),
+            actions=[
+                ft.TextButton("Cancelar", on_click=cerrar_dialogo),
+                ft.ElevatedButton("Guardar", on_click=guardar_modificar)
+            ],
+        )
         page.dialog = dialog_modificar
         dialog_modificar.open = True
         page.update()
@@ -196,6 +283,7 @@ def producto_view(page: ft.Page):
             productos_seleccionados_ids.append(producto_id)
         else:
             productos_seleccionados_ids.remove(producto_id)
+        # Actualizar el estado de los botones
         boton_borrar.disabled = len(productos_seleccionados_ids) == 0
         boton_modificar.disabled = len(productos_seleccionados_ids) != 1
         page.update()

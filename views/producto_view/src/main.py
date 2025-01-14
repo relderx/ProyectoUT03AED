@@ -99,21 +99,6 @@ def producto_view(page: ft.Page):
     precio_unitario = ft.TextField(hint_text="Escribe el precio del producto por unidad", hint_style=ft.TextStyle(color="#d8d8d8"),label="Precio unitario", on_submit=guardar_insertar)
     categorias = ft.TextField(hint_text="Escribe las categorías del producto", hint_style=ft.TextStyle(color="#d8d8d8"), helper_text="Separa cada categoría comas y sin espacios",label="Categorías del producto", on_submit=guardar_insertar)
     
-    # dialogInser = ft.AlertDialog(
-    #         shape=ft.RoundedRectangleBorder(radius=5),
-    #         title=ft.Text("Insertar un Producto nuevo"),
-    #         content=ft.Column([ 
-    #             producto,
-    #             descripcion,
-    #             stock_disponible,
-    #             precio_unitario,
-    #             categorias
-    #         ], width=page.window.width*0.33, height=page.window.height*0.5),
-    #         actions=[ 
-    #             ft.TextButton("Cancelar", on_click=cerrar_producto),
-    #             ft.ElevatedButton("Guardar", on_click=guardar_insertar)
-    #         ],
-    # )
     dialogBor = ft.AlertDialog(
             shape=ft.RoundedRectangleBorder(radius=5),
             title=ft.Text("¿Quieres borrar el/los productos?"),

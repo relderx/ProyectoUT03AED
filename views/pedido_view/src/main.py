@@ -23,15 +23,6 @@ def pedido_view(page: ft.Page):
     page.val_telefono_cliente = None
     page.val_productos = None
     page.val_estado = None
-    
-    def cerrar_y_abrir_movimiento_view(e):
-        page.window_close()  # Cerrar la ventana actual
-        os.system("flet run .\\views\\movimiento_view\\src")  # Ejecutar la página principal
-
-    # Función para cerrar la ventana actual y abrir la ventana de pedidos
-    def cerrar_y_abrir_producto(e):
-        page.window_close()  # Cerrar la ventana actual
-        os.system("flet run .\\views\\producto_view\\src")  # Ejecutar la vista de pedidos
 
     def cambio_num_pedido(e):
         page.val_num_pedido = e.control.value
@@ -59,16 +50,11 @@ def pedido_view(page: ft.Page):
         
     def cerra_insertar(e):
         page.dialog.open = False
-        num_pedido.value = None
-        for cli in cliente.controls:
-            cli.value = None
-        productos.value = None
-        estado.value = None
         page.update()
 
     def guardar_insertar(e):
         todos_productos = []
-        for producto in productos.value.split(","):
+        for producto in page.val_productos.split(","):
             proInsert = {}
             sep_producto = producto.split(" x ")
             sep_info_producto = sep_producto[1].split(" (")
@@ -91,11 +77,7 @@ def pedido_view(page: ft.Page):
         tabla.update()  
         
         page.dialog.open = False
-        num_pedido.value = None
-        for cli in cliente.controls:
-            cli.value = None
-        productos.value = None
-        estado.value = None
+        
         page.update()
         
     def cerrar_borrar(e):
@@ -141,8 +123,42 @@ def pedido_view(page: ft.Page):
         page.val_fech_creacion = None
         page.val_fech_modificacion = None
         page.update()
+        
+    productos = ft.TextField(hint_text="Escribe los productos", hint_style=ft.TextStyle(color="#d8d8d8"), helper_text="El producto tiene que tener un formato de este tipo: nombre_producto x num_unidades (precio_unidad)\nSi se quiere añadir más productos, separalos por comas de la siguiente manera: \nnombre_producto x num_unidades (precio_unidad),nombre_producto x num_unidades (precio_unidad)",label="Productos", on_submit=guardar_insertar)
+    estado = ft.TextField(hint_text="Escribe el estado del pedido", hint_style=ft.TextStyle(color="#d8d8d8"), helper_text="Tiene que ser uno de los siguientes: 'pendientes, enviado, entregado o cancelado'",label="Estado", on_submit=guardar_insertar)
+
+    num_pedido = ft.TextField(hint_text="Escribe el número del pedido", hint_style=ft.TextStyle(color="#d8d8d8"),label="Número de pedido", on_submit=guardar_insertar)
+
+    nombre_cliente = ft.TextField(hint_text="Escribe el nombre del cliente", hint_style=ft.TextStyle(color="#d8d8d8"),label="Nombre del Cliente", on_submit=guardar_insertar)
+    email_cliente = ft.TextField(hint_text="Escribe el email del cliente", hint_style=ft.TextStyle(color="#d8d8d8"),label="Email del Cliente", on_submit=guardar_insertar)
+    telefono_cliente = ft.TextField(hint_text="Escribe el teléfono del cliente", hint_style=ft.TextStyle(color="#d8d8d8"),label="Teléfono del Cliente", on_submit=guardar_insertar)
+    cliente = ft.Column([nombre_cliente,email_cliente, telefono_cliente])
     
     def mostrar_vent_insertar(e):
+        num_pedido.on_change = cambio_num_pedido
+        nombre_cliente.on_change = cambio_nombre_cliente
+        email_cliente.on_change = cambio_email_cliente
+        telefono_cliente.on_change = cambio_telefono_cliente
+        productos.on_change = cambio_productos
+        estado.on_change = cambio_estado
+
+        dialogInser = ft.AlertDialog(
+                shape=ft.RoundedRectangleBorder(radius=5),
+                title=ft.Text("Inserta un pedido nuevo"),
+                content=ft.Column([
+                    num_pedido,
+                    cliente,
+                    productos,
+                    estado
+                ],
+                width=650,
+                height=650
+                ),
+                actions=[
+                    ft.TextButton("Cancelar", on_click=cerra_insertar),
+                    ft.ElevatedButton("Guardar", on_click=guardar_insertar)
+                ],
+        )
         page.dialog = dialogInser
         page.dialog.open = True
         page.update()
@@ -160,30 +176,7 @@ def pedido_view(page: ft.Page):
     #     page.update()
     #     num_pedido.focus()
     
-    num_pedido = ft.TextField(hint_text="Escribe el número del pedido", hint_style=ft.TextStyle(color="#d8d8d8"),label="Número de pedido", on_submit=guardar_insertar)
     
-    nombre_cliente = ft.TextField(hint_text="Escribe el nombre del cliente", hint_style=ft.TextStyle(color="#d8d8d8"),label="Nombre del Cliente", on_submit=guardar_insertar)
-    email_cliente = ft.TextField(hint_text="Escribe el email del cliente", hint_style=ft.TextStyle(color="#d8d8d8"),label="Email del Cliente", on_submit=guardar_insertar)
-    telefono_cliente = ft.TextField(hint_text="Escribe el teléfono del cliente", hint_style=ft.TextStyle(color="#d8d8d8"),label="Teléfono del Cliente", on_submit=guardar_insertar)
-    cliente = ft.Column([nombre_cliente,email_cliente, telefono_cliente])
-    
-    productos = ft.TextField(hint_text="Escribe los productos", hint_style=ft.TextStyle(color="#d8d8d8"), helper_text="El producto tiene que tener un formato de este tipo: nombre_producto x num_unidades (precio_unidad)\nSi se quiere añadir más productos, separalos por comas de la siguiente manera: \nnombre_producto x num_unidades (precio_unidad),nombre_producto x num_unidades (precio_unidad)",label="Productos", on_submit=guardar_insertar)
-    estado = ft.TextField(hint_text="Escribe el estado del pedido", hint_style=ft.TextStyle(color="#d8d8d8"), helper_text="Tiene que ser uno de los siguientes: 'pendientes, enviado, entregado o cancelado'",label="Estado", on_submit=guardar_insertar)
-    
-    dialogInser = ft.AlertDialog(
-            shape=ft.RoundedRectangleBorder(radius=5),
-            title=ft.Text("Inserta un pedido nuevo"),
-            content=ft.Column([
-                num_pedido,
-                cliente,
-                productos,
-                estado
-            ], width=page.window.width*0.33, height=page.window.height*0.5),
-            actions=[
-                ft.TextButton("Cancelar", on_click=cerra_insertar),
-                ft.ElevatedButton("Guardar", on_click=guardar_insertar)
-            ],
-    )
     # dialogBor = ft.AlertDialog(
     #         shape=ft.RoundedRectangleBorder(radius=5),
     #         title=ft.Text("Borrar Pedidos"),
@@ -213,12 +206,6 @@ def pedido_view(page: ft.Page):
     #         ],
     # )
         
-    num_pedido.on_change = cambio_num_pedido
-    nombre_cliente.on_change = cambio_nombre_cliente
-    email_cliente.on_change = cambio_email_cliente
-    telefono_cliente.on_change = cambio_telefono_cliente
-    productos.on_change = cambio_productos
-    estado.on_change = cambio_estado
 
     # Encabezado
     encabezado = ft.Row([

@@ -373,9 +373,12 @@ def producto_view(page: ft.Page):
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
 
 # ft.app(target=producto_view)
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======

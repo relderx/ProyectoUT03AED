@@ -370,18 +370,3 @@ def producto_view(page: ft.Page):
         ],
         scroll=ft.ScrollMode.AUTO  # Habilitar el scroll para la página
     )
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-
-
-# ft.app(target=producto_view)
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes

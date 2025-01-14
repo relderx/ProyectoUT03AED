@@ -1,5 +1,6 @@
 import sys
 import os
+from datetime import datetime, timezone
 from pymongo import MongoClient
 
 # Añadir la carpeta raíz del proyecto al path
@@ -32,6 +33,11 @@ def add_many_productos(producto: list[Producto]):
 
 def update_producto(producto_id, producto_data):
     '''Actualiza un producto existente en la colección de productos.'''
+    # Agregar la fecha de última modificación si no está presente
+    producto_data['fecha_modificacion'] = producto_data.get(
+        'fecha_modificacion', 
+        datetime.now(timezone.utc).isoformat()
+    )
     return COLL_PRO.update_one({'producto': producto_id}, {'$set': producto_data})
 
 def delete_producto(producto_id):

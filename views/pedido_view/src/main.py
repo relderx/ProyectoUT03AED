@@ -6,7 +6,7 @@ import flet as ft
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
 
 from utils.helpers import tabulate_pedidos
-from utils.db import add_pedido
+from utils.db import add_pedido, delete_producto
 from models.pedidos import Pedido
 
 def pedido_view(page: ft.Page):
@@ -49,7 +49,7 @@ def pedido_view(page: ft.Page):
         page.val_estado = e.control.value
         page.update()
         
-    def cerrar_insertar(e):
+    def cerrar_dialogo(e):
         page.dialog.open = False
         page.update()
 
@@ -68,17 +68,17 @@ def pedido_view(page: ft.Page):
             "telefono":f"{page.val_telefono_cliente}"},
         todos_productos,page.val_estado))
         actualizar_tabla()
-        cerrar_insertar(e)
-        
-    def cerrar_borrar(e):
-        page.dialog.open = False
-        page.val_num_pedido = None
-        page.val_cliente = None
-        page.val_productos = None
-        page.val_precio_total = None
-        page.val_estado = None
-        page.val_fech_creacion = None
-        page.val_fech_modificacion = None
+        cerrar_dialogo(e)
+
+    def borrar_productos(e):
+        # Borrar los productos seleccionados
+        for producto_id in productos_seleccionados_ids:
+            delete_producto(producto_id)  # Elimina por ID
+        actualizar_tabla()
+        # Limpia los productos seleccionados y habilita/deshabilita botones
+        productos_seleccionados_ids.clear()
+        boton_borrar.disabled = True
+        boton_modificar.disabled = True  # Asegurarse de que "Modificar" esté deshabilitado
         page.update()
 
     def guardar_borrar(e):
@@ -129,8 +129,42 @@ def pedido_view(page: ft.Page):
     email_cliente = ft.TextField(hint_text="Escribe el email del cliente", hint_style=ft.TextStyle(color="#d8d8d8"),label="Email del Cliente", on_submit=guardar_insertar)
     telefono_cliente = ft.TextField(hint_text="Escribe el teléfono del cliente", hint_style=ft.TextStyle(color="#d8d8d8"),label="Teléfono del Cliente", on_submit=guardar_insertar)
     cliente = ft.Column([nombre_cliente,email_cliente, telefono_cliente])
+
+    dialog_borrar = ft.AlertDialog(
+        shape=ft.RoundedRectangleBorder(radius=5),
+        title=ft.Text("¿Quieres borrar el/los productos seleccionados?"),
+        actions=[
+            ft.TextButton("Cancelar", on_click=cerrar_dialogo),
+            ft.ElevatedButton("Sí", on_click=lambda e: [borrar_productos(e), cerrar_dialogo(e)])
+        ],
+    )
+
+    dialog_modificar = ft.AlertDialog(
+                shape=ft.RoundedRectangleBorder(radius=5),
+                title=ft.Text("Modificar un pedido nuevo"),
+                content=ft.Column([
+                    num_pedido,
+                    cliente,
+                    productos,
+                    estado
+                ],
+                width=650,
+                height=650
+                ),
+                actions=[
+                    ft.TextButton("Cancelar", on_click=cerrar_modificar),
+                    ft.ElevatedButton("Guardar", on_click=guardar_modificar)
+                ],
+        )
     
     def mostrar_vent_insertar(e):
+        num_pedido.value = ""
+        nombre_cliente.value = ""
+        email_cliente.value = ""
+        telefono_cliente.value = ""
+        productos.value = ""
+        estado.value = ""
+        
         num_pedido.on_change = cambio_num_pedido
         nombre_cliente.on_change = cambio_nombre_cliente
         email_cliente.on_change = cambio_email_cliente
@@ -138,7 +172,7 @@ def pedido_view(page: ft.Page):
         productos.on_change = cambio_productos
         estado.on_change = cambio_estado
 
-        dialogInser = ft.AlertDialog(
+        page.dialog = ft.AlertDialog(
                 shape=ft.RoundedRectangleBorder(radius=5),
                 title=ft.Text("Inserta un pedido nuevo"),
                 content=ft.Column([
@@ -151,77 +185,60 @@ def pedido_view(page: ft.Page):
                 height=650
                 ),
                 actions=[
-                    ft.TextButton("Cancelar", on_click=cerrar_insertar),
+                    ft.TextButton("Cancelar", on_click=cerrar_dialogo),
                     ft.ElevatedButton("Guardar", on_click=guardar_insertar)
                 ],
         )
-        page.dialog = dialogInser
         page.dialog.open = True
         page.update()
         num_pedido.focus()
-    
-    # def mostrar_vent_borrar(e):
-    #     page.dialog = dialogBor
-    #     page.dialog.open = True
-    #     page.update()
-    #     num_pedido.focus()
-    
-    # def mostrar_vent_modificar(e):
-    #     page.dialog = dialogMod
-    #     page.dialog.open = True
-    #     page.update()
-    #     num_pedido.focus()
-    
-    
-    # dialogBor = ft.AlertDialog(
-    #         shape=ft.RoundedRectangleBorder(radius=5),
-    #         title=ft.Text("Borrar Pedidos"),
-    #         content=ft.Column([
-    #             num_pedido,
-    #             tipMovimiento,
-    #             cantidad,
-    #             comentario
-    #         ], width=page.window.width*0.33, height=page.window.height*0.5),
-    #         actions=[
-    #             ft.TextButton("Si", on_click=guardar_borrar),
-    #             ft.ElevatedButton("No", on_click=cerrar_borrar)
-    #         ],
-    # )
-    # dialogMod = ft.AlertDialog(
-    #         shape=ft.RoundedRectangleBorder(radius=5),
-    #         title=ft.Text("Modificar un pedido nuevo"),
-    #         content=ft.Column([
-    #             num_pedido,
-    #             tipMovimiento,
-    #             cantidad,
-    #             comentario
-    #         ], width=page.window.width*0.33, height=page.window.height*0.5),
-    #         actions=[
-    #             ft.TextButton("Cancelar", on_click=cerrar_modificar),
-    #             ft.ElevatedButton("Guardar", on_click=guardar_modificar)
-    #         ],
-    # )
-        
+
+    def mostrar_vent_modificar(e):
+        num_pedido.on_change = cambio_num_pedido
+        nombre_cliente.on_change = cambio_nombre_cliente
+        email_cliente.on_change = cambio_email_cliente
+        telefono_cliente.on_change = cambio_telefono_cliente
+        productos.on_change = cambio_productos
+        estado.on_change = cambio_estado
+
+        page.dialog = dialog_modificar
+        dialog_modificar.open = True
+        page.update()
+
+    def mostrar_vent_borrar(e):
+        page.dialog = dialog_borrar
+        dialog_borrar.open = True
+        page.update()
 
     # Encabezado
     encabezado = ft.Row([
         ft.Text("Gestión de pedidos", size=30, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.LEFT)
     ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN)
 
-    # Botones inferiores
+    boton_borrar = ft.ElevatedButton("Borrar", width=100, disabled=True, on_click=mostrar_vent_borrar)
+    boton_modificar = ft.ElevatedButton("Modificar", width=100, on_click=mostrar_vent_modificar, disabled=True)
     botones_inferiores = ft.Row([
-        # ft.ElevatedButton("Borrar", width=100, disabled=True, on_click=mostrar_vent_borrar),
-        ft.ElevatedButton("Borrar", width=100, disabled=True),
+        boton_borrar,
         ft.ElevatedButton("Insertar", width=100, on_click=mostrar_vent_insertar),
-        # ft.ElevatedButton("Modificar", width=100, disabled=True, on_click=mostrar_vent_modificar),
-        ft.ElevatedButton("Modificar", width=100, disabled=True),
-    ], alignment=ft.MainAxisAlignment.END)
-
+        boton_modificar
+    ], alignment=ft.MainAxisAlignment.END
+    )
+    
     # Encabezados de la tabla
     encabezados_tabla = [
         "Número de Pedido", "Cliente", "Productos", "Precio Total",
         "Estado", "Fecha de Creación", "Fecha de Modificación"
     ]
+
+    def seleccionar_producto(e):
+        producto_id = e.control.data
+        if e.control.value:
+            productos_seleccionados_ids.append(producto_id)
+        else:
+            productos_seleccionados_ids.remove(producto_id)
+        boton_borrar.disabled = len(productos_seleccionados_ids) == 0
+        boton_modificar.disabled = len(productos_seleccionados_ids) != 1
+        page.update()
 
     # Obtener datos iniciales
     def obtener_datos():

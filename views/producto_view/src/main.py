@@ -2,7 +2,7 @@ import os
 import sys
 import flet as ft
 from utils.helpers import tabulate_productos
-from utils.db import add_producto, delete_producto
+from utils.db import add_producto, delete_producto, update_producto
 from models.productos import Producto
 
 def producto_view(page: ft.Page):
@@ -54,8 +54,18 @@ def producto_view(page: ft.Page):
         cerrar_dialogo(e)
 
     def guardar_modificar(e):
-        # Aquí implementa la lógica para modificar un producto existente.
-        cerrar_dialogo(e)
+        if productos_seleccionados_ids:
+            producto_id = productos_seleccionados_ids[0]
+            updated_data = {
+                "producto": page.val_producto,
+                "descripcion": page.val_descripcion,
+                "stock_disponible": int(page.val_stock_disponible),
+                "precio_unitario": int(page.val_precio_unitario),
+                "categorias": [categoria.strip() for categoria in page.val_categorias.split(",")]
+            }
+            update_producto(producto_id, updated_data)
+            actualizar_tabla()
+            cerrar_dialogo(e)
 
     def borrar_productos(e):
         # Borrar los productos seleccionados

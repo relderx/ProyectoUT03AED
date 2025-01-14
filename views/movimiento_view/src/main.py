@@ -199,7 +199,7 @@ def movimiento_view(page: ft.Page):
         value="Ningún filtro"
     )
 
-    input_buscar = ft.TextField(label="Buscar", width=200)
+    input_buscar = ft.TextField(label="Buscar", width=200,)
 
     def aplicar_filtro(e=None):  # e=None para aceptar llamadas sin evento
         # Obtener datos originales de nuevo

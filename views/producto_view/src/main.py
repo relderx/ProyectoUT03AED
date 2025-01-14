@@ -40,14 +40,21 @@ def producto_view(page: ft.Page):
         page.val_categorias = e.control.value
         page.update()
 
-    def cerrar_producto(e):
+    def cerrar_dialogo(e):
         page.dialog.open = False
         page.update()
 
     def guardar_insertar(e):
-        add_producto(Producto(page.val_producto, page.val_descripcion, int(page.val_stock_disponible), int(page.val_precio_unitario), page.val_categorias))
+        newCategorias = []
+        for categoria in page.val_categorias.split(","):
+            newCategorias.append(categoria.strip())
+        add_producto(Producto(page.val_producto, page.val_descripcion, int(page.val_stock_disponible), int(page.val_precio_unitario), newCategorias))
         actualizar_tabla()
-        cerrar_producto(e)
+        cerrar_dialogo(e)
+
+    def guardar_modificar(e):
+        # Aquí implementa la lógica para modificar un producto existente.
+        cerrar_dialogo(e)
 
     def borrar_productos(e):
         for producto_id in productos_seleccionados_ids:
@@ -65,139 +72,119 @@ def producto_view(page: ft.Page):
         tabla.rows.clear()
         tabla.rows.extend(crear_filas(datos_tabla))
         tabla.update()
-        
-        page.dialog.open = False
-        page.update()
 
-    def cerrar_borrar(e):
-        page.dialog.open = False
+    producto = ft.TextField(hint_text="Escribe el nombre del producto", hint_style=ft.TextStyle(color="#d8d8d8"), label="Producto", on_submit=guardar_insertar)
+    descripcion = ft.TextField(hint_text="Escribe la descripción del producto", hint_style=ft.TextStyle(color="#d8d8d8"), label="Descripción", on_submit=guardar_insertar)
+    stock_disponible = ft.TextField(hint_text="Escribe el stock del producto", hint_style=ft.TextStyle(color="#d8d8d8"), helper_text="El valor tiene que ser un número entero", label="Stock del producto", on_submit=guardar_insertar)
+    precio_unitario = ft.TextField(hint_text="Escribe el precio del producto por unidad", hint_style=ft.TextStyle(color="#d8d8d8"), helper_text="El valor puede ser entero o flotante", label="Precio unitario", on_submit=guardar_insertar)
+    categorias = ft.TextField(hint_text="Escribe las categorías del producto", hint_style=ft.TextStyle(color="#d8d8d8"), helper_text="Separa cada categoría con comas y sin espacios", label="Categorías del producto", on_submit=guardar_insertar)
 
-    def guardar_borrar(e):
-        page.dialog.open = False
-
-    def cerrar_modificar(e):
-        page.dialog.open = False
-
-    def guardar_modificar(e):
-        page.dialog.open = False
-    
-    producto = ft.TextField(hint_text="Escribe el nombre del producto", hint_style=ft.TextStyle(color="#d8d8d8"),label="Producto", on_submit=guardar_insertar)
-    descripcion = ft.TextField(hint_text="Escribe la descripción del producto", hint_style=ft.TextStyle(color="#d8d8d8"),label="Descripción", on_submit=guardar_insertar)
-    stock_disponible = ft.TextField(hint_text="Escribe el stock del producto", hint_style=ft.TextStyle(color="#d8d8d8"), helper_text="El valor tiene que ser un número entero",label="Stock del producto", on_submit=guardar_insertar)
-    precio_unitario = ft.TextField(hint_text="Escribe el precio del producto por unidad", hint_style=ft.TextStyle(color="#d8d8d8"), helper_text="El valor puede ser entero o flotante",label="Precio unitario", on_submit=guardar_insertar)
-    categorias = ft.TextField(hint_text="Escribe las categorías del producto", hint_style=ft.TextStyle(color="#d8d8d8"), helper_text="Separa cada categoría comas y sin espacios",label="Categorías del producto", on_submit=guardar_insertar)
-    
-    dialogBor = ft.AlertDialog(
-            shape=ft.RoundedRectangleBorder(radius=5),
-            title=ft.Text("¿Quieres borrar el/los productos?"),
-            content=ft.Column([ 
-                producto,
-                descripcion,
-                stock_disponible,
-                precio_unitario,
-                categorias
-            ], width=page.window.width*0.33, height=page.window.height*0.5),
-            actions=[ 
-                ft.TextButton("Si", on_click=cerrar_borrar),
-                ft.ElevatedButton("No", on_click=guardar_borrar)
-            ],
+    dialog_borrar = ft.AlertDialog(
+        shape=ft.RoundedRectangleBorder(radius=5),
+        title=ft.Text("¿Quieres borrar el/los productos seleccionados?"),
+        actions=[
+            ft.TextButton("Cancelar", on_click=cerrar_dialogo),
+            ft.ElevatedButton("Sí", on_click=lambda e: [borrar_productos(e), cerrar_dialogo(e)])
+        ],
     )
-    dialogMod = ft.AlertDialog(
-            shape=ft.RoundedRectangleBorder(radius=5),
-            title=ft.Text("Modificar un Producto"),
-            content=ft.Column([ 
-                producto,
-                descripcion,
-                stock_disponible,
-                precio_unitario,
-                categorias
-            ], width=page.window.width*0.33, height=page.window.height*0.5),
-            actions=[ 
-                ft.TextButton("Cancelar", on_click=cerrar_modificar),
-                ft.ElevatedButton("Guardar", on_click=guardar_modificar)
-            ],
+
+    dialog_modificar = ft.AlertDialog(
+        shape=ft.RoundedRectangleBorder(radius=5),
+        title=ft.Text("Modificar un Producto"),
+        content=ft.Column([
+            producto,
+            descripcion,
+            stock_disponible,
+            precio_unitario,
+            categorias
+        ], width=650, height=650),
+        actions=[
+            ft.TextButton("Cancelar", on_click=cerrar_dialogo),
+            ft.ElevatedButton("Guardar", on_click=guardar_modificar)
+        ],
     )
-    
+
     def mostrar_vent_insertar(e):
         producto.on_change = cambio_producto
         descripcion.on_change = cambio_descripcion
         stock_disponible.on_change = cambio_stock_disponible
         precio_unitario.on_change = cambio_precio_unitario
         categorias.on_change = cambio_categorias
-        
-        dialogInser = ft.AlertDialog(
+
+        dialog_insertar = ft.AlertDialog(
             shape=ft.RoundedRectangleBorder(radius=5),
             title=ft.Text("Insertar un Producto nuevo"),
-            content=ft.Column(
-                [
-                    producto,
-                    descripcion,
-                    stock_disponible,
-                    precio_unitario,
-                    categorias
-                ],
-                width=650,
-                height=650
-            ),
+            content=ft.Column([
+                producto,
+                descripcion,
+                stock_disponible,
+                precio_unitario,
+                categorias
+            ], width=650, height=650),
             actions=[
-                ft.TextButton("Cancelar", on_click=cerrar_producto),
+                ft.TextButton("Cancelar", on_click=cerrar_dialogo),
                 ft.ElevatedButton("Guardar", on_click=guardar_insertar)
             ],
         )
-        
-        page.dialog = dialogInser
-        dialogInser.open = True
-        page.update()
-        producto.focus()
-    
-    def mostrar_vent_borrar(e):
-        page.dialog = dialogBor
-        page.dialog.open = True
-        page.update()
-        producto.focus()
-    
-    def mostrar_vent_modificar(e):
-        page.dialog = dialogMod
-        page.dialog.open = True
+
+        page.dialog = dialog_insertar
+        dialog_insertar.open = True
         page.update()
         producto.focus()
 
-    encabezado = ft.Row([ 
+    def mostrar_vent_modificar(e):
+        producto.on_change = cambio_producto
+        descripcion.on_change = cambio_descripcion
+        stock_disponible.on_change = cambio_stock_disponible
+        precio_unitario.on_change = cambio_precio_unitario
+        categorias.on_change = cambio_categorias
+
+        page.dialog = dialog_modificar
+        dialog_modificar.open = True
+        page.update()
+
+    def mostrar_vent_borrar(e):
+        page.dialog = dialog_borrar
+        dialog_borrar.open = True
+        page.update()
+
+    encabezado = ft.Row([
         ft.Text("Gestión de Productos", size=30, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.LEFT)
     ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN)
 
     boton_borrar = ft.ElevatedButton("Borrar", width=100, disabled=True, on_click=mostrar_vent_borrar)
-    botones_inferiores = ft.Row([ 
+    boton_modificar = ft.ElevatedButton("Modificar", width=100, on_click=mostrar_vent_modificar, disabled=True)
+    botones_inferiores = ft.Row([
         boton_borrar,
         ft.ElevatedButton("Insertar", width=100, on_click=mostrar_vent_insertar),
-        ft.ElevatedButton("Modificar", width=100, disabled=True, on_click=mostrar_vent_modificar),
+        boton_modificar
     ], alignment=ft.MainAxisAlignment.END)
 
-    # Encabezados de la tabla
     encabezados_tabla = [
-        "Seleccionar",  # Nueva columna para los checkboxes
-        "Nombre del Producto", 
-        "Descripción", 
-        "Stock Disponible", 
-        "Precio por Unidad", 
-        "Categorías", 
-        "Fecha de Creación", 
+        "Seleccionar",
+        "Nombre del Producto",
+        "Descripción",
+        "Stock Disponible",
+        "Precio por Unidad",
+        "Categorías",
+        "Fecha de Creación",
         "Última Modificación"
     ]
 
     def seleccionar_producto(e):
-        producto_id = e.control.data  # Recibe el ID del producto directamente del checkbox
+        producto_id = e.control.data
         if e.control.value:
             productos_seleccionados_ids.append(producto_id)
         else:
             productos_seleccionados_ids.remove(producto_id)
         boton_borrar.disabled = len(productos_seleccionados_ids) == 0
+        boton_modificar.disabled = len(productos_seleccionados_ids) != 1
         page.update()
 
     def crear_filas(datos):
         filas = []
         for fila in datos:
-            producto_id = fila[0]  # Asume que el ID del producto está en la primera columna
+            producto_id = fila[0]
             checkbox = ft.Checkbox(value=False, on_change=seleccionar_producto, data=producto_id)
             celdas = [ft.DataCell(checkbox)] + [ft.DataCell(ft.Text(str(dato))) for dato in fila]
             filas.append(ft.DataRow(cells=celdas))
@@ -215,101 +202,38 @@ def producto_view(page: ft.Page):
         rows=crear_filas(datos_tabla),
     )
 
-    input_buscar = ft.TextField(label="Buscar", width=200)
-    dropdown_filtro = ft.Dropdown(
-        label="Filtrar por",
-        options=[ft.dropdown.Option("Ningún filtro")] + [
-            ft.dropdown.Option("Nombre del Producto"),
-            ft.dropdown.Option("Descripción"),
-            ft.dropdown.Option("Stock Disponible"),
-            ft.dropdown.Option("Precio por Unidad"),
-            ft.dropdown.Option("Categorías")
-        ],
-        width=200,
-        value="Ningún filtro"
-    )
-
-    def aplicar_filtro(e=None):
-        datos = obtener_datos()
-        filtro = dropdown_filtro.value
-        texto = input_buscar.value.lower()
-
-        tabla.rows.clear()
-
-        if texto:
-            if filtro == "Ningún filtro":
-                datos_filtrados = [
-                    fila for fila in datos if any(texto in str(campo).lower() for campo in fila)
-                ]
-            else:
-                campo_indices = {
-                    "Nombre del Producto": 1,
-                    "Descripción": 2,
-                    "Stock Disponible": 3,
-                    "Precio por Unidad": 4,
-                    "Categorías": 5
-                }
-                indice = campo_indices.get(filtro)
-                datos_filtrados = [
-                    fila for fila in datos if texto in str(fila[indice]).lower()
-                ]
-        else:
-            datos_filtrados = datos
-
-        tabla.rows.extend(crear_filas(datos_filtrados))
-        tabla.update()
-
-    boton_filtrar = ft.ElevatedButton("Aplicar Filtro", on_click=aplicar_filtro)
-
     buscar_filtro = ft.Row([
-        input_buscar,
-        dropdown_filtro,
-        boton_filtrar
+        ft.TextField(label="Buscar", width=200),
+        ft.Dropdown(
+            label="Filtrar por",
+            options=[ft.dropdown.Option("Ningún filtro")] + [
+                ft.dropdown.Option("Nombre del Producto"),
+                ft.dropdown.Option("Descripción"),
+                ft.dropdown.Option("Stock Disponible"),
+                ft.dropdown.Option("Precio por Unidad"),
+                ft.dropdown.Option("Categorías")
+            ],
+            width=200,
+            value="Ningún filtro"
+        ),
+        ft.ElevatedButton("Aplicar Filtro")
     ], alignment=ft.MainAxisAlignment.END)
-
-    dropdown_ordenar = ft.Dropdown(
-        label='Ordenar por',
-        options=[
-            ft.dropdown.Option("Nombre del Producto"),
-            ft.dropdown.Option("Descripción"),
-            ft.dropdown.Option("Stock Disponible"),
-            ft.dropdown.Option("Precio por Unidad"),
-            ft.dropdown.Option("Categorías")
-        ],
-        width=200,
-        value="Nombre del Producto"
-    )
-
-    def ordenar_tabla(e):
-        columna_ordenar = dropdown_ordenar.value
-        campo_indices = {
-            "Nombre del Producto": 1,
-            "Descripción": 2,
-            "Stock Disponible": 3,
-            "Precio por Unidad": 4,
-            "Categorías": 5
-        }
-        indice_columna = campo_indices.get(columna_ordenar)
-        datos_ordenados = sorted(datos_tabla, key=lambda x: str(x[indice_columna]).lower())
-
-        tabla.rows.clear()
-        tabla.rows.extend(crear_filas(datos_ordenados))
-        tabla.update()
-
-    boton_ordenar = ft.ElevatedButton('Ordenar', on_click=ordenar_tabla)
 
     ordenar_filtro = ft.Row([
-        dropdown_ordenar,
-        boton_ordenar
+        ft.Dropdown(
+            label='Ordenar por',
+            options=[
+                ft.dropdown.Option("Nombre del Producto"),
+                ft.dropdown.Option("Descripción"),
+                ft.dropdown.Option("Stock Disponible"),
+                ft.dropdown.Option("Precio por Unidad"),
+                ft.dropdown.Option("Categorías")
+            ],
+            width=200,
+            value="Nombre del Producto"
+        ),
+        ft.ElevatedButton('Ordenar')
     ], alignment=ft.MainAxisAlignment.END)
-
-    def cerrar_y_abrir_pedidos(e):
-        page.window_close()
-        os.system("flet run .\\views\\pedido_view\\src")
-
-    def cerrar_y_abrir_movimientos(e):
-        page.window_close()
-        os.system("flet run .\\views\\movimiento_view\\src")
 
     return ft.View(
         "/inventario",
@@ -333,3 +257,6 @@ def producto_view(page: ft.Page):
         ],
         scroll=ft.ScrollMode.AUTO
     )
+
+if __name__ == "__main__":
+    ft.app(target=producto_view)

@@ -54,7 +54,6 @@ def producto_view(page: ft.Page):
         page.update()
 
     def guardar_insertar(e):
-        print(page.val_producto)
         newCategorias = []
         for categoria in page.val_categorias.split(","):
             newCategorias.append(categoria.strip())

@@ -23,6 +23,7 @@ def pedido_view(page: ft.Page):
     page.val_telefono_cliente = None
     page.val_productos = None
     page.val_estado = None
+    productos_seleccionados_ids = []
 
     def cambio_num_pedido(e):
         page.val_num_pedido = e.control.value

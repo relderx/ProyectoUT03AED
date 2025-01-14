@@ -224,11 +224,7 @@ def pedido_view(page: ft.Page):
 
     # Encabezado
     encabezado = ft.Row([
-        ft.Text("Gestión de pedidos", size=30, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.LEFT),
-        ft.Row([
-            ft.ElevatedButton("Movimiento", width=150, on_click=cerrar_y_abrir_movimiento_view),
-            ft.ElevatedButton("Productos", width=150, on_click=cerrar_y_abrir_producto)
-        ], alignment=ft.MainAxisAlignment.END, expand=True)
+        ft.Text("Gestión de pedidos", size=30, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.LEFT)
     ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN)
 
     # Botones inferiores

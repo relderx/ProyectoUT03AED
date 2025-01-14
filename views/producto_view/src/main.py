@@ -175,11 +175,7 @@ def producto_view(page: ft.Page):
         producto.focus()
 
     encabezado = ft.Row([ 
-        ft.Text("Gestión de Productos", size=30, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.LEFT),
-        ft.Row([ 
-            ft.ElevatedButton("Movimientos", width=150, on_click=cerrar_y_abrir_movimientos),
-            ft.ElevatedButton("Pedidos", width=150, on_click=cerrar_y_abrir_pedidos)
-        ], alignment=ft.MainAxisAlignment.END, expand=True)
+        ft.Text("Gestión de Productos", size=30, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.LEFT)
     ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN)
 
     botones_inferiores = ft.Row([ 
@@ -379,17 +375,6 @@ def producto_view(page: ft.Page):
             tabla_con_scroll,  # Agregar la tabla dentro del contenedor con scroll
             ft.Divider(),
         ]
-    )
-
-    page.add(
-        encabezado,
-        botones_inferiores,
-        ft.Divider(),
-        ft.Text("Producto", size=30, weight=ft.FontWeight.BOLD),
-        buscar_filtro,
-        ordenar_filtro,
-        tabla_con_scroll,  # Agregar la tabla dentro del contenedor con scroll
-        ft.Divider(),
     )
 
 

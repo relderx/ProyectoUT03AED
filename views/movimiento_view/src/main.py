@@ -157,11 +157,7 @@ def movimiento_view(page: ft.Page):
 
     # Encabezado
     encabezado = ft.Row([
-        ft.Text("Movimiento de Inventario", size=30, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.LEFT),
-        ft.Row([
-            ft.ElevatedButton("Productos", width=150, on_click=cerrar_y_abrir_producto_view),
-            ft.ElevatedButton("Pedidos", width=150, on_click=cerrar_y_abrir_pedidos)
-        ], alignment=ft.MainAxisAlignment.END, expand=True)
+        ft.Text("Movimiento de Inventario", size=30, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.LEFT)
     ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN)
     # Botones inferiores
     botones_inferiores = ft.Row([

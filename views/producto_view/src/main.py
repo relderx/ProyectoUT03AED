@@ -292,13 +292,6 @@ def producto_view(page: ft.Page):
         rows=crear_filas(datos_tabla),
     )
 
-    # Contenedor con scroll para la tabla
-    tabla_con_scroll = ft.Column(
-        controls=[tabla],
-        height=500,
-        scroll=ft.ScrollMode.AUTO
-    )
-
     # Componentes de filtro
     input_buscar = ft.TextField(label="Buscar", width=200)
     dropdown_filtro = ft.Dropdown(
@@ -398,10 +391,8 @@ def producto_view(page: ft.Page):
             ft.Text("Producto", size=30, weight=ft.FontWeight.BOLD),
             buscar_filtro,
             ordenar_filtro,
-            tabla_con_scroll,  # Agregar la tabla dentro del contenedor con scroll
+            tabla,
             ft.Divider(),
-        ]
+        ],
+        scroll=ft.ScrollMode.AUTO  # Habilitar el scroll para la página
     )
-
-
-# ft.app(target=producto_view)

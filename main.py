@@ -1,5 +1,4 @@
 import flet as ft
-from store import store_view  # Importas la vista desde otro archivo
 
 from views.movimiento_view.src.main import movimiento_view
 from views.producto_view.src.main import producto_view

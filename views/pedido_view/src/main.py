@@ -5,11 +5,9 @@ import flet as ft
 # Añadir la carpeta raíz del proyecto al path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
 
-from utils.helpers import tabulate_movimientos
+from utils.helpers import tabulate_pedidos
 from utils.db import add_pedido
 from models.pedidos import Pedido
-
-from utils.helpers import tabulate_pedidos
 
 def pedido_view(page: ft.Page):
     page.title = "Gestión de Pedidos"
@@ -266,13 +264,6 @@ def pedido_view(page: ft.Page):
         rows=crear_filas(datos_tabla),
     )
 
-    # Contenedor con scroll para la tabla
-    tabla_con_scroll = ft.Column(
-        controls=[tabla],
-        height=500,
-        scroll=ft.ScrollMode.AUTO
-    )
-
     # Componentes de filtro
     input_buscar = ft.TextField(label="Buscar", width=200)
     dropdown_filtro = ft.Dropdown(
@@ -370,9 +361,10 @@ def pedido_view(page: ft.Page):
             ft.Text("Pedidos", size=30, weight=ft.FontWeight.BOLD),
             buscar_filtro,
             ordenar_filtro,
-            tabla_con_scroll,
+            tabla,
             ft.Divider()
-        ]
+        ],
+        scroll=ft.ScrollMode.AUTO  # Habilitar el scroll para la página
     )
 
 # ft.app(target=pedido_view)

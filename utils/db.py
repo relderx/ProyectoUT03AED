@@ -33,7 +33,6 @@ def add_many_productos(producto: list[Producto]):
 
 def update_producto(producto_id, producto_data):
     '''Actualiza un producto existente en la colección de productos.'''
-    # Agregar la fecha de última modificación si no está presente
     producto_data['fecha_modificacion'] = producto_data.get(
         'fecha_modificacion', 
         datetime.now(timezone.utc).isoformat()
@@ -56,6 +55,14 @@ def add_many_movimientos(movimientos: list[Movimiento]):
     '''Inserta múltiples movimientos de inventario en la colección de movimientos.'''
     return COLL_MOV.insert_many([mov.to_dict() for mov in movimientos])
 
+def update_movimiento(movimiento_id, movimiento_data):
+    '''Actualiza un movimiento existente en la colección de movimientos.'''
+    return COLL_MOV.update_one({'producto': movimiento_id}, {'$set': movimiento_data})
+
+def delete_movimiento(movimiento_id):
+    '''Elimina un movimiento de la colección de movimientos utilizando su ID.'''
+    return COLL_MOV.delete_one({'producto': movimiento_id})
+
 def get_pedidos():
     '''Obtiene todos los documentos de la colección de pedidos.'''
     return COLL_PED.find()
@@ -67,3 +74,11 @@ def add_pedido(pedido: Pedido):
 def add_many_pedidos(pedidos: list[Pedido]):
     '''Inserta múltiples pedidos en la colección de pedidos.'''
     return COLL_PED.insert_many([ped.to_dict() for ped in pedidos])
+
+def update_pedido(pedido_id, pedido_data):
+    '''Actualiza un pedido existente en la colección de pedidos.'''
+    return COLL_PED.update_one({'num_pedido': pedido_id}, {'$set': pedido_data})
+
+def delete_pedido(pedido_id):
+    '''Elimina un pedido de la colección de pedidos utilizando su ID.'''
+    return COLL_PED.delete_one({'num_pedido': pedido_id})

@@ -6,180 +6,283 @@ import flet as ft
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
 
 from utils.helpers import tabulate_movimientos
-from utils.db import add_movimiento
+from utils.db import add_movimiento, delete_movimiento, update_movimiento
 from models.movimientos import Movimiento
 
+def obtener_datos():
+    return tabulate_movimientos()
+
 def movimiento_view(page: ft.Page):
-    page.title = "Movimiento de Inventario"
-    
-    def toggle_theme():
-        # Cambiar entre 'light' y 'dark' al hacer clic
-        page.theme_mode = 'dark' if page.theme_mode == 'light' else 'light'
-        page.update()  # Actualiza la vista para reflejar el cambio de tema
-    
+    page.title = "Gestión de Movimientos"
+
+    # Variables globales
     page.val_producto = None
-    page.val_tipMovimiento = None
+    page.val_tipo_movimiento = None
     page.val_cantidad = None
     page.val_comentario = None
-    
-    def cerrar_y_abrir_producto_view(e):
-        page.window_close()  # Cerrar la ventana actual
-        os.system("flet run .\\views\\producto_view\\src")  # Ejecutar la página principal
+    movimientos_seleccionados_ids = []
 
-    # Función para cerrar la ventana actual y abrir la ventana de pedidos
-    def cerrar_y_abrir_pedidos(e):
-        page.window_close()  # Cerrar la ventana actual
-        os.system("flet run .\\views\\pedido_view\\src")  # Ejecutar la vista de pedidos
+    # Obtener datos originales para usar en filtrado
+    datos_originales = obtener_datos()
+
+    def aplicar_filtro(e):
+        filtro_seleccionado = filtro_dropdown.value
+        texto_busqueda = texto_buscar.value.lower()
+
+        if filtro_seleccionado == "Ningún filtro" or not texto_busqueda:
+            # Si no hay filtro o búsqueda, restablecer datos originales
+            datos_filtrados = datos_originales
+        else:
+            # Filtrar los datos según el criterio seleccionado (omitiendo la columna "Seleccionar")
+            indice_columna = encabezados_tabla.index(filtro_seleccionado) - 1
+            datos_filtrados = [
+                fila for fila in datos_originales
+                if texto_busqueda in str(fila[indice_columna]).lower()
+            ]
+
+        # Actualizar la tabla con los datos filtrados
+        tabla.rows.clear()
+        tabla.rows.extend(crear_filas(datos_filtrados))
+        tabla.update()
+
+    def aplicar_orden(e):
+        orden_seleccionado = orden_dropdown.value
+        if orden_seleccionado:
+            indice_columna = encabezados_tabla.index(orden_seleccionado) - 1
+            datos_ordenados = sorted(
+                datos_originales,
+                key=lambda x: float(x[indice_columna]) if str(x[indice_columna]).replace('.', '', 1).isdigit() else str(x[indice_columna]).lower()
+            )
+            tabla.rows.clear()
+            tabla.rows.extend(crear_filas(datos_ordenados))
+            tabla.update()
+
+    def toggle_theme():
+        page.theme_mode = 'dark' if page.theme_mode == 'light' else 'light'
+        page.update()
 
     def cambio_producto(e):
         page.val_producto = e.control.value
         page.update()
-        
-    def cambio_tipo_Mov(e):
-        page.val_tipMovimiento = e.control.value
+
+    def cambio_tipo_movimiento(e):
+        page.val_tipo_movimiento = e.control.value  # Obtiene el valor seleccionado
         page.update()
-        
+
     def cambio_cantidad(e):
         page.val_cantidad = e.control.value
         page.update()
-        
+
     def cambio_comentario(e):
         page.val_comentario = e.control.value
         page.update()
-        
-    def cerrar_movimiento(e):
+
+    def cerrar_dialogo(e):
         page.dialog.open = False
+        movimientos_seleccionados_ids.clear()
+        boton_modificar.disabled = True
+        boton_borrar.disabled = True
         page.update()
 
-    def guardar_movimiento(e):
-        add_movimiento(Movimiento(page.val_producto, page.val_tipMovimiento,int(page.val_cantidad),page.val_comentario))
-        datos_tabla = obtener_datos()
-        tabla.rows.clear()
-        
-        for fila in datos_tabla:
-            tabla.rows.append(ft.DataRow(
-                cells=[ft.DataCell(ft.Text(str(dato))) for dato in fila]
-            ))
-        tabla.update()  
-        
-        page.dialog.open = False
+    def mostrar_notificacion(mensaje):
+        page.snack_bar = ft.SnackBar(ft.Text(mensaje), bgcolor=ft.colors.GREEN)
+        page.snack_bar.open = True
         page.update()
-        
-    def cerrar_borrar(e):
-        page.dialog.open = False
 
-    def guardar_borrar(e):
-        page.dialog.open = False
-        
-    def cerrar_modificar(e):
-        page.dialog.open = False
+    def guardar_insertar(e):
+        nuevo_movimiento = Movimiento(
+            producto=producto.value.strip(),
+            tipo_movimiento=tipo_movimiento.value.strip(),  # Valor directamente del Dropdown
+            cantidad=int(cantidad.value.strip()),
+            comentario=comentario.value.strip(),
+        )
+
+        add_movimiento(nuevo_movimiento)
+        actualizar_tabla()
+        cerrar_dialogo(e)
+        mostrar_notificacion("Movimiento insertado correctamente.")
+
+
+
 
     def guardar_modificar(e):
-        page.dialog.open = False
-    
-    producto = ft.TextField(hint_text="Escribe el nombre del producto", hint_style=ft.TextStyle(color="#d8d8d8"),label="Producto", on_submit=guardar_movimiento)
-    tipMovimiento = ft.TextField(hint_text="Escribe el tipo de movimiento", hint_style=ft.TextStyle(color="#d8d8d8"), helper_text="Tiene que ser uno de los siguientes: 'entrada, salida o ajuste'",label="Tipo de Movimiento", on_submit=guardar_movimiento)
-    cantidad = ft.TextField(hint_text="Escribe la cantidad del producto", hint_style=ft.TextStyle(color="#d8d8d8"),label="Cantidad", on_submit=guardar_movimiento)
-    comentario = ft.TextField(hint_text="Escribe un comentario para el movimiento", hint_style=ft.TextStyle(color="#d8d8d8"),label="Comentario", on_submit=guardar_movimiento)
-    
-    dialogBor = ft.AlertDialog(
-            shape=ft.RoundedRectangleBorder(radius=5),
-            title=ft.Text("¿Quieres borrar el/los movimientos?"),
-            content=ft.Column([
-                producto,
-                tipMovimiento,
-                cantidad,
-                comentario
-            ], 
-            width=650, 
-            height=650
-            ),
-            actions=[
-                ft.TextButton("Si", on_click=cerrar_borrar),
-                ft.ElevatedButton("No", on_click=guardar_borrar)
-            ],
+        if movimientos_seleccionados_ids:
+            movimiento_id = movimientos_seleccionados_ids[0]
+            
+            # Obtener valores directamente de los campos para asegurar la consistencia
+            datos_actualizados = {
+                "producto": producto.value,  # Campo de texto del producto
+                "tipo_movimiento": tipo_movimiento.value,  # Campo de texto del tipo de movimiento
+                "cantidad": int(cantidad.value),  # Campo de texto de cantidad
+                "comentario": comentario.value,  # Campo de texto de comentario
+            }
+            
+            # Actualizar en la base de datos
+            update_movimiento(movimiento_id, datos_actualizados)
+            
+            # Refrescar la tabla con los datos actualizados
+            actualizar_tabla()
+            
+            # Cerrar el diálogo y limpiar la selección
+            cerrar_dialogo(e)
+
+    def borrar_movimientos(e):
+        for movimiento_id in movimientos_seleccionados_ids:
+            delete_movimiento(movimiento_id)
+        actualizar_tabla()
+        movimientos_seleccionados_ids.clear()
+        boton_borrar.disabled = True
+        boton_modificar.disabled = True
+        page.update()
+
+    def actualizar_tabla():
+        datos_tabla = obtener_datos()
+        tabla.rows.clear()
+        tabla.rows.extend(crear_filas(datos_tabla))
+        tabla.update()
+
+    producto = ft.TextField(hint_text="Escribe el producto", label="Producto", on_submit=guardar_insertar)
+    tipo_movimiento = ft.Dropdown(
+        hint_text="Selecciona el tipo de movimiento",
+        label="Tipo de Movimiento",
+        options=[
+            ft.dropdown.Option("entrada"),
+            ft.dropdown.Option("salida"),
+            ft.dropdown.Option("ajuste"),
+        ],
+        on_change=cambio_tipo_movimiento,
     )
-    dialogMod = ft.AlertDialog(
-            shape=ft.RoundedRectangleBorder(radius=5),
-            title=ft.Text("Modificar un Movimiento nuevo"),
-            content=ft.Column([
-                producto,
-                tipMovimiento,
-                cantidad,
-                comentario
-            ], width=page.window.width*0.33, height=page.window.height*0.5),
-            actions=[
-                ft.TextButton("Cancelar", on_click=cerrar_modificar),
-                ft.ElevatedButton("Guardar", on_click=guardar_modificar)
-            ],
+    cantidad = ft.TextField(hint_text="Escribe la cantidad", label="Cantidad", on_submit=guardar_insertar)
+    comentario = ft.TextField(hint_text="Escribe un comentario", label="Comentario", on_submit=guardar_insertar)
+
+    dialog_borrar = ft.AlertDialog(
+        shape=ft.RoundedRectangleBorder(radius=5),
+        title=ft.Text("¿Quieres borrar los movimientos seleccionados?"),
+        actions=[
+            ft.TextButton("Cancelar", on_click=cerrar_dialogo),
+            ft.ElevatedButton("Sí", on_click=lambda e: [borrar_movimientos(e), cerrar_dialogo(e)])
+        ],
     )
-    
+
+    dialog_modificar = ft.AlertDialog(
+        shape=ft.RoundedRectangleBorder(radius=5),
+        title=ft.Text("Modificar Movimiento"),
+        content=ft.Column([
+            producto,
+            tipo_movimiento,
+            cantidad,
+            comentario
+        ], width=650, height=650),
+        actions=[
+            ft.TextButton("Cancelar", on_click=cerrar_dialogo),
+            ft.ElevatedButton("Guardar", on_click=guardar_modificar)
+        ],
+    )
+
     def mostrar_vent_insertar(e):
+        producto.value = ""
+        tipo_movimiento.value = ""
+        cantidad.value = ""
+        comentario.value = ""
+
         producto.on_change = cambio_producto
-        tipMovimiento.on_change = cambio_tipo_Mov
+        tipo_movimiento.on_change = cambio_tipo_movimiento
         cantidad.on_change = cambio_cantidad
         comentario.on_change = cambio_comentario
-        dialogInser = ft.AlertDialog(
-                shape=ft.RoundedRectangleBorder(radius=5),
-                title=ft.Text("Inserta un Movimiento nuevo"),
-                content=ft.Column([
-                    producto,
-                    tipMovimiento,
-                    cantidad,
-                    comentario
-                ],
-                width=650,
-                height=650
-                ),
-                actions=[
-                    ft.TextButton("Cancelar", on_click=cerrar_movimiento),
-                    ft.ElevatedButton("Guardar", on_click=guardar_movimiento)
-                ],
+
+        page.dialog = ft.AlertDialog(
+            shape=ft.RoundedRectangleBorder(radius=5),
+            title=ft.Text("Insertar un Movimiento"),
+            content=ft.Column([
+                producto,
+                tipo_movimiento,
+                cantidad,
+                comentario
+            ], width=650, height=650),
+            actions=[
+                ft.TextButton("Cancelar", on_click=cerrar_dialogo),
+                ft.ElevatedButton("Guardar", on_click=guardar_insertar)
+            ],
         )
-        page.dialog = dialogInser
-        page.dialog.open = True
-        page.update()
-        producto.focus()
-    
-    def mostrar_vent_borrar(e):
-        page.dialog = dialogBor
-        page.dialog.open = True
-        page.update()
-        producto.focus()
-    
-    def mostrar_vent_modificar(e):
-        page.dialog = dialogMod
         page.dialog.open = True
         page.update()
         producto.focus()
 
-    # Encabezado
+    def mostrar_vent_modificar(e):
+        if len(movimientos_seleccionados_ids) != 1:
+            mostrar_notificacion("Selecciona un único movimiento para modificar.")
+            return
+
+        movimiento_id = movimientos_seleccionados_ids[0]
+        movimiento = next(
+            (mov for mov in obtener_datos() if mov[0] == movimiento_id), None
+        )
+        if not movimiento:
+            mostrar_notificacion("No se encontró el movimiento seleccionado.")
+            return
+
+        # Ajustar índices para que coincidan con la estructura generada por tabulate_movimientos
+        page.val_producto = movimiento[0]  # Producto
+        page.val_tipo_movimiento = movimiento[1]  # Tipo de Movimiento
+        page.val_cantidad = str(movimiento[2])  # Cantidad
+        page.val_comentario = movimiento[4]  # Comentario
+
+        producto.value = page.val_producto
+        tipo_movimiento.value = page.val_tipo_movimiento
+        cantidad.value = page.val_cantidad
+        comentario.value = page.val_comentario
+
+        page.dialog = dialog_modificar
+        dialog_modificar.open = True
+        page.update()
+
+
+    def mostrar_vent_borrar(e):
+        page.dialog = dialog_borrar
+        dialog_borrar.open = True
+        page.update()
+
     encabezado = ft.Row([
-        ft.Text("Movimiento de Inventario", size=30, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.LEFT)
+        ft.Text("Gestión de Movimientos", size=30, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.LEFT)
     ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN)
-    # Botones inferiores
+
+    boton_borrar = ft.ElevatedButton("Borrar", width=100, disabled=True, on_click=mostrar_vent_borrar)
+    boton_modificar = ft.ElevatedButton("Modificar", width=100, on_click=mostrar_vent_modificar, disabled=True)
     botones_inferiores = ft.Row([
-        ft.ElevatedButton("Borrar", width=100, disabled=True, on_click=mostrar_vent_borrar),
+        boton_borrar,
         ft.ElevatedButton("Insertar", width=100, on_click=mostrar_vent_insertar),
-        ft.ElevatedButton("Modificar", width=100, disabled=True, on_click=mostrar_vent_modificar),
+        boton_modificar
     ], alignment=ft.MainAxisAlignment.END)
 
-    # Encabezados de la tabla
-    encabezados_tabla = ["Producto", "Tipo de Movimiento", "Cantidad", "Fecha", "Comentario"]
+    def seleccionar_movimiento(e):
+        movimiento_id = e.control.data
+        if e.control.value:
+            movimientos_seleccionados_ids.append(movimiento_id)
+        else:
+            movimientos_seleccionados_ids.remove(movimiento_id)
+        boton_borrar.disabled = len(movimientos_seleccionados_ids) == 0
+        boton_modificar.disabled = len(movimientos_seleccionados_ids) != 1
+        page.update()
 
-    # Obtener datos originales de la base de datos
-    def obtener_datos():
-        return tabulate_movimientos()
+    encabezados_tabla = [
+        "Seleccionar",
+        "Producto",
+        "Tipo de Movimiento",
+        "Cantidad",
+        "Fecha",
+        "Comentario"
+    ]
 
-    datos_tabla = obtener_datos()
-
-    # Crear la tabla
     def crear_filas(datos):
-        return [
-            ft.DataRow(
-                cells=[ft.DataCell(ft.Text(str(dato))) for dato in fila]
-            ) for fila in datos
-        ]
+        filas = []
+        for fila in datos:
+            movimiento_id = fila[0]
+            checkbox = ft.Checkbox(value=False, on_change=seleccionar_movimiento, data=movimiento_id)
+            celdas = [ft.DataCell(checkbox)] + [ft.DataCell(ft.Text(str(dato))) for dato in fila]
+            filas.append(ft.DataRow(cells=celdas))
+        return filas
+
+    datos_tabla = datos_originales
 
     tabla = ft.DataTable(
         width=1920,
@@ -191,124 +294,60 @@ def movimiento_view(page: ft.Page):
         rows=crear_filas(datos_tabla),
     )
 
-    # Componentes de filtro
-    dropdown_filtro = ft.Dropdown(
+    texto_buscar = ft.TextField(label="Buscar", width=200)
+    filtro_dropdown = ft.Dropdown(
         label="Filtrar por",
-        options=[ft.dropdown.Option("Ningún filtro")] + [ft.dropdown.Option(encabezado) for encabezado in encabezados_tabla],
+        options=[ft.dropdown.Option("Ningún filtro")] + [
+            ft.dropdown.Option(encabezado) for encabezado in encabezados_tabla[1:]
+        ],
         width=200,
         value="Ningún filtro"
     )
+    boton_aplicar_filtro = ft.ElevatedButton("Aplicar Filtro", on_click=aplicar_filtro)
 
-    input_buscar = ft.TextField(label="Buscar", width=200,)
-
-    def aplicar_filtro(e=None):  # e=None para aceptar llamadas sin evento
-        # Obtener datos originales de nuevo
-        datos = obtener_datos()
-
-        # Obtener filtro seleccionado y texto ingresado
-        filtro = dropdown_filtro.value
-        texto = input_buscar.value.lower()
-
-        # Limpiar las filas actuales de la tabla
-        tabla.rows.clear()  # Asegurarse de que no haya filas previas
-
-        # Filtrar los datos
-        datos_filtrados = []
-        if texto:  # Si hay texto ingresado
-            if (filtro == "Ningún filtro"):
-                # Buscar en todos los campos
-                datos_filtrados = [
-                    fila for fila in datos if any(texto in str(campo).lower() for campo in fila)
-                ]
-            else:
-                # Filtrar por campo específico
-                campo_indices = {
-                    "Producto": 0,
-                    "Tipo de Movimiento": 1,
-                    "Cantidad": 2,
-                    "Fecha": 3,
-                    "Comentario": 4
-                }
-                indice = campo_indices.get(filtro, None)
-                if indice is not None:
-                    datos_filtrados = [
-                        fila for fila in datos if texto in str(fila[indice]).lower()
-                    ]
-        else:
-            # Si no hay texto, mostrar todos los datos
-            datos_filtrados = datos
-
-        # Agregar las filas filtradas a la tabla
-        for fila in datos_filtrados:
-            tabla.rows.append(ft.DataRow(
-                cells=[ft.DataCell(ft.Text(str(dato))) for dato in fila]
-            ))
-
-        tabla.update()  # Actualizar la tabla con los resultados filtrados
-
-    # Función para ordenar la tabla
-    def ordenar_tabla(e):
-        columna_ordenar = dropdown_ordenar.value
-        indice_columna = encabezados_tabla.index(columna_ordenar)
-
-        # Ordenar los datos según la columna seleccionada
-        datos_ordenados = sorted(datos_tabla, key=lambda x: str(x[indice_columna]).lower())
-
-        tabla.rows.clear()  # Limpiar las filas actuales de la tabla
-        for fila in datos_ordenados:
-            tabla.rows.append(ft.DataRow(
-                cells=[ft.DataCell(ft.Text(str(dato))) for dato in fila]
-            ))
-
-        tabla.update()  # Actualizar la tabla con los datos ordenados
-
-    # Dropdown para ordenar la tabla
-    dropdown_ordenar = ft.Dropdown(
-        label='Ordenar por',
-        options=[ft.dropdown.Option(text=encabezado) for encabezado in encabezados_tabla],
+    orden_dropdown = ft.Dropdown(
+        label="Ordenar por",
+        options=[
+            ft.dropdown.Option(encabezado) for encabezado in encabezados_tabla[1:]
+        ],
         width=200,
-        value=encabezados_tabla[0]  # Ordenar por la primera columna por defecto
+        value="Producto"
     )
-    boton_ordenar = ft.ElevatedButton('Ordenar', on_click=ordenar_tabla)
+    boton_aplicar_orden = ft.ElevatedButton("Ordenar", on_click=aplicar_orden)
 
-    # Configuración de eventos
-    input_buscar.on_submit = aplicar_filtro  # Aplicar filtro al presionar Enter
-    boton_filtrar = ft.ElevatedButton("Aplicar Filtro", on_click=aplicar_filtro)
-
-    # Estructura de búsqueda y filtro
     buscar_filtro = ft.Row([
-        input_buscar,
-        dropdown_filtro,
-        boton_filtrar
+        texto_buscar,
+        filtro_dropdown,
+        boton_aplicar_filtro
     ], alignment=ft.MainAxisAlignment.END)
 
-    # Configuración de orden
     ordenar_filtro = ft.Row([
-        dropdown_ordenar,
-        boton_ordenar
+        orden_dropdown,
+        boton_aplicar_orden
     ], alignment=ft.MainAxisAlignment.END)
-    
+
     return ft.View(
-        '/movimientos',
+        "/movimientos",
         [
             ft.AppBar(
                 title=ft.Text("Gestión de Movimientos", weight=ft.FontWeight.BOLD, size=36),
                 bgcolor=ft.Colors.INVERSE_PRIMARY,
                 center_title=True,
-                leading=ft.IconButton(ft.Icons.HOME, on_click=lambda _: page.go("/")),  # Botón Home
-                actions=[ft.IconButton(ft.Icons.BRIGHTNESS_6, on_click=lambda _: toggle_theme()), # Botón de cambio de tema (Light <-> Dark)
+                leading=ft.IconButton(ft.Icons.HOME, on_click=lambda _: page.go("/")),
+                actions=[
+                    ft.IconButton(ft.Icons.BRIGHTNESS_6, on_click=toggle_theme),
                 ],
             ),
             encabezado,
             botones_inferiores,
             ft.Divider(),
-            ft.Text("Movimientos", size=30, weight=ft.FontWeight.BOLD),
             buscar_filtro,
             ordenar_filtro,
-            tabla,  # Agregar la tabla directamente
-            ft.Divider(),
+            tabla,
+            ft.Divider()
         ],
-        scroll=ft.ScrollMode.AUTO  # Habilitar el scroll para la página
+        scroll=ft.ScrollMode.AUTO
     )
 
-# ft.app(target=main)
+if __name__ == "__main__":
+    ft.app(target=movimiento_view)

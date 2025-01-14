@@ -248,11 +248,13 @@ def pedido_view(page: ft.Page):
 
     # Crear la tabla
     def crear_filas(datos):
-        return [
-            ft.DataRow(
-                cells=[ft.DataCell(ft.Text(str(dato))) for dato in fila]
-            ) for fila in datos
-        ]
+        filas = []
+        for fila in datos:
+            producto_id = fila[0]
+            checkbox = ft.Checkbox(value=False, on_change=seleccionar_producto, data=producto_id)
+            celdas = [ft.DataCell(checkbox)] + [ft.DataCell(ft.Text(str(dato))) for dato in fila]
+            filas.append(ft.DataRow(cells=celdas))
+        return filas
 
     tabla = ft.DataTable(
         width=1920,
@@ -315,19 +317,23 @@ def pedido_view(page: ft.Page):
         boton_filtrar
     ], alignment=ft.MainAxisAlignment.END)
 
-    # Configuración de orden
-    dropdown_ordenar = ft.Dropdown(
-        label='Ordenar por',
-        options=[ft.dropdown.Option(text=encabezado) for encabezado in encabezados_tabla],
-        width=200,
-        value=encabezados_tabla[0]
-    )
-
-    boton_ordenar = ft.ElevatedButton('Ordenar', on_click=lambda e: ordenar_tabla(e))
-
-    ordenar_filtro = ft.Row([
-        dropdown_ordenar,
-        boton_ordenar
+    buscar_filtro = ft.Row([
+        ft.TextField(label="Buscar", width=200),
+        ft.Dropdown(
+            label="Filtrar por",
+            options=[ft.dropdown.Option("Ningún filtro")] + [
+                ft.dropdown.Option("Número de Pedido"),
+                ft.dropdown.Option("Cliente"),
+                ft.dropdown.Option("Productos"),
+                ft.dropdown.Option("Precio Total"),
+                ft.dropdown.Option("Estado"),
+                ft.dropdown.Option("Fecha de Creación"),
+                ft.dropdown.Option("Fecha de Modificación"),
+            ],
+            width=200,
+            value="Ningún filtro"
+        ),
+        ft.ElevatedButton("Aplicar Filtro")
     ], alignment=ft.MainAxisAlignment.END)
 
     def ordenar_tabla(e):

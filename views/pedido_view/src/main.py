@@ -49,7 +49,7 @@ def pedido_view(page: ft.Page):
         page.val_estado = e.control.value
         page.update()
         
-    def cerra_insertar(e):
+    def cerrar_insertar(e):
         page.dialog.open = False
         page.update()
 
@@ -67,19 +67,8 @@ def pedido_view(page: ft.Page):
             "email":f"{page.val_email_cliente}",
             "telefono":f"{page.val_telefono_cliente}"},
         todos_productos,page.val_estado))
-        
-        datos_tabla = obtener_datos()
-        tabla.rows.clear()
-        
-        for fila in datos_tabla:
-            tabla.rows.append(ft.DataRow(
-                cells=[ft.DataCell(ft.Text(str(dato))) for dato in fila]
-            ))
-        tabla.update()  
-        
-        page.dialog.open = False
-        
-        page.update()
+        actualizar_tabla()
+        cerrar_insertar(e)
         
     def cerrar_borrar(e):
         page.dialog.open = False
@@ -124,6 +113,12 @@ def pedido_view(page: ft.Page):
         page.val_fech_creacion = None
         page.val_fech_modificacion = None
         page.update()
+
+    def actualizar_tabla():
+        datos_tabla = obtener_datos()
+        tabla.rows.clear()
+        tabla.rows.extend(crear_filas(datos_tabla))
+        tabla.update()
         
     productos = ft.TextField(hint_text="Escribe los productos", hint_style=ft.TextStyle(color="#d8d8d8"), helper_text="El producto tiene que tener un formato de este tipo: nombre_producto x num_unidades (precio_unidad)\nSi se quiere añadir más productos, separalos por comas de la siguiente manera: \nnombre_producto x num_unidades (precio_unidad),nombre_producto x num_unidades (precio_unidad)",label="Productos", on_submit=guardar_insertar)
     estado = ft.TextField(hint_text="Escribe el estado del pedido", hint_style=ft.TextStyle(color="#d8d8d8"), helper_text="Tiene que ser uno de los siguientes: 'pendientes, enviado, entregado o cancelado'",label="Estado", on_submit=guardar_insertar)
@@ -156,7 +151,7 @@ def pedido_view(page: ft.Page):
                 height=650
                 ),
                 actions=[
-                    ft.TextButton("Cancelar", on_click=cerra_insertar),
+                    ft.TextButton("Cancelar", on_click=cerrar_insertar),
                     ft.ElevatedButton("Guardar", on_click=guardar_insertar)
                 ],
         )
@@ -354,5 +349,3 @@ def pedido_view(page: ft.Page):
         ],
         scroll=ft.ScrollMode.AUTO  # Habilitar el scroll para la página
     )
-
-# ft.app(target=pedido_view)

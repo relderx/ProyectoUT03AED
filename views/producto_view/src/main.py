@@ -5,6 +5,9 @@ from utils.helpers import tabulate_productos
 from utils.db import add_producto, delete_producto, update_producto
 from models.productos import Producto
 
+def obtener_datos():
+    return tabulate_productos()
+
 def producto_view(page: ft.Page):
     page.title = "Gestión de Productos"
 
@@ -15,6 +18,30 @@ def producto_view(page: ft.Page):
     page.val_precio_unitario = None
     page.val_categorias = None
     productos_seleccionados_ids = []
+
+    # Obtener datos originales para usar en filtrado
+    datos_originales = obtener_datos()
+
+    def aplicar_filtro(e):
+        filtro_seleccionado = filtro_dropdown.value
+        texto_busqueda = texto_buscar.value.lower()
+
+        if filtro_seleccionado == "Ningún filtro" or not texto_busqueda:
+            # Si no hay filtro o búsqueda, restablecer datos originales
+            datos_filtrados = datos_originales
+        else:
+            # Filtrar los datos según el criterio seleccionado
+            indice_columna = encabezados_tabla.index(filtro_seleccionado) - 1
+            datos_filtrados = [
+                fila for fila in datos_originales
+                if texto_busqueda in str(fila[indice_columna]).lower()
+            ]
+
+        # Actualizar la tabla con los datos filtrados
+        tabla.rows.clear()
+        tabla.rows.extend(crear_filas(datos_filtrados))
+        tabla.update()
+
 
     def toggle_theme():
         page.theme_mode = 'dark' if page.theme_mode == 'light' else 'light'
@@ -76,18 +103,13 @@ def producto_view(page: ft.Page):
             cerrar_dialogo(e)
 
     def borrar_productos(e):
-        # Borrar los productos seleccionados
         for producto_id in productos_seleccionados_ids:
-            delete_producto(producto_id)  # Elimina por ID
+            delete_producto(producto_id)
         actualizar_tabla()
-        # Limpia los productos seleccionados y habilita/deshabilita botones
         productos_seleccionados_ids.clear()
         boton_borrar.disabled = True
-        boton_modificar.disabled = True  # Asegurarse de que "Modificar" esté deshabilitado
+        boton_modificar.disabled = True
         page.update()
-
-    def obtener_datos():
-        return tabulate_productos()
 
     def actualizar_tabla():
         datos_tabla = obtener_datos()
@@ -265,6 +287,16 @@ def producto_view(page: ft.Page):
         boton_modificar
     ], alignment=ft.MainAxisAlignment.END)
 
+    def seleccionar_producto(e):
+        producto_id = e.control.data
+        if e.control.value:
+            productos_seleccionados_ids.append(producto_id)
+        else:
+            productos_seleccionados_ids.remove(producto_id)
+        boton_borrar.disabled = len(productos_seleccionados_ids) == 0
+        boton_modificar.disabled = len(productos_seleccionados_ids) != 1
+        page.update()
+
     encabezados_tabla = [
         "Seleccionar",
         "Nombre del Producto",
@@ -276,17 +308,6 @@ def producto_view(page: ft.Page):
         "Última Modificación"
     ]
 
-    def seleccionar_producto(e):
-        producto_id = e.control.data
-        if e.control.value:
-            productos_seleccionados_ids.append(producto_id)
-        else:
-            productos_seleccionados_ids.remove(producto_id)
-        # Actualizar el estado de los botones
-        boton_borrar.disabled = len(productos_seleccionados_ids) == 0
-        boton_modificar.disabled = len(productos_seleccionados_ids) != 1
-        page.update()
-
     def crear_filas(datos):
         filas = []
         for fila in datos:
@@ -296,7 +317,18 @@ def producto_view(page: ft.Page):
             filas.append(ft.DataRow(cells=celdas))
         return filas
 
-    datos_tabla = obtener_datos()
+    encabezados_tabla = [
+        "Seleccionar",
+        "Nombre del Producto",
+        "Descripción",
+        "Stock Disponible",
+        "Precio por Unidad",
+        "Categorías",
+        "Fecha de Creación",
+        "Última Modificación"
+    ]
+
+    datos_tabla = datos_originales
 
     tabla = ft.DataTable(
         width=1920,
@@ -308,21 +340,21 @@ def producto_view(page: ft.Page):
         rows=crear_filas(datos_tabla),
     )
 
+    texto_buscar = ft.TextField(label="Buscar", width=200)
+    filtro_dropdown = ft.Dropdown(
+        label="Filtrar por",
+        options=[ft.dropdown.Option("Ningún filtro")] + [
+            ft.dropdown.Option(encabezado) for encabezado in encabezados_tabla[1:]
+        ],
+        width=200,
+        value="Ningún filtro"
+    )
+    boton_aplicar_filtro = ft.ElevatedButton("Aplicar Filtro", on_click=aplicar_filtro)
+
     buscar_filtro = ft.Row([
-        ft.TextField(label="Buscar", width=200),
-        ft.Dropdown(
-            label="Filtrar por",
-            options=[ft.dropdown.Option("Ningún filtro")] + [
-                ft.dropdown.Option("Nombre del Producto"),
-                ft.dropdown.Option("Descripción"),
-                ft.dropdown.Option("Stock Disponible"),
-                ft.dropdown.Option("Precio por Unidad"),
-                ft.dropdown.Option("Categorías")
-            ],
-            width=200,
-            value="Ningún filtro"
-        ),
-        ft.ElevatedButton("Aplicar Filtro")
+        texto_buscar,
+        filtro_dropdown,
+        boton_aplicar_filtro
     ], alignment=ft.MainAxisAlignment.END)
 
     ordenar_filtro = ft.Row([

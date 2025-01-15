@@ -24,6 +24,17 @@ def pedido_view(page: ft.Page):
     page.val_productos = None
     page.val_estado = None
     productos_seleccionados_ids = []
+    def aplicar_orden(e):
+        orden_seleccionado = orden_dropdown.value
+        if orden_seleccionado:
+            indice_columna = encabezados_tabla.index(orden_seleccionado) - 1
+            datos_ordenados = sorted(
+                datos_originales,
+                key=lambda x: float(x[indice_columna]) if str(x[indice_columna]).replace('.', '', 1).isdigit() else str(x[indice_columna]).lower()
+            )
+            tabla.rows.clear()
+            tabla.rows.extend(crear_filas(datos_ordenados))
+            tabla.update()
 
     def cambio_num_pedido(e):
         page.val_num_pedido = e.control.value
@@ -173,21 +184,21 @@ def pedido_view(page: ft.Page):
         estado.on_change = cambio_estado
 
         page.dialog = ft.AlertDialog(
-                shape=ft.RoundedRectangleBorder(radius=5),
-                title=ft.Text("Inserta un pedido nuevo"),
-                content=ft.Column([
-                    num_pedido,
-                    cliente,
-                    productos,
-                    estado
-                ],
-                width=650,
-                height=650
-                ),
-                actions=[
-                    ft.TextButton("Cancelar", on_click=cerrar_dialogo),
-                    ft.ElevatedButton("Guardar", on_click=guardar_insertar)
-                ],
+            shape=ft.RoundedRectangleBorder(radius=5),
+            title=ft.Text("Inserta un pedido nuevo"),
+            content=ft.Column([
+                num_pedido,
+                cliente,
+                productos,
+                estado
+            ],
+            width=650,
+            height=650
+            ),
+            actions=[
+                ft.TextButton("Cancelar", on_click=cerrar_dialogo),
+                ft.ElevatedButton("Guardar", on_click=guardar_insertar)
+            ],
         )
         page.dialog.open = True
         page.update()
@@ -275,38 +286,27 @@ def pedido_view(page: ft.Page):
         width=200,
         value="Ningún filtro"
     )
+    datos_originales = obtener_datos()
+    texto_buscar = ft.TextField(label="Buscar", width=200)
 
     def aplicar_filtro(e=None):
-        # Obtener datos originales
-        datos = obtener_datos()
+        filtro_seleccionado = filtro_dropdown.value
+        texto_busqueda = texto_buscar.value.lower()
 
-        # Filtro seleccionado y texto ingresado
-        filtro = dropdown_filtro.value
-        texto = input_buscar.value.lower()
-
-        # Limpiar filas actuales de la tabla
-        tabla.rows.clear()
-
-        # Filtrar datos
-        if texto:
-            if filtro == "Ningún filtro":
-                datos_filtrados = [
-                    fila for fila in datos if any(texto in str(campo).lower() for campo in fila)
-                ]
-            else:
-                campo_indices = {encabezado: i for i, encabezado in enumerate(encabezados_tabla)}
-                indice = campo_indices.get(filtro)
-                datos_filtrados = [
-                    fila for fila in datos if texto in str(fila[indice]).lower()
-                ]
+        if filtro_seleccionado == "Ningún filtro" or not texto_busqueda:
+            # Si no hay filtro o búsqueda, restablecer datos originales
+            datos_filtrados = datos_originales
         else:
-            datos_filtrados = datos
+            # Filtrar los datos según el criterio seleccionado (omitiendo la columna "Seleccionar")
+            indice_columna = encabezados_tabla.index(filtro_seleccionado) - 1
+            datos_filtrados = [
+                fila for fila in datos_originales
+                if texto_busqueda in str(fila[indice_columna]).lower()
+            ]
 
-        for fila in datos_filtrados:
-            tabla.rows.append(ft.DataRow(
-                cells=[ft.DataCell(ft.Text(str(dato))) for dato in fila]
-            ))
-
+        # Actualizar la tabla con los datos filtrados
+        tabla.rows.clear()
+        tabla.rows.extend(crear_filas(datos_filtrados))
         tabla.update()
 
     boton_filtrar = ft.ElevatedButton("Aplicar Filtro", on_click=aplicar_filtro)
@@ -336,20 +336,30 @@ def pedido_view(page: ft.Page):
         ),
         ft.ElevatedButton("Aplicar Filtro")
     ], alignment=ft.MainAxisAlignment.END)
+    boton_aplicar_orden = ft.ElevatedButton("Ordenar", on_click=aplicar_orden)
+    
+    orden_dropdown = ft.Dropdown(
+        label="Ordenar por",
+        options=[
+            ft.dropdown.Option(encabezado) for encabezado in encabezados_tabla[1:]
+        ],
+        width=200,
+        value="Nombre del Producto"
+    )
 
-    def ordenar_tabla(e):
-        columna_ordenar = dropdown_ordenar.value
-        indice_columna = encabezados_tabla.index(columna_ordenar)
-
-        datos_ordenados = sorted(datos_tabla, key=lambda x: str(x[indice_columna]).lower())
-
-        tabla.rows.clear()
-        for fila in datos_ordenados:
-            tabla.rows.append(ft.DataRow(
-                cells=[ft.DataCell(ft.Text(str(dato))) for dato in fila]
-            ))
-
-        tabla.update()
+    ordenar_filtro = ft.Row([
+        orden_dropdown,
+        boton_aplicar_orden
+    ], alignment=ft.MainAxisAlignment.END)
+    
+    filtro_dropdown = ft.Dropdown(
+        label="Filtrar por",
+        options=[ft.dropdown.Option("Ningún filtro")] + [
+            ft.dropdown.Option(encabezado) for encabezado in encabezados_tabla[1:]
+        ],
+        width=200,
+        value="Ningún filtro"
+    )
         
     return ft.View(
         '/pedidos',

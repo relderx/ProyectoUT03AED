@@ -56,13 +56,13 @@ Las principales ventanas gráficas de la aplicación se organizarán de la sigui
 ### Ventana de Productos
 
 - Visualización de todos los productos en el inventario.
-- Opciones para agregar, editar y eliminar productos.
+- Opciones para insertar, modificar y eliminar productos.
 - Funcionalidades de búsqueda y filtrado por categoría, precio, y nombre.
 
 ### Ventana de Movimientos de Inventario
 
-- Visualiza el historial de movimientos (entradas y salidas) de productos.
-- Permite registrar nuevos movimientos (entradas o salidas de inventario).
+- Visualiza el historial de movimientos (entradas, salidas y ajustes) de productos.
+- Permite registrar nuevos movimientos (entradas, salidas o ajustes de inventario).
 - Búsqueda por fecha, tipo de movimiento y producto.
 
 ### Ventana de Pedidos
@@ -95,6 +95,8 @@ Proyecto/
 │ ├───movimiento_view.py      # Vistas y formularios para movimientos de inventario
 │ ├───pedido_view.py          # Vistas y formularios para pedidos
 │ └───producto_view.py        # Vistas y formularios para productos
+│
+├─app.py                      # Archivo que ejecuta el main.py
 │
 ├─main.py                     # Archivo principal que inicia la aplicación
 │

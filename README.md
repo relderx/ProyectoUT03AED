@@ -20,13 +20,13 @@ Activa el entorno virtual para instalar las dependencias:
 - En Windows:
 
   ```bash
-  .\Scripts\activate
+  ..\Scripts\activate
   ```
 
 - En macOS/Linux:
 
   ```bash
-  source ./bin/activate
+  source ../bin/activate
   ```
 
 Instala las librerías requeridas dentro del entorno virtual:

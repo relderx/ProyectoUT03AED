@@ -148,7 +148,7 @@ def pedido_view(page: ft.Page):
             except Exception as ex:
                 mostrar_notificacion(f"Error al modificar el pedido: {ex}")
 
-    def abrir_dialogo_modificar():
+    def abrir_dialogo_modificar(e):
         if len(pedidos_seleccionados_ids) != 1:
             mostrar_notificacion("Selecciona un único pedido para modificar.")
             return
@@ -166,15 +166,15 @@ def pedido_view(page: ft.Page):
         estado.value = pedido_seleccionado[4]
 
         page.dialog = dialog_modificar
-        dialog_modificar.open = True
+        page.dialog.open = True
         page.update()
 
-    def abrir_dialogo_borrar():
+    def abrir_dialogo_borrar(e):
         page.dialog = dialog_borrar
-        dialog_borrar.open = True
+        page.dialog.open = True
         page.update()
 
-    def borrar_pedidos():
+    def borrar_pedidos(e):
         try:
             for pedido_id in pedidos_seleccionados_ids:
                 delete_pedido(pedido_id)
@@ -183,6 +183,7 @@ def pedido_view(page: ft.Page):
             boton_borrar.disabled = True
             boton_modificar.disabled = True
             page.update()
+            cerrar_dialogo()
             mostrar_notificacion("Pedido(s) borrado(s) correctamente.")
         except Exception as ex:
             mostrar_notificacion(f"Error al borrar pedido(s): {ex}")
@@ -217,7 +218,7 @@ def pedido_view(page: ft.Page):
         title=ft.Text("¿Quieres borrar los pedidos seleccionados?"),
         actions=[
             ft.TextButton("Cancelar", on_click=cerrar_dialogo),
-            ft.ElevatedButton("Sí", on_click=lambda e: [borrar_pedidos(e), cerrar_dialogo(e)])
+            ft.ElevatedButton("Sí", on_click=borrar_pedidos)
         ],
     )
 

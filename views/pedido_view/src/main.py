@@ -17,7 +17,9 @@ def pedido_view(page: ft.Page):
 
     # Variables globales
     page.val_pedido = None
-    page.val_cliente = None
+    page.val_nombreCliente = None
+    page.val_emailCliente = None
+    page.val_telefonoCliente = None
     page.val_productos = None
     page.val_estado = None
     pedidos_seleccionados_ids = []
@@ -62,8 +64,16 @@ def pedido_view(page: ft.Page):
         page.val_pedido = e.control.value
         page.update()
 
-    def cambio_cliente(e):
-        page.val_cliente = e.control.value
+    def cambio_nombreCliente(e):
+        page.val_nombreCliente = e.control.value
+        page.update()
+
+    def cambio_emailCliente(e):
+        page.val_emailCliente = e.control.value
+        page.update()
+
+    def cambio_telefonoCliente(e):
+        page.val_telefonoCliente = e.control.value
         page.update()
 
     def cambio_productos(e):
@@ -88,16 +98,20 @@ def pedido_view(page: ft.Page):
 
     def guardar_insertar(e):
         try:
-            if not pedido.value.strip() or not cliente.value.strip() or not productos.value.strip() or not estado.value:
+            if not pedido.value.strip() or not nombreCliente.value.strip() or not emailCliente.value.strip() or not emailCliente.value.strip() or not productos.value.strip() or not estado.value:
                 mostrar_notificacion("Todos los campos son obligatorios.")
                 return
+            
+            products = []
+            for producto in productos.value.split(","):
+                for elemento in producto.split(" x "):
+                    products.append({"producto":elemento[0],"unidades":elemento[1],"precio_unidad":elemento[2]})
 
             nuevo_pedido = Pedido(
                 num_pedido=pedido.value.strip(),
-                cliente=cliente.value.strip(),
-                productos=productos.value.strip(),
-                estado=estado.value.strip(),
-                precio_total=float(precio_total.value.strip())
+                cliente={"nombre":{nombreCliente.value.strip()},"email":{emailCliente.value.strip()}, "telefono":{telefonoCliente.value.strip()}},
+                productos=products,
+                estado=estado.value.strip()
             )
 
             add_pedido(nuevo_pedido)
@@ -111,16 +125,15 @@ def pedido_view(page: ft.Page):
         if pedidos_seleccionados_ids:
             try:
                 pedido_id = pedidos_seleccionados_ids[0]
-                if not pedido.value.strip() or not cliente.value.strip() or not productos.value.strip() or not estado.value:
+                if not pedido.value.strip() or not nombreCliente.value.strip() or not productos.value.strip() or not estado.value:
                     mostrar_notificacion("Todos los campos son obligatorios.")
                     return
 
                 datos_actualizados = {
                     "num_pedido": pedido.value.strip(),
-                    "cliente": cliente.value.strip(),
+                    "cliente": nombreCliente.value.strip(),
                     "productos": productos.value.strip(),
-                    "estado": estado.value.strip(),
-                    "precio_total": float(precio_total.value.strip())
+                    "estado": estado.value.strip()
                 }
 
                 update_pedido(pedido_id, datos_actualizados)
@@ -143,9 +156,8 @@ def pedido_view(page: ft.Page):
             return
 
         pedido.value = pedido_seleccionado[0]
-        cliente.value = pedido_seleccionado[1]
+        nombreCliente.value = pedido_seleccionado[1]
         productos.value = pedido_seleccionado[2]
-        precio_total.value = str(pedido_seleccionado[3])
         estado.value = pedido_seleccionado[4]
 
         page.dialog = dialog_modificar
@@ -177,9 +189,10 @@ def pedido_view(page: ft.Page):
         tabla.update()
 
     pedido = ft.TextField(hint_text="Escribe el ID del pedido", label="Pedido")
-    cliente = ft.TextField(hint_text="Escribe el nombre del cliente", label="Cliente")
-    productos = ft.TextField(hint_text="Escribe los productos", label="Productos")
-    precio_total = ft.TextField(hint_text="Escribe el precio total", label="Precio Total")
+    nombreCliente = ft.TextField(hint_text="Escribe el nombre del cliente", label="Cliente")
+    emailCliente = ft.TextField(hint_text="Escribe el email del cliente", label="Email")
+    telefonoCliente = ft.TextField(hint_text="Escribe el teléfono del cliente", label="Teléfono")
+    productos = ft.TextField(hint_text="Escribe los productos", helper_text="Introduce los productos de la siguiente manera: nom_pro x unid x pre_unid,otro_pro...",label="Productos")
     estado = ft.Dropdown(
         hint_text="Selecciona el estado",
         label="Estado",
@@ -207,11 +220,12 @@ def pedido_view(page: ft.Page):
         shape=ft.RoundedRectangleBorder(radius=5),
         title=ft.Text("Modificar Pedido"),
         content=ft.Column([
-            pedido,
-            cliente,
-            productos,
-            precio_total,
-            estado
+                pedido,
+                nombreCliente,
+                emailCliente,
+                telefonoCliente,
+                productos,
+                estado
         ]),
         actions=[
             ft.TextButton("Cancelar", on_click=cerrar_dialogo),
@@ -219,21 +233,32 @@ def pedido_view(page: ft.Page):
         ],
     )
 
-    def mostrar_vent_insertar():
+    def mostrar_vent_insertar(e):
         pedido.value = ""
-        cliente.value = ""
+        nombreCliente.value = ""
+        emailCliente.value = ""
+        telefonoCliente.value = ""
         productos.value = ""
-        precio_total.value = ""
         estado.value = None
+        
+        pedido.on_change = cambio_pedido
+        nombreCliente.on_change = cambio_nombreCliente
+        emailCliente.on_change = cambio_emailCliente
+        telefonoCliente.on_change = cambio_telefonoCliente
+        productos.on_change = cambio_productos
+        estado.on_change = cambio_estado
+        
+        
 
         page.dialog = ft.AlertDialog(
             shape=ft.RoundedRectangleBorder(radius=5),
             title=ft.Text("Insertar un Pedido nuevo"),
             content=ft.Column([
                 pedido,
-                cliente,
+                nombreCliente,
+                emailCliente,
+                telefonoCliente,
                 productos,
-                precio_total,
                 estado
             ]),
             actions=[

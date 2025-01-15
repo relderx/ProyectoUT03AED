@@ -2,29 +2,47 @@
 
 ## ¿Qué se necesita para utilizar el proyecto?
 
-Pullea el proyecto dentro de un enviroment de python, para crearlo se utiliza el siguiente comando:
+Crea un entorno virtual para aislar las dependencias del proyecto utilizando el siguiente comando:
 
 ```bash
-  py -m venv nombreCarpeta
+py -m venv nombre_entorno
 ```
 
-Luego entra en el enviroment, activalo e instala el flet:
+Navega a la carpeta del entorno y clona el repositorio dentro de ella:
 
 ```bash
-  cd nombreCarpeta
-  .\Scripts\activate
-  pip install flet
+cd nombre_entorno
+git clone https://github.com/relderx/ProyectoUT03AED
 ```
 
-Por último, también instala pymongo dentro del enviroment:
+Activa el entorno virtual para instalar las dependencias:
+
+- En Windows:
+
+  ```bash
+  ..\Scripts\activate
+  ```
+
+- En macOS/Linux:
+
+  ```bash
+  source ../bin/activate
+  ```
+
+Instala las librerías requeridas dentro del entorno virtual:
+
 ```bash
-  pip install pymongo
+pip install flet pymongo
 ```
 
-Una vez termines, ejecuta el siguiente comando para correr la ventana principal después de haber clonado el repositorio dentro del enviroment:
+Una vez que el repositorio haya sido clonado y las dependencias instaladas, ejecuta la ventana principal con uno de los siguientes comandos:
 
 ```bash
-  flet run .\views\producto_view.py
+py app.py
+```
+
+```bash
+flet run app.py
 ```
 
 ## Descripción del Proyecto

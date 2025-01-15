@@ -296,6 +296,8 @@ def pedido_view(page: ft.Page):
         "Seleccionar",
         "ID Pedido",
         "Cliente",
+        "Email",
+        "Teléfono",
         "Productos",
         "Precio Total",
         "Estado",

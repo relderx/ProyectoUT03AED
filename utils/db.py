@@ -43,6 +43,10 @@ def delete_producto(producto_id):
     '''Elimina un producto de la colección de productos utilizando su ID.'''
     return COLL_PRO.delete_one({'producto': producto_id})
 
+def producto_existe(nombre_producto):
+    '''Verifica si un producto con el nombre dado ya existe en la base de datos.'''
+    return COLL_PRO.find_one({'producto': nombre_producto}) is not None
+
 def get_movimientos():
     '''Obtiene todos los documentos de la colección de movimientos de inventario.'''
     return COLL_MOV.find()

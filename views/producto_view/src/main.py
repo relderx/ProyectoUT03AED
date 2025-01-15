@@ -6,7 +6,7 @@ import flet as ft
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
 
 from utils.helpers import tabulate_productos
-from utils.db import add_producto, delete_producto, update_producto
+from utils.db import add_producto, delete_producto, update_producto, producto_existe
 from models.productos import Producto
 
 def obtener_datos():
@@ -96,12 +96,26 @@ def producto_view(page: ft.Page):
         page.update()
 
     def guardar_insertar(e):
+        # Verificar si el producto ya existe
+        if producto_existe(page.val_producto):
+            mostrar_notificacion("No se puede añadir, el producto ya existe.")
+            return
+
+        # Si no existe, continuar con la inserción
         newCategorias = []
         for categoria in page.val_categorias.split(","):
             newCategorias.append(categoria.strip())
-        add_producto(Producto(page.val_producto, page.val_descripcion, int(page.val_stock_disponible), float(page.val_precio_unitario), newCategorias))
+        add_producto(Producto(
+            page.val_producto,
+            page.val_descripcion,
+            int(page.val_stock_disponible),
+            float(page.val_precio_unitario),
+            newCategorias
+        ))
+        mostrar_notificacion("Producto añadido exitosamente.")
         actualizar_tabla()
         cerrar_dialogo(e)
+
 
     def guardar_modificar(e):
         if productos_seleccionados_ids:

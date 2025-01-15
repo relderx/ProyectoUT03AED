@@ -1,19 +1,25 @@
 import os
 import sys
 import flet as ft
-
-# Añadir la carpeta raíz del proyecto al path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
-
 from utils.helpers import tabulate_pedidos
 from utils.db import add_pedido, delete_pedido, update_pedido
 from models.pedidos import Pedido
 
 def obtener_datos():
     try:
-        datos = tabulate_pedidos() or []
-        print("Datos obtenidos:", datos)  # Verifica la estructura
-        return datos
+        pedidos = tabulate_pedidos()
+        return [
+            [
+                pedido.get("num_pedido", ""),
+                pedido.get("cliente", ""),
+                pedido.get("productos", ""),
+                pedido.get("precio_total", 0),
+                pedido.get("estado", ""),
+                pedido.get("fecha_creacion", ""),
+                pedido.get("fecha_modificacion", "")
+            ]
+            for pedido in pedidos
+        ]
     except Exception as e:
         print(f"Error al obtener datos: {e}")
         return []
@@ -22,10 +28,8 @@ def pedido_view(page: ft.Page):
     page.title = "Gestión de Pedidos"
 
     # Variables globales
-    page.val_num_pedido = None
-    page.val_nombre_cliente = None
-    page.val_email_cliente = None
-    page.val_telefono_cliente = None
+    page.val_pedido = None
+    page.val_cliente = None
     page.val_productos = None
     page.val_estado = None
     pedidos_seleccionados_ids = []
@@ -56,7 +60,7 @@ def pedido_view(page: ft.Page):
             indice_columna = encabezados_tabla.index(orden_seleccionado) - 1
             datos_ordenados = sorted(
                 datos_originales,
-                key=lambda x: str(x[indice_columna]).lower()
+                key=lambda x: float(x[indice_columna]) if str(x[indice_columna]).replace('.', '', 1).isdigit() else str(x[indice_columna]).lower()
             )
             tabla.rows.clear()
             tabla.rows.extend(crear_filas(datos_ordenados))
@@ -66,20 +70,12 @@ def pedido_view(page: ft.Page):
         page.theme_mode = 'dark' if page.theme_mode == 'light' else 'light'
         page.update()
 
-    def cambio_num_pedido(e):
-        page.val_num_pedido = e.control.value
+    def cambio_pedido(e):
+        page.val_pedido = e.control.value
         page.update()
 
-    def cambio_nombre_cliente(e):
-        page.val_nombre_cliente = e.control.value
-        page.update()
-
-    def cambio_email_cliente(e):
-        page.val_email_cliente = e.control.value
-        page.update()
-
-    def cambio_telefono_cliente(e):
-        page.val_telefono_cliente = e.control.value
+    def cambio_cliente(e):
+        page.val_cliente = e.control.value
         page.update()
 
     def cambio_productos(e):
@@ -104,24 +100,16 @@ def pedido_view(page: ft.Page):
 
     def guardar_insertar(e):
         try:
-            productos_lista = []
-            for producto in productos.value.split(","):
-                partes = producto.split(" x ")
-                nombre = partes[0].strip()
-                unidades_precio = partes[1].split(" (")
-                unidades = int(unidades_precio[0].strip())
-                precio = float(unidades_precio[1].strip(")"))
-                productos_lista.append({"producto": nombre, "unidades": unidades, "precio_unidad": precio})
+            if not pedido.value.strip() or not cliente.value.strip() or not productos.value.strip() or not estado.value:
+                mostrar_notificacion("Todos los campos son obligatorios.")
+                return
 
             nuevo_pedido = Pedido(
-                num_pedido=num_pedido.value.strip(),
-                cliente={
-                    "nombre": nombre_cliente.value.strip(),
-                    "email": email_cliente.value.strip(),
-                    "telefono": telefono_cliente.value.strip()
-                },
-                productos=productos_lista,
-                estado=estado.value.strip()
+                num_pedido=pedido.value.strip(),
+                cliente=cliente.value.strip(),
+                productos=productos.value.strip(),
+                estado=estado.value.strip(),
+                precio_total=float(precio_total.value.strip())
             )
 
             add_pedido(nuevo_pedido)
@@ -129,37 +117,57 @@ def pedido_view(page: ft.Page):
             cerrar_dialogo(e)
             mostrar_notificacion("Pedido insertado correctamente.")
         except Exception as ex:
-            mostrar_notificacion(f"Error al insertar pedido: {ex}")
+            mostrar_notificacion(f"Error al insertar el pedido: {ex}")
 
     def guardar_modificar(e):
-        try:
-            if pedidos_seleccionados_ids:
+        if pedidos_seleccionados_ids:
+            try:
                 pedido_id = pedidos_seleccionados_ids[0]
-                productos_lista = []
-                for producto in productos.value.split(","):
-                    partes = producto.split(" x ")
-                    nombre = partes[0].strip()
-                    unidades_precio = partes[1].split(" (")
-                    unidades = int(unidades_precio[0].strip())
-                    precio = float(unidades_precio[1].strip(")"))
-                    productos_lista.append({"producto": nombre, "unidades": unidades, "precio_unidad": precio})
+                if not pedido.value.strip() or not cliente.value.strip() or not productos.value.strip() or not estado.value:
+                    mostrar_notificacion("Todos los campos son obligatorios.")
+                    return
 
                 datos_actualizados = {
-                    "num_pedido": num_pedido.value.strip(),
-                    "cliente": {
-                        "nombre": nombre_cliente.value.strip(),
-                        "email": email_cliente.value.strip(),
-                        "telefono": telefono_cliente.value.strip()
-                    },
-                    "productos": productos_lista,
-                    "estado": estado.value.strip()
+                    "num_pedido": pedido.value.strip(),
+                    "cliente": cliente.value.strip(),
+                    "productos": productos.value.strip(),
+                    "estado": estado.value.strip(),
+                    "precio_total": float(precio_total.value.strip())
                 }
 
                 update_pedido(pedido_id, datos_actualizados)
                 actualizar_tabla()
                 cerrar_dialogo(e)
-        except Exception as ex:
-            mostrar_notificacion(f"Error al modificar pedido: {ex}")
+                mostrar_notificacion("Pedido modificado correctamente.")
+            except Exception as ex:
+                mostrar_notificacion(f"Error al modificar el pedido: {ex}")
+
+    def abrir_dialogo_modificar(e):
+        if len(pedidos_seleccionados_ids) != 1:
+            mostrar_notificacion("Selecciona un único pedido para modificar.")
+            return
+
+        pedido_id = pedidos_seleccionados_ids[0]
+        pedido_seleccionado = next((fila for fila in datos_originales if fila[0] == pedido_id), None)
+
+        if not pedido_seleccionado:
+            mostrar_notificacion("No se encontró el pedido seleccionado.")
+            return
+
+        pedido.value = pedido_seleccionado[0]
+        cliente.value = pedido_seleccionado[1]
+        productos.value = pedido_seleccionado[2]
+        precio_total.value = str(pedido_seleccionado[3])
+        estado.value = pedido_seleccionado[4]
+
+        page.dialog = dialog_modificar
+        dialog_modificar.open = True
+        page.update()
+
+    def abrir_dialogo_borrar(e):
+        page.dialog = dialog_borrar
+        dialog_borrar.open = True
+        page.update()
 
     def borrar_pedidos(e):
         try:
@@ -170,112 +178,87 @@ def pedido_view(page: ft.Page):
             boton_borrar.disabled = True
             boton_modificar.disabled = True
             page.update()
+            mostrar_notificacion("Pedido(s) borrado(s) correctamente.")
         except Exception as ex:
-            mostrar_notificacion(f"Error al borrar pedidos: {ex}")
+            mostrar_notificacion(f"Error al borrar pedido(s): {ex}")
 
     def actualizar_tabla():
-        try:
-            datos_tabla = obtener_datos()
-            tabla.rows.clear()
-            tabla.rows.extend(crear_filas(datos_tabla))
-            tabla.update()
-        except Exception as ex:
-            mostrar_notificacion(f"Error al actualizar la tabla: {ex}")
+        datos_tabla = obtener_datos()
+        tabla.rows.clear()
+        tabla.rows.extend(crear_filas(datos_tabla))
+        tabla.update()
+
+    pedido = ft.TextField(hint_text="Escribe el ID del pedido", label="Pedido")
+    cliente = ft.TextField(hint_text="Escribe el nombre del cliente", label="Cliente")
+    productos = ft.TextField(hint_text="Escribe los productos", label="Productos")
+    precio_total = ft.TextField(hint_text="Escribe el precio total", label="Precio Total")
+    estado = ft.Dropdown(
+        hint_text="Selecciona el estado",
+        label="Estado",
+        options=[
+            ft.dropdown.Option("pendiente"),
+            ft.dropdown.Option("enviado"),
+            ft.dropdown.Option("entregado"),
+            ft.dropdown.Option("cancelado"),
+        ],
+    )
+
+    boton_borrar = ft.ElevatedButton("Borrar", width=100, disabled=True, on_click=abrir_dialogo_borrar)
+    boton_modificar = ft.ElevatedButton("Modificar", width=100, on_click=abrir_dialogo_modificar, disabled=True)
+
+    dialog_borrar = ft.AlertDialog(
+        shape=ft.RoundedRectangleBorder(radius=5),
+        title=ft.Text("¿Quieres borrar los pedidos seleccionados?"),
+        actions=[
+            ft.TextButton("Cancelar", on_click=cerrar_dialogo),
+            ft.ElevatedButton("Sí", on_click=lambda e: [borrar_pedidos(e), cerrar_dialogo(e)])
+        ],
+    )
+
+    dialog_modificar = ft.AlertDialog(
+        shape=ft.RoundedRectangleBorder(radius=5),
+        title=ft.Text("Modificar Pedido"),
+        content=ft.Column([
+            pedido,
+            cliente,
+            productos,
+            precio_total,
+            estado
+        ]),
+        actions=[
+            ft.TextButton("Cancelar", on_click=cerrar_dialogo),
+            ft.ElevatedButton("Guardar", on_click=guardar_modificar)
+        ],
+    )
 
     def mostrar_vent_insertar(e):
-        num_pedido.value = ""
-        nombre_cliente.value = ""
-        email_cliente.value = ""
-        telefono_cliente.value = ""
+        pedido.value = ""
+        cliente.value = ""
         productos.value = ""
-        estado.value = ""
+        precio_total.value = ""
+        estado.value = None
+
         page.dialog = ft.AlertDialog(
-            title=ft.Text("Insertar Pedido"),
+            shape=ft.RoundedRectangleBorder(radius=5),
+            title=ft.Text("Insertar un Pedido nuevo"),
             content=ft.Column([
-                num_pedido,
-                nombre_cliente,
-                email_cliente,
-                telefono_cliente,
+                pedido,
+                cliente,
                 productos,
+                precio_total,
                 estado
             ]),
             actions=[
                 ft.TextButton("Cancelar", on_click=cerrar_dialogo),
                 ft.ElevatedButton("Guardar", on_click=guardar_insertar)
-            ]
+            ],
         )
         page.dialog.open = True
         page.update()
+        pedido.focus()
 
-    def mostrar_vent_modificar(e):
-        if len(pedidos_seleccionados_ids) != 1:
-            mostrar_notificacion("Selecciona un único pedido para modificar.")
-            return
-
-        pedido_id = pedidos_seleccionados_ids[0]
-        pedido = next((p for p in obtener_datos() if p[0] == pedido_id), None)
-        if not pedido:
-            mostrar_notificacion("Pedido no encontrado.")
-            return
-
-        num_pedido.value = pedido[0]
-        nombre_cliente.value = pedido[1].get("nombre", "")
-        email_cliente.value = pedido[1].get("email", "")
-        telefono_cliente.value = pedido[1].get("telefono", "")
-        productos.value = ", ".join(
-            [f"{p['producto']} x {p['unidades']} ({p['precio_unidad']})" for p in pedido[2]]
-        )
-        estado.value = pedido[3]
-        page.dialog = ft.AlertDialog(
-            title=ft.Text("Modificar Pedido"),
-            content=ft.Column([
-                num_pedido,
-                nombre_cliente,
-                email_cliente,
-                telefono_cliente,
-                productos,
-                estado
-            ]),
-            actions=[
-                ft.TextButton("Cancelar", on_click=cerrar_dialogo),
-                ft.ElevatedButton("Guardar", on_click=guardar_modificar)
-            ]
-        )
-        page.dialog.open = True
-        page.update()
-
-    num_pedido = ft.TextField(label="Número de Pedido", hint_text="Escribe el número del pedido", on_submit=guardar_insertar)
-    nombre_cliente = ft.TextField(label="Nombre del Cliente", hint_text="Escribe el nombre del cliente", on_submit=guardar_insertar)
-    email_cliente = ft.TextField(label="Email del Cliente", hint_text="Escribe el email del cliente", on_submit=guardar_insertar)
-    telefono_cliente = ft.TextField(label="Teléfono del Cliente", hint_text="Escribe el teléfono del cliente", on_submit=guardar_insertar)
-    productos = ft.TextField(label="Productos", hint_text="Formato: producto x unidades (precio),...", on_submit=guardar_insertar)
-    estado = ft.TextField(label="Estado", hint_text="Pendiente, Enviado, Entregado, Cancelado", on_submit=guardar_insertar)
-
-    encabezados_tabla = [
-        "Seleccionar",
-        "Número de Pedido",
-        "Cliente",
-        "Productos",
-        "Estado",
-        "Fecha de Creación",
-        "Fecha de Modificación"
-    ]
-
-    def crear_filas(datos):
-        filas = []
-        if not datos:
-            filas.append(ft.DataRow(cells=[ft.DataCell(ft.Text("No hay datos disponibles")) for _ in encabezados_tabla]))
-            return filas
-
-        for fila in datos:
-            # Asegura que cada fila tenga el número correcto de columnas
-            fila.extend(["" for _ in range(len(encabezados_tabla) - len(fila) - 1)])
-            checkbox = ft.Checkbox(value=False, on_change=lambda e: seleccionar_pedido(e, fila[0]))
-            celdas = [ft.DataCell(checkbox)] + [ft.DataCell(ft.Text(str(dato))) for dato in fila]
-            filas.append(ft.DataRow(cells=celdas))
-        return filas
-
-    def seleccionar_pedido(e, pedido_id):
+    def seleccionar_pedido(e):
+        pedido_id = e.control.data
         if e.control.value:
             pedidos_seleccionados_ids.append(pedido_id)
         else:
@@ -284,71 +267,94 @@ def pedido_view(page: ft.Page):
         boton_modificar.disabled = len(pedidos_seleccionados_ids) != 1
         page.update()
 
+    encabezados_tabla = [
+        "Seleccionar",
+        "ID Pedido",
+        "Cliente",
+        "Productos",
+        "Precio Total",
+        "Estado",
+        "Fecha de Creación",
+        "Última Modificación"
+    ]
+
+    def crear_filas(datos):
+        filas = []
+        for fila in datos:
+            pedido_id = fila[0]
+            checkbox = ft.Checkbox(value=False, on_change=seleccionar_pedido, data=pedido_id)
+            celdas = [ft.DataCell(checkbox)] + [ft.DataCell(ft.Text(str(dato))) for dato in fila[1:]]
+            filas.append(ft.DataRow(cells=celdas))
+        return filas
+
+    datos_tabla = datos_originales
+
     tabla = ft.DataTable(
-        columns=[ft.DataColumn(ft.Text(h)) for h in encabezados_tabla],
-        rows=crear_filas(datos_originales)
+        width=1920,
+        border_radius=2,
+        border=ft.border.all(2, "#1e88e5"),
+        horizontal_lines=ft.BorderSide(2, "#1e88e5"),
+        vertical_lines=ft.BorderSide(2, "#1e88e5"),
+        columns=[ft.DataColumn(ft.Text(encabezado)) for encabezado in encabezados_tabla],
+        rows=crear_filas(datos_tabla),
     )
 
-    boton_borrar = ft.ElevatedButton("Borrar", on_click=lambda e: borrar_pedidos(e), disabled=True)
-    boton_modificar = ft.ElevatedButton("Modificar", on_click=mostrar_vent_modificar, disabled=True)
-    boton_insertar = ft.ElevatedButton("Insertar", on_click=mostrar_vent_insertar)
+    texto_buscar = ft.TextField(label="Buscar", width=200)
+    filtro_dropdown = ft.Dropdown(
+        label="Filtrar por",
+        options=[ft.dropdown.Option("Ningún filtro")] + [
+            ft.dropdown.Option(encabezado) for encabezado in encabezados_tabla[1:]
+        ],
+        width=200,
+        value="Ningún filtro"
+    )
+    boton_aplicar_filtro = ft.ElevatedButton("Aplicar Filtro", on_click=aplicar_filtro)
+
+    orden_dropdown = ft.Dropdown(
+        label="Ordenar por",
+        options=[
+            ft.dropdown.Option(encabezado) for encabezado in encabezados_tabla[1:]
+        ],
+        width=200,
+        value="ID Pedido"
+    )
+    boton_aplicar_orden = ft.ElevatedButton("Ordenar", on_click=aplicar_orden)
 
     buscar_filtro = ft.Row([
-        texto_buscar := ft.TextField(label="Buscar", width=200),
-        filtro_dropdown := ft.Dropdown(
-            label="Filtrar por",
-            options=[ft.dropdown.Option("Ningún filtro")] + [
-                ft.dropdown.Option(encabezado) for encabezado in encabezados_tabla[1:]
-            ],
-            width=200,
-            value="Ningún filtro"
-        ),
-        ft.ElevatedButton("Aplicar Filtro", on_click=aplicar_filtro)
+        texto_buscar,
+        filtro_dropdown,
+        boton_aplicar_filtro
     ], alignment=ft.MainAxisAlignment.END)
 
     ordenar_filtro = ft.Row([
-        orden_dropdown := ft.Dropdown(
-            label="Ordenar por",
-            options=[
-                ft.dropdown.Option(encabezado) for encabezado in encabezados_tabla[1:]
-            ],
-            width=200,
-            value="Número de Pedido"
-        ),
-        ft.ElevatedButton("Ordenar", on_click=aplicar_orden)
+        orden_dropdown,
+        boton_aplicar_orden
     ], alignment=ft.MainAxisAlignment.END)
-
-    botones_inferiores = ft.Row([
-        boton_borrar,
-        boton_insertar,
-        boton_modificar
-    ], alignment=ft.MainAxisAlignment.END)
-
-    encabezado = ft.Row([
-        ft.Text("Gestión de Pedidos", size=30, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.LEFT)
-    ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN)
 
     return ft.View(
-        "/inventario",
+        "/pedidos",
         [
             ft.AppBar(
-                title=ft.Text("Gestión de Pedidos", weight=ft.FontWeight.BOLD, size=36), 
-                bgcolor=ft.Colors.INVERSE_PRIMARY,
+                title=ft.Text("Gestión de Pedidos", weight=ft.FontWeight.BOLD, size=36),
+                bgcolor=ft.colors.INVERSE_PRIMARY,
                 center_title=True,
                 leading=ft.IconButton(ft.Icons.HOME, on_click=lambda _: page.go("/")),
                 actions=[
                     ft.IconButton(ft.Icons.BRIGHTNESS_6, on_click=toggle_theme),
                 ],
             ),
-            encabezado,
-            botones_inferiores,
-            ft.Divider(),
+            ft.Row([
+                ft.Text("Gestión de Pedidos", size=30, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.RIGHT)
+            ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN),
+            ft.Row([
+                ft.ElevatedButton("Insertar", on_click=mostrar_vent_insertar),
+                boton_modificar,
+                boton_borrar
+            ], alignment=ft.MainAxisAlignment.END),
             buscar_filtro,
             ordenar_filtro,
             tabla,
-            ft.Divider()
-        ],
-        scroll=ft.ScrollMode.AUTO
+        ]
     )
 
 if __name__ == "__main__":

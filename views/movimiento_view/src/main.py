@@ -129,7 +129,7 @@ def movimiento_view(page: ft.Page):
 
         producto.value = movimiento_seleccionado[0]  # Producto
         tipo_movimiento.value = movimiento_seleccionado[1]  # Tipo de movimiento
-        cantidad.value = str(movimiento_seleccionado[3])  # Cantidad
+        cantidad.value = str(movimiento_seleccionado[2])  # Cantidad
         comentario.value = movimiento_seleccionado[5] if len(movimiento_seleccionado) > 5 else ""  # Comentario
 
         page.dialog = dialog_modificar

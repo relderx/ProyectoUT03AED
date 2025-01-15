@@ -129,7 +129,7 @@ def movimiento_view(page: ft.Page):
 
         producto.value = movimiento_seleccionado[0]  # Producto
         tipo_movimiento.value = movimiento_seleccionado[1]  # Tipo de movimiento
-        cantidad.value = str(movimiento_seleccionado[3])  # Cantidad
+        cantidad.value = str(movimiento_seleccionado[2])  # Cantidad
         comentario.value = movimiento_seleccionado[5] if len(movimiento_seleccionado) > 5 else ""  # Comentario
 
         page.dialog = dialog_modificar
@@ -296,7 +296,7 @@ def movimiento_view(page: ft.Page):
                 center_title=True,
                 leading=ft.IconButton(ft.Icons.HOME, on_click=lambda _: page.go("/")),  # Botón de inicio
                 actions=[
-                    ft.IconButton(ft.Icons.BRIGHTNESS_6, on_click=toggle_theme),
+                    ft.IconButton(ft.Icons.BRIGHTNESS_6, on_click=lambda _: toggle_theme()),
                 ],
             ),
             ft.Row(

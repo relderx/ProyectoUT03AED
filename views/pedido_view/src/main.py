@@ -328,7 +328,7 @@ def pedido_view(page: ft.Page):
                 center_title=True,
                 leading=ft.IconButton(ft.Icons.HOME, on_click=lambda _: page.go("/")),
                 actions=[
-                    ft.IconButton(ft.Icons.BRIGHTNESS_6, on_click=toggle_theme),
+                    ft.IconButton(ft.Icons.BRIGHTNESS_6, on_click=lambda _: toggle_theme()),
                 ],
             ),
             ft.Row([

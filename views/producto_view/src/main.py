@@ -159,29 +159,13 @@ def producto_view(page: ft.Page):
         ],
     )
 
-    # def mostrar_vent_insertar(e):
-    #     producto.on_change = cambio_producto
-    #     descripcion.on_change = cambio_descripcion
-    #     stock_disponible.on_change = cambio_stock_disponible
-    #     precio_unitario.on_change = cambio_precio_unitario
-    #     categorias.on_change = cambio_categorias
-
     def mostrar_vent_insertar(e):
-        # Resetea los valores de los inputs antes de abrir el diálogo
         producto.value = ""
         descripcion.value = ""
         stock_disponible.value = ""
         precio_unitario.value = ""
         categorias.value = ""
-        
-        producto.on_change = cambio_producto
-        descripcion.on_change = cambio_descripcion
-        stock_disponible.on_change = cambio_stock_disponible
-        precio_unitario.on_change = cambio_precio_unitario
-        categorias.on_change = cambio_categorias
-        
 
-    # Configura el diálogo
         page.dialog = ft.AlertDialog(
             shape=ft.RoundedRectangleBorder(radius=5),
             title=ft.Text("Insertar un Producto nuevo"),
@@ -191,13 +175,12 @@ def producto_view(page: ft.Page):
                 stock_disponible,
                 precio_unitario,
                 categorias
-            ], width=650, height=650),
+            ]),
             actions=[
                 ft.TextButton("Cancelar", on_click=cerrar_dialogo),
                 ft.ElevatedButton("Guardar", on_click=guardar_insertar)
             ],
         )
-        # Abre el diálogo
         page.dialog.open = True
         page.update()
         producto.focus()
@@ -287,7 +270,7 @@ def producto_view(page: ft.Page):
         page.update()
 
     encabezado = ft.Row([
-        ft.Text("Gestión de Productos", size=30, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.LEFT)
+        ft.Text("Gestión de Productos", size=30, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.RIGHT)
     ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN)
 
     boton_borrar = ft.ElevatedButton("Borrar", width=100, disabled=True, on_click=mostrar_vent_borrar)

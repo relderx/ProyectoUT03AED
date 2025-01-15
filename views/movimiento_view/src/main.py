@@ -129,8 +129,8 @@ def movimiento_view(page: ft.Page):
 
         producto.value = movimiento_seleccionado[0]  # Producto
         tipo_movimiento.value = movimiento_seleccionado[1]  # Tipo de movimiento
-        cantidad.value = str(movimiento_seleccionado[2])  # Cantidad
-        comentario.value = movimiento_seleccionado[4] if len(movimiento_seleccionado) > 5 else ""  # Comentario
+        cantidad.value = str(movimiento_seleccionado[3])  # Cantidad
+        comentario.value = movimiento_seleccionado[5] if len(movimiento_seleccionado) > 5 else ""  # Comentario
 
         page.dialog = dialog_modificar
         dialog_modificar.open = True
@@ -247,6 +247,10 @@ def movimiento_view(page: ft.Page):
 
     tabla = ft.DataTable(
         width=1920,
+        border_radius=2,
+        border=ft.border.all(2, "red"),  # Color de borde rojo
+        horizontal_lines=ft.BorderSide(2, "blue"),  # Líneas horizontales azules
+        vertical_lines=ft.BorderSide(2, "blue"),  # Líneas verticales azules
         columns=[ft.DataColumn(ft.Text(encabezado)) for encabezado in encabezados_tabla],
         rows=crear_filas(datos_tabla),
     )
@@ -288,23 +292,43 @@ def movimiento_view(page: ft.Page):
         [
             ft.AppBar(
                 title=ft.Text("Gestión de Movimientos", weight=ft.FontWeight.BOLD, size=36),
+                bgcolor=ft.colors.INVERSE_PRIMARY,  # Color azul oscuro
+                center_title=True,
+                leading=ft.IconButton(ft.Icons.HOME, on_click=lambda _: page.go("/")),  # Botón de inicio
                 actions=[
                     ft.IconButton(ft.Icons.BRIGHTNESS_6, on_click=toggle_theme),
                 ],
             ),
-            ft.Row([
-                ft.Text("Gestión de Movimientos", size=30, weight=ft.FontWeight.BOLD),
-            ]),
-            ft.Row([
-                boton_borrar,
-                ft.ElevatedButton("Insertar", width=100, on_click=mostrar_vent_insertar),
-                boton_modificar
-            ]),
-            buscar_filtro,
-            ordenar_filtro,
+            ft.Row(
+                [
+                    ft.Text("Gestión de Movimientos", size=30, weight=ft.FontWeight.BOLD),
+                ],
+                alignment=ft.MainAxisAlignment.END
+            ),
+            ft.Row(
+                [
+                    boton_borrar,
+                    ft.ElevatedButton("Insertar", width=100, on_click=mostrar_vent_insertar),
+                    boton_modificar,
+                ],
+                alignment=ft.MainAxisAlignment.END
+            ),
+            ft.Row(
+                [
+                    buscar_filtro,
+                ],
+                alignment=ft.MainAxisAlignment.END
+            ),
+            ft.Row(
+                [
+                    ordenar_filtro,
+                ],
+                alignment=ft.MainAxisAlignment.END
+            ),
             tabla,
         ]
     )
+
 
 if __name__ == "__main__":
     ft.app(target=movimiento_view)

@@ -16,7 +16,7 @@ Luego entra en el enviroment, activalo e instala el flet:
   pip install flet
 ```
 
-También instalará pymongo dentro del enviroment:
+Por último, también instala pymongo dentro del enviroment:
 ```bash
   pip install pymongo
 ```
@@ -38,13 +38,13 @@ Las principales ventanas gráficas de la aplicación se organizarán de la sigui
 ### Ventana de Productos
 
 - Visualización de todos los productos en el inventario.
-- Opciones para insertar, modificar y eliminar productos.
+- Opciones para agregar, editar y eliminar productos.
 - Funcionalidades de búsqueda y filtrado por categoría, precio, y nombre.
 
 ### Ventana de Movimientos de Inventario
 
-- Visualiza el historial de movimientos (entradas, salidas y ajustes) de productos.
-- Permite registrar nuevos movimientos (entradas, salidas o ajustes de inventario).
+- Visualiza el historial de movimientos (entradas y salidas) de productos.
+- Permite registrar nuevos movimientos (entradas o salidas de inventario).
 - Búsqueda por fecha, tipo de movimiento y producto.
 
 ### Ventana de Pedidos
@@ -77,8 +77,6 @@ Proyecto/
 │ ├───movimiento_view.py      # Vistas y formularios para movimientos de inventario
 │ ├───pedido_view.py          # Vistas y formularios para pedidos
 │ └───producto_view.py        # Vistas y formularios para productos
-│
-├─app.py                      # Archivo de la app
 │
 ├─main.py                     # Archivo principal que inicia la aplicación
 │

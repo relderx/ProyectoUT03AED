@@ -101,25 +101,32 @@ def pedido_view(page: ft.Page):
             if not pedido.value.strip() or not nombreCliente.value.strip() or not emailCliente.value.strip() or not emailCliente.value.strip() or not productos.value.strip() or not estado.value:
                 mostrar_notificacion("Todos los campos son obligatorios.")
                 return
-            
+            print(nombreCliente.value.strip())
             products = []
             for producto in productos.value.split(","):
-                for elemento in producto.split(" x "):
-                    products.append({"producto":elemento[0],"unidades":elemento[1],"precio_unidad":elemento[2]})
-
+                elemento = producto.split(" x ")
+                print(elemento)
+                products.append({"producto":elemento[0],"unidades":int(elemento[1]),"precio_unidad":float(elemento[2])})
+            cliente = {
+                "nombre":nombreCliente.value.strip(),
+                "email":emailCliente.value.strip(), 
+                "telefono":telefonoCliente.value.strip()
+                }
             nuevo_pedido = Pedido(
                 num_pedido=pedido.value.strip(),
-                cliente={"nombre":{nombreCliente.value.strip()},"email":{emailCliente.value.strip()}, "telefono":{telefonoCliente.value.strip()}},
+                cliente=cliente,
                 productos=products,
                 estado=estado.value.strip()
             )
 
             add_pedido(nuevo_pedido)
             actualizar_tabla()
-            cerrar_dialogo(e)
+            cerrar_dialogo()
             mostrar_notificacion("Pedido insertado correctamente.")
-        except Exception as ex:
-            mostrar_notificacion(f"Error al insertar el pedido: {ex}")
+            # except Exception as ex:
+            #     mostrar_notificacion(f"Error al modificar el pedido: {ex}")
+        finally:
+            pass
 
     def guardar_modificar(e):
         if pedidos_seleccionados_ids:
@@ -140,8 +147,10 @@ def pedido_view(page: ft.Page):
                 actualizar_tabla()
                 cerrar_dialogo(e)
                 mostrar_notificacion("Pedido modificado correctamente.")
-            except Exception as ex:
-                mostrar_notificacion(f"Error al modificar el pedido: {ex}")
+            # except Exception as ex:
+            #     mostrar_notificacion(f"Error al modificar el pedido: {ex}")
+            finally:
+                pass
 
     def abrir_dialogo_modificar():
         if len(pedidos_seleccionados_ids) != 1:
@@ -226,7 +235,10 @@ def pedido_view(page: ft.Page):
                 telefonoCliente,
                 productos,
                 estado
-        ]),
+            ],
+            width = 650,
+            height = 650,
+            ),
         actions=[
             ft.TextButton("Cancelar", on_click=cerrar_dialogo),
             ft.ElevatedButton("Guardar", on_click=guardar_modificar)
@@ -260,7 +272,10 @@ def pedido_view(page: ft.Page):
                 telefonoCliente,
                 productos,
                 estado
-            ]),
+            ],
+            width = 650,
+            height = 650,
+            ),
             actions=[
                 ft.TextButton("Cancelar", on_click=cerrar_dialogo),
                 ft.ElevatedButton("Guardar", on_click=guardar_insertar)

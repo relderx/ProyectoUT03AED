@@ -6,7 +6,7 @@ import flet as ft
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
 
 from utils.helpers import tabulate_movimientos
-from utils.db import add_movimiento, delete_movimiento, update_movimiento
+from utils.db import add_movimiento, delete_movimiento, update_movimiento, movimiento_existe
 from models.movimientos import Movimiento
 
 def obtener_datos():
@@ -87,6 +87,7 @@ def movimiento_view(page: ft.Page):
         page.update()
 
     def guardar_insertar(e):
+        # Obtener los valores del formulario
         nuevo_movimiento = Movimiento(
             producto=producto.value.strip(),
             tipo_movimiento=tipo_movimiento.value.strip(),
@@ -94,10 +95,17 @@ def movimiento_view(page: ft.Page):
             comentario=comentario.value.strip(),
         )
 
+        # Verificar si el movimiento ya existe basado en el producto
+        if movimiento_existe(nuevo_movimiento.producto):
+            mostrar_notificacion("No se puede añadir, ya existe un movimiento con este producto.")
+            return
+
+        # Si no existe, agregar el movimiento
         add_movimiento(nuevo_movimiento)
+        mostrar_notificacion("Movimiento añadido exitosamente.")
         actualizar_tabla()
         cerrar_dialogo(e)
-        mostrar_notificacion("Movimiento insertado correctamente.")
+
 
     def guardar_modificar(e):
         if movimientos_seleccionados_ids:

@@ -326,7 +326,8 @@ def movimiento_view(page: ft.Page):
                 alignment=ft.MainAxisAlignment.END
             ),
             tabla,
-        ]
+        ],
+        scroll=ft.ScrollMode.AUTO
     )
 
 

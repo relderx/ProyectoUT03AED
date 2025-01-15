@@ -342,7 +342,8 @@ def pedido_view(page: ft.Page):
             buscar_filtro,
             ordenar_filtro,
             tabla,
-        ]
+        ],
+        scroll=ft.ScrollMode.AUTO
     )
 
 if __name__ == "__main__":

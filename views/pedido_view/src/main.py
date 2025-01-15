@@ -1,28 +1,16 @@
 import os
 import sys
 import flet as ft
+
+# Añadir la carpeta raíz del proyecto al path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
+
 from utils.helpers import tabulate_pedidos
 from utils.db import add_pedido, delete_pedido, update_pedido
 from models.pedidos import Pedido
 
 def obtener_datos():
-    try:
-        pedidos = tabulate_pedidos()
-        return [
-            [
-                pedido.get("num_pedido", ""),
-                pedido.get("cliente", ""),
-                pedido.get("productos", ""),
-                pedido.get("precio_total", 0),
-                pedido.get("estado", ""),
-                pedido.get("fecha_creacion", ""),
-                pedido.get("fecha_modificacion", "")
-            ]
-            for pedido in pedidos
-        ]
-    except Exception as e:
-        print(f"Error al obtener datos: {e}")
-        return []
+    return tabulate_pedidos()
 
 def pedido_view(page: ft.Page):
     page.title = "Gestión de Pedidos"
@@ -37,7 +25,7 @@ def pedido_view(page: ft.Page):
     # Obtener datos originales para usar en filtrado
     datos_originales = obtener_datos()
 
-    def aplicar_filtro(e):
+    def aplicar_filtro():
         filtro_seleccionado = filtro_dropdown.value
         texto_busqueda = texto_buscar.value.lower()
 
@@ -54,7 +42,7 @@ def pedido_view(page: ft.Page):
         tabla.rows.extend(crear_filas(datos_filtrados))
         tabla.update()
 
-    def aplicar_orden(e):
+    def aplicar_orden():
         orden_seleccionado = orden_dropdown.value
         if orden_seleccionado:
             indice_columna = encabezados_tabla.index(orden_seleccionado) - 1
@@ -69,7 +57,7 @@ def pedido_view(page: ft.Page):
     def toggle_theme():
         page.theme_mode = 'dark' if page.theme_mode == 'light' else 'light'
         page.update()
-
+        
     def cambio_pedido(e):
         page.val_pedido = e.control.value
         page.update()
@@ -86,7 +74,7 @@ def pedido_view(page: ft.Page):
         page.val_estado = e.control.value
         page.update()
 
-    def cerrar_dialogo(e):
+    def cerrar_dialogo():
         page.dialog.open = False
         pedidos_seleccionados_ids.clear()
         boton_modificar.disabled = True
@@ -142,7 +130,7 @@ def pedido_view(page: ft.Page):
             except Exception as ex:
                 mostrar_notificacion(f"Error al modificar el pedido: {ex}")
 
-    def abrir_dialogo_modificar(e):
+    def abrir_dialogo_modificar():
         if len(pedidos_seleccionados_ids) != 1:
             mostrar_notificacion("Selecciona un único pedido para modificar.")
             return
@@ -164,12 +152,12 @@ def pedido_view(page: ft.Page):
         dialog_modificar.open = True
         page.update()
 
-    def abrir_dialogo_borrar(e):
+    def abrir_dialogo_borrar():
         page.dialog = dialog_borrar
         dialog_borrar.open = True
         page.update()
 
-    def borrar_pedidos(e):
+    def borrar_pedidos():
         try:
             for pedido_id in pedidos_seleccionados_ids:
                 delete_pedido(pedido_id)
@@ -231,7 +219,7 @@ def pedido_view(page: ft.Page):
         ],
     )
 
-    def mostrar_vent_insertar(e):
+    def mostrar_vent_insertar():
         pedido.value = ""
         cliente.value = ""
         productos.value = ""
@@ -283,7 +271,7 @@ def pedido_view(page: ft.Page):
         for fila in datos:
             pedido_id = fila[0]
             checkbox = ft.Checkbox(value=False, on_change=seleccionar_pedido, data=pedido_id)
-            celdas = [ft.DataCell(checkbox)] + [ft.DataCell(ft.Text(str(dato))) for dato in fila[1:]]
+            celdas = [ft.DataCell(checkbox)] + [ft.DataCell(ft.Text(str(dato))) for dato in fila]
             filas.append(ft.DataRow(cells=celdas))
         return filas
 

@@ -130,10 +130,12 @@ def movimiento_view(page: ft.Page):
         for movimiento_id in movimientos_seleccionados_ids:
             delete_movimiento(movimiento_id)
         actualizar_tabla()
+        datos_originales = obtener_datos()  # Actualizar los datos originales
         movimientos_seleccionados_ids.clear()
         boton_borrar.disabled = True
         boton_modificar.disabled = True
         page.update()
+
 
     def actualizar_tabla():
         datos_tabla = obtener_datos()
@@ -181,7 +183,7 @@ def movimiento_view(page: ft.Page):
 
     def mostrar_vent_insertar(e):
         producto.value = ""
-        tipo_movimiento.value = ""
+        tipo_movimiento.value = None
         cantidad.value = ""
         comentario.value = ""
 
@@ -193,12 +195,7 @@ def movimiento_view(page: ft.Page):
         page.dialog = ft.AlertDialog(
             shape=ft.RoundedRectangleBorder(radius=5),
             title=ft.Text("Insertar un Movimiento"),
-            content=ft.Column([
-                producto,
-                tipo_movimiento,
-                cantidad,
-                comentario
-            ], width=650, height=650),
+            content=ft.Column([producto, tipo_movimiento, cantidad, comentario], width=650, height=650),
             actions=[
                 ft.TextButton("Cancelar", on_click=cerrar_dialogo),
                 ft.ElevatedButton("Guardar", on_click=guardar_insertar)

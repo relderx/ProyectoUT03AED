@@ -233,6 +233,24 @@ def movimiento_view(page: ft.Page):
         boton_modificar.disabled = len(movimientos_seleccionados_ids) != 1
         page.update()
 
+    def seleccionar_todos(e):
+        # Determinar si el checkbox global está marcado o no
+        seleccionar = e.control.value
+        movimientos_seleccionados_ids.clear()
+
+        # Actualizar cada fila de la tabla
+        for row in tabla.rows:
+            checkbox = row.cells[0].content  # Primer contenido de la fila es el checkbox
+            checkbox.value = seleccionar  # Cambiar el estado del checkbox
+            if seleccionar:
+                movimientos_seleccionados_ids.append(checkbox.data)  # Agregar ID del movimiento si está seleccionado
+
+        # Habilitar o deshabilitar los botones según la selección
+        boton_borrar.disabled = not movimientos_seleccionados_ids
+        boton_modificar.disabled = len(movimientos_seleccionados_ids) != 1
+        page.update()
+
+
     encabezados_tabla = [
         "Seleccionar",
         "Producto",
@@ -246,10 +264,15 @@ def movimiento_view(page: ft.Page):
         filas = []
         for fila in datos:
             movimiento_id = fila[0]
-            checkbox = ft.Checkbox(value=False, on_change=seleccionar_movimiento, data=movimiento_id)
+            checkbox = ft.Checkbox(
+                value=False,
+                on_change=seleccionar_movimiento,
+                data=movimiento_id  # Asigna el ID del movimiento al checkbox
+            )
             celdas = [ft.DataCell(checkbox)] + [ft.DataCell(ft.Text(str(dato))) for dato in fila]
             filas.append(ft.DataRow(cells=celdas))
         return filas
+
 
     datos_tabla = datos_originales
 
@@ -259,9 +282,17 @@ def movimiento_view(page: ft.Page):
         border=ft.border.all(2, "red"),  # Color de borde rojo
         horizontal_lines=ft.BorderSide(2, "blue"),  # Líneas horizontales azules
         vertical_lines=ft.BorderSide(2, "blue"),  # Líneas verticales azules
-        columns=[ft.DataColumn(ft.Text(encabezado)) for encabezado in encabezados_tabla],
+        columns=[
+            ft.DataColumn(
+                ft.Row([
+                    ft.Text("Seleccionar"),
+                    ft.Checkbox(value=False, on_change=seleccionar_todos)  # Checkbox global
+                ])
+            )
+        ] + [ft.DataColumn(ft.Text(encabezado)) for encabezado in encabezados_tabla[1:]],
         rows=crear_filas(datos_tabla),
     )
+
 
     texto_buscar = ft.TextField(label="Buscar", width=200)
     filtro_dropdown = ft.Dropdown(

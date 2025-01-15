@@ -81,22 +81,17 @@ Proyecto/
 │ ├───pedidos.py              # Modelo de pedido
 │ └───productos.py            # Modelo de producto
 │
-├─services/                   # Lógica de negocio y servicios
-│ ├───movimientos_service.py  # Lógica para gestionar movimientos de inventario
-│ ├───pedidos_service.py      # Lógica para gestionar pedidos
-│ └───productos_service.py    # Lógica para manejar productos
-│
 ├─utils/                      # Utilidades y funciones generales
 │ ├───db.py                   # Conexión y operaciones básicas con MongoDB
 │ ├───helpers.py              # Funciones auxiliares y generales
-│ └───validators.py           # Funciones de validación de datos
 │
 ├─views/                      # Interfaces de usuario y vistas
+│ ├───main_view.py            
 │ ├───movimiento_view.py      # Vistas y formularios para movimientos de inventario
 │ ├───pedido_view.py          # Vistas y formularios para pedidos
 │ └───producto_view.py        # Vistas y formularios para productos
 │
-├─main.py                     # Archivo principal que inicia la aplicación
+├─app.py                     # Archivo principal que inicia la aplicación
 │
 └─README.md                   # Archivo explicatorio de todo el proyecto
 ```

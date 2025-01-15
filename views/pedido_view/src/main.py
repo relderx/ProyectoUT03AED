@@ -44,7 +44,7 @@ def pedido_view(page: ft.Page):
         tabla.rows.extend(crear_filas(datos_filtrados))
         tabla.update()
 
-    def aplicar_orden():
+    def aplicar_orden(e):
         orden_seleccionado = orden_dropdown.value
         if orden_seleccionado:
             indice_columna = encabezados_tabla.index(orden_seleccionado) - 1

@@ -165,6 +165,11 @@ def producto_view(page: ft.Page):
         stock_disponible.value = ""
         precio_unitario.value = ""
         categorias.value = ""
+        producto.on_change = cambio_producto
+        descripcion.on_change = cambio_descripcion
+        stock_disponible.on_change = cambio_stock_disponible
+        precio_unitario.on_change = cambio_precio_unitario
+        categorias.on_change = cambio_categorias
 
         page.dialog = ft.AlertDialog(
             shape=ft.RoundedRectangleBorder(radius=5),

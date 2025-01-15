@@ -207,6 +207,7 @@ def movimiento_view(page: ft.Page):
         producto.focus()
 
 
+
     def mostrar_vent_modificar(e):
         if len(movimientos_seleccionados_ids) != 1:
             mostrar_notificacion("Selecciona un único movimiento para modificar.")

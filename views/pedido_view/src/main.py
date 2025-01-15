@@ -123,16 +123,14 @@ def pedido_view(page: ft.Page):
             actualizar_tabla()
             cerrar_dialogo()
             mostrar_notificacion("Pedido insertado correctamente.")
-            # except Exception as ex:
-            #     mostrar_notificacion(f"Error al modificar el pedido: {ex}")
-        finally:
-            pass
+        except Exception as ex:
+            mostrar_notificacion(f"Error al insertar el pedido: {ex}")
 
     def guardar_modificar(e):
         if pedidos_seleccionados_ids:
             try:
                 pedido_id = pedidos_seleccionados_ids[0]
-                if not pedido.value.strip() or not nombreCliente.value.strip() or not productos.value.strip() or not estado.value:
+                if not pedido.value.strip() or not nombreCliente.value.strip() or not emailCliente.value.strip() or not telefonoCliente.value.strip() or not productos.value.strip() or not estado.value:
                     mostrar_notificacion("Todos los campos son obligatorios.")
                     return
 
@@ -147,10 +145,8 @@ def pedido_view(page: ft.Page):
                 actualizar_tabla()
                 cerrar_dialogo(e)
                 mostrar_notificacion("Pedido modificado correctamente.")
-            # except Exception as ex:
-            #     mostrar_notificacion(f"Error al modificar el pedido: {ex}")
-            finally:
-                pass
+            except Exception as ex:
+                mostrar_notificacion(f"Error al modificar el pedido: {ex}")
 
     def abrir_dialogo_modificar():
         if len(pedidos_seleccionados_ids) != 1:

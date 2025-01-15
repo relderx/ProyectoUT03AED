@@ -187,10 +187,11 @@ def movimiento_view(page: ft.Page):
         cantidad.value = ""
         comentario.value = ""
 
-        producto.on_change = cambio_producto
+        # Reasignar eventos por seguridad
+        producto.on_submit = guardar_insertar
         tipo_movimiento.on_change = cambio_tipo_movimiento
-        cantidad.on_change = cambio_cantidad
-        comentario.on_change = cambio_comentario
+        cantidad.on_submit = guardar_insertar
+        comentario.on_submit = guardar_insertar
 
         page.dialog = ft.AlertDialog(
             shape=ft.RoundedRectangleBorder(radius=5),
@@ -204,6 +205,7 @@ def movimiento_view(page: ft.Page):
         page.dialog.open = True
         page.update()
         producto.focus()
+
 
     def mostrar_vent_modificar(e):
         if len(movimientos_seleccionados_ids) != 1:

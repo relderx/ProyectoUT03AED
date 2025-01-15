@@ -95,7 +95,7 @@ def producto_view(page: ft.Page):
         newCategorias = []
         for categoria in page.val_categorias.split(","):
             newCategorias.append(categoria.strip())
-        add_producto(Producto(page.val_producto, page.val_descripcion, int(page.val_stock_disponible), float(page.val_precio_unitario), newCategorias))
+        add_producto(Producto(page.val_producto, page.val_descripcion, float(page.val_stock_disponible), float(page.val_precio_unitario), newCategorias))
         actualizar_tabla()
         cerrar_dialogo(e)
 
@@ -106,7 +106,7 @@ def producto_view(page: ft.Page):
                 "producto": page.val_producto,
                 "descripcion": page.val_descripcion,
                 "stock": int(page.val_stock_disponible),
-                "precio_unidad": int(page.val_precio_unitario),
+                "precio_unidad": float(page.val_precio_unitario),
                 "categoria": [categoria.strip() for categoria in page.val_categorias.split(",")]
             }
             update_producto(producto_id, updated_data)

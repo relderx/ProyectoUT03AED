@@ -6,7 +6,7 @@ import flet as ft
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from utils.helpers import tabulate_pedidos
-from utils.db import add_pedido, delete_pedido, update_pedido
+from utils.db import add_pedido, delete_pedido, update_pedido, pedido_existe
 from models.pedidos import Pedido
 
 
@@ -125,6 +125,11 @@ def pedido_view(page: ft.Page):
                 or not estado.value
             ):
                 mostrar_notificacion("Todos los campos son obligatorios.")
+                return
+
+        # Verificar si el producto ya existe
+            if pedido_existe(page.val_pedido.strip()):
+                mostrar_notificacion("No se puede añadir, el pedido ya existe.")
                 return
 
             # Validar formato del email

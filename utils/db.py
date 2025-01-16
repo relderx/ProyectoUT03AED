@@ -118,3 +118,7 @@ def update_pedido(pedido_id, pedido_data):
 def delete_pedido(pedido_id):
     '''Elimina un pedido de la colección de pedidos utilizando su ID.'''
     return COLL_PED.delete_one({'num_pedido': pedido_id})
+
+def pedido_existe(nombre_pedido):
+    '''Verifica si un pedido con el nombre dado ya existe en la base de datos.'''
+    return COLL_PED.find_one({'num_pedido': nombre_pedido}) is not None

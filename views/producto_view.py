@@ -348,7 +348,8 @@ def producto_view(page: ft.Page):
         actions=[
             ft.TextButton("Cancelar", on_click=cerrar_dialogo),
             ft.ElevatedButton(
-                "Sí", on_click=lambda e: [borrar_productos(e), cerrar_dialogo(e)]
+                "Sí", 
+                on_click=lambda e: [borrar_productos(e), cerrar_dialogo(e)]
             ),
         ],
     )
@@ -385,7 +386,9 @@ def producto_view(page: ft.Page):
             shape=ft.RoundedRectangleBorder(radius=5),
             title=ft.Text("Insertar un Producto nuevo"),
             content=ft.Column(
-                [producto, descripcion, stock_disponible, precio_unitario, categorias]
+                [producto, descripcion, stock_disponible, precio_unitario, categorias],
+            width=650,
+            height=650,
             ),
             actions=[
                 ft.TextButton("Cancelar", on_click=cerrar_dialogo),
@@ -468,7 +471,9 @@ def producto_view(page: ft.Page):
                         on_change=lambda e: cambio_categorias(e),
                         hint_text="Categorías separadas por comas",
                     ),
-                ]
+                ],
+            width=650,
+            height=650,
             ),
             actions=[
                 ft.TextButton("Cancelar", on_click=cerrar_dialogo),

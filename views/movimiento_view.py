@@ -316,7 +316,9 @@ def movimiento_view(page: ft.Page):
     dialog_modificar = ft.AlertDialog(
         shape=ft.RoundedRectangleBorder(radius=5),
         title=ft.Text("Modificar Movimiento"),
-        content=ft.Column([producto, tipo_movimiento, cantidad, comentario]),
+        content=ft.Column([producto, tipo_movimiento, cantidad, comentario],
+            width=650,
+            height=650,),
         actions=[
             ft.TextButton("Cancelar", on_click=cerrar_dialogo),
             ft.ElevatedButton("Guardar", on_click=guardar_modificar),
@@ -349,7 +351,9 @@ def movimiento_view(page: ft.Page):
         page.dialog = ft.AlertDialog(
             shape=ft.RoundedRectangleBorder(radius=5),
             title=ft.Text("Insertar un Movimiento"),
-            content=ft.Column([producto, tipo_movimiento, cantidad, comentario]),
+            content=ft.Column([producto, tipo_movimiento, cantidad, comentario],
+            width=650,
+            height=650,),
             actions=[
                 ft.TextButton("Cancelar", on_click=cerrar_dialogo),
                 ft.ElevatedButton("Guardar", on_click=guardar_insertar),

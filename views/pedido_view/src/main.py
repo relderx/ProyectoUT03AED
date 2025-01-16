@@ -97,12 +97,14 @@ def pedido_view(page: ft.Page):
         page.update()
 
     # Cierra el cuadro de diálogo y restablece el estado de los botones y la selección
-    def cerrar_dialogo():
-        page.dialog.open = False
-        pedidos_seleccionados_ids.clear()
-        boton_modificar.disabled = True
-        boton_borrar.disabled = True
-        page.update()
+    def cerrar_dialogo(e=None):
+        if page.dialog:
+            page.dialog.open = False  # Cierra el diálogo
+            page.dialog = None  # Limpia la referencia al diálogo
+            pedidos_seleccionados_ids.clear()  # Limpia la selección
+            boton_modificar.disabled = True
+            boton_borrar.disabled = True
+            page.update()
 
     # Muestra una notificación en la barra inferior
     def mostrar_notificacion(mensaje):
@@ -278,7 +280,7 @@ def pedido_view(page: ft.Page):
                 mostrar_notificacion(f"Error al modificar el pedido: {ex}")
 
     # Abre el cuadro de diálogo para modificar un pedido seleccionado
-    def abrir_dialogo_modificar(e):
+    def mostrar_dialogo_modificar(e):
         if len(pedidos_seleccionados_ids) != 1:
             mostrar_notificacion("Selecciona un único pedido para modificar.")
             return
@@ -296,8 +298,10 @@ def pedido_view(page: ft.Page):
         # Cargar los datos del pedido en los campos del formulario
         pedido.value = pedido_seleccionado[0]
         nombreCliente.value = pedido_seleccionado[1]
-        productos.value = pedido_seleccionado[2]
-        estado.value = pedido_seleccionado[4]
+        emailCliente.value = pedido_seleccionado[2]
+        telefonoCliente.value = pedido_seleccionado[3]
+        productos.value = pedido_seleccionado[4]
+        estado.value = pedido_seleccionado[6]
 
         # Abrir el cuadro de diálogo para modificar
         page.dialog = dialog_modificar
@@ -362,7 +366,7 @@ def pedido_view(page: ft.Page):
         "Borrar", width=100, disabled=True, on_click=abrir_dialogo_borrar
     )
     boton_modificar = ft.ElevatedButton(
-        "Modificar", width=100, on_click=abrir_dialogo_modificar, disabled=True
+        "Modificar", width=100, on_click=mostrar_dialogo_modificar, disabled=True
     )
 
     # Cuadro de diálogo para confirmación de borrado
@@ -370,7 +374,7 @@ def pedido_view(page: ft.Page):
         shape=ft.RoundedRectangleBorder(radius=5),
         title=ft.Text("¿Quieres borrar los pedidos seleccionados?"),
         actions=[
-            ft.TextButton("Cancelar", on_click=cerrar_dialogo),
+            ft.TextButton("Cancelar", on_click=cerrar_dialogo),  # Evento para cancelar
             ft.ElevatedButton("Sí", on_click=borrar_pedidos),
         ],
     )
@@ -385,14 +389,13 @@ def pedido_view(page: ft.Page):
             height=650,
         ),
         actions=[
-            ft.TextButton("Cancelar", on_click=cerrar_dialogo),
+            ft.TextButton("Cancelar", on_click=cerrar_dialogo),  # Evento para cancelar
             ft.ElevatedButton("Guardar", on_click=guardar_modificar),
         ],
     )
 
     # Muestra el cuadro de diálogo para insertar un nuevo pedido
     def mostrar_vent_insertar(e):
-        # Restablecer los valores de los campos del formulario
         pedido.value = ""
         nombreCliente.value = ""
         emailCliente.value = ""
@@ -400,7 +403,6 @@ def pedido_view(page: ft.Page):
         productos.value = ""
         estado.value = None
 
-        # Asociar eventos de cambio a los campos
         pedido.on_change = cambio_pedido
         nombreCliente.on_change = cambio_nombreCliente
         emailCliente.on_change = cambio_emailCliente
@@ -408,7 +410,6 @@ def pedido_view(page: ft.Page):
         productos.on_change = cambio_productos
         estado.on_change = cambio_estado
 
-        # Configurar el cuadro de diálogo de inserción
         page.dialog = ft.AlertDialog(
             shape=ft.RoundedRectangleBorder(radius=5),
             title=ft.Text("Insertar un Pedido nuevo"),
@@ -425,7 +426,7 @@ def pedido_view(page: ft.Page):
                 height=650,
             ),
             actions=[
-                ft.TextButton("Cancelar", on_click=cerrar_dialogo),
+                ft.TextButton("Cancelar", on_click=cerrar_dialogo),  # Evento para cancelar
                 ft.ElevatedButton("Guardar", on_click=guardar_insertar),
             ],
         )

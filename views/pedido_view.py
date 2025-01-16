@@ -628,7 +628,7 @@ def pedido_view(page: ft.Page):
             ),
             buscar_filtro,
             ordenar_filtro,
-            tabla,
+            ft.Row([tabla], scroll=ft.ScrollMode.AUTO),
         ],
         scroll=ft.ScrollMode.AUTO,
     )

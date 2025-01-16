@@ -6,7 +6,7 @@ import flet as ft
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
 
 from utils.helpers import tabulate_productos
-from utils.db import add_producto, delete_producto, update_producto, producto_existe
+from utils.db import add_producto, delete_producto, update_producto, producto_existe, obtener_id_producto
 from models.productos import Producto
 
 def obtener_datos():
@@ -96,8 +96,45 @@ def producto_view(page: ft.Page):
         page.update()
 
     def guardar_insertar(e):
+        # Validar si algún campo está vacío o es None
+        if not (page.val_producto and page.val_producto.strip()):
+            mostrar_notificacion("El campo 'Producto' no puede estar vacío.")
+            return
+        if not (page.val_descripcion and page.val_descripcion.strip()):
+            mostrar_notificacion("El campo 'Descripción' no puede estar vacío.")
+            return
+        if not (page.val_stock_disponible and page.val_stock_disponible.strip()):
+            mostrar_notificacion("El campo 'Stock disponible' no puede estar vacío.")
+            return
+        if not (page.val_precio_unitario and page.val_precio_unitario.strip()):
+            mostrar_notificacion("El campo 'Precio unitario' no puede estar vacío.")
+            return
+        if not (page.val_categorias and page.val_categorias.strip()):
+            mostrar_notificacion("El campo 'Categorías' no puede estar vacío.")
+            return
+
+        # Validar que el stock sea un número entero
+        try:
+            stock_disponible = int(page.val_stock_disponible.strip())
+            if stock_disponible < 0:
+                mostrar_notificacion("El campo 'Stock disponible' debe ser un número entero positivo.")
+                return
+        except ValueError:
+            mostrar_notificacion("El campo 'Stock disponible' debe ser un número entero válido.")
+            return
+
+        # Validar que el precio unitario sea un número entero o flotante
+        try:
+            precio_unitario = float(page.val_precio_unitario.strip())
+            if precio_unitario < 0:
+                mostrar_notificacion("El campo 'Precio unitario' debe ser un número positivo.")
+                return
+        except ValueError:
+            mostrar_notificacion("El campo 'Precio unitario' debe ser un número válido (entero o flotante).")
+            return
+
         # Verificar si el producto ya existe
-        if producto_existe(page.val_producto):
+        if producto_existe(page.val_producto.strip()):
             mostrar_notificacion("No se puede añadir, el producto ya existe.")
             return
 
@@ -105,11 +142,12 @@ def producto_view(page: ft.Page):
         newCategorias = []
         for categoria in page.val_categorias.split(","):
             newCategorias.append(categoria.strip())
+
         add_producto(Producto(
-            page.val_producto,
-            page.val_descripcion,
-            int(page.val_stock_disponible),
-            float(page.val_precio_unitario),
+            page.val_producto.strip(),
+            page.val_descripcion.strip(),
+            stock_disponible,
+            precio_unitario,
             newCategorias
         ))
         mostrar_notificacion("Producto añadido exitosamente.")
@@ -120,16 +158,47 @@ def producto_view(page: ft.Page):
     def guardar_modificar(e):
         if productos_seleccionados_ids:
             producto_id = productos_seleccionados_ids[0]
+
+            # Validar que el producto no existe con el mismo nombre
+            if producto_existe(page.val_producto.strip()) and producto_id != obtener_id_producto(page.val_producto.strip()):
+                mostrar_notificacion("El nombre del producto ya existe, no se puede modificar.")
+                return
+
+            # Validar que el stock sea un número entero
+            try:
+                stock_disponible = int(page.val_stock_disponible.strip())
+                if stock_disponible < 0:
+                    mostrar_notificacion("El campo 'Stock disponible' debe ser un número entero positivo.")
+                    return
+            except ValueError:
+                mostrar_notificacion("El campo 'Stock disponible' debe ser un número entero válido.")
+                return
+
+            # Validar que el precio unitario sea un número entero o flotante
+            try:
+                precio_unitario = float(page.val_precio_unitario.strip())
+                if precio_unitario < 0:
+                    mostrar_notificacion("El campo 'Precio unitario' debe ser un número positivo.")
+                    return
+            except ValueError:
+                mostrar_notificacion("El campo 'Precio unitario' debe ser un número válido (entero o flotante).")
+                return
+
+            # Actualizar los datos del producto
             updated_data = {
-                "producto": page.val_producto,
-                "descripcion": page.val_descripcion,
-                "stock": int(page.val_stock_disponible),
-                "precio_unidad": float(page.val_precio_unitario),
+                "producto": page.val_producto.strip(),
+                "descripcion": page.val_descripcion.strip(),
+                "stock": stock_disponible,
+                "precio_unidad": precio_unitario,
                 "categoria": [categoria.strip() for categoria in page.val_categorias.split(",")]
             }
             update_producto(producto_id, updated_data)
+
+            # Mostrar notificación de éxito
+            mostrar_notificacion("El pedido se modificó correctamente.")
             actualizar_tabla()
             cerrar_dialogo(e)
+
 
     def borrar_productos(e):
         for producto_id in productos_seleccionados_ids:

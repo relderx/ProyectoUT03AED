@@ -55,14 +55,30 @@ def tabulate_pedidos():
     datos_tabla = []
 
     for pedido in pedidos:
+        if not isinstance(pedido, dict):
+            print(f"Warning: Unexpected pedido format: {pedido}")
+            continue  # Skip invalid entries
+
+        cliente = pedido.get('cliente', {})
+        productos = pedido.get('productos', [])
         datos_tabla.append([
             pedido.get('num_pedido', ''),
-            pedido.get('cliente', {}).get('nombre', ''),
-            ", ".join([f"{producto['producto']} x {producto['unidades']} ({producto['precio_unidad']}€ x unidad)" for producto in pedido.get('productos', [])]),
-            pedido.get('precio_total', ''),
+            cliente.get('nombre', '') if isinstance(cliente, dict) else '',
+            cliente.get('email', '') if isinstance(cliente, dict) else '',
+            cliente.get('telefono', '') if isinstance(cliente, dict) else '',
+            ", ".join([
+                f"{p.get('producto', '')} x {p.get('unidades', 0)} ({p.get('precio_unidad', 0)}€ x unidad)" 
+                for p in productos if isinstance(p, dict)
+            ]),
+            pedido.get('precio_total', 0),
             pedido.get('estado', ''),
             pedido.get('fecha_creacion', ''),
             pedido.get('fecha_modificacion', '')
         ])
+
+    # Ensure rows have exactly 10 elements
+    for row in datos_tabla:
+        if len(row) != 10:
+            print(f"Invalid row length: {len(row)}, Row: {row}")
 
     return datos_tabla

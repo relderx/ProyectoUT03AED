@@ -39,6 +39,14 @@ def update_producto(producto_id, producto_data):
     )
     return COLL_PRO.update_one({'producto': producto_id}, {'$set': producto_data})
 
+def obtener_id_producto(nombre_producto):
+    """
+    Devuelve el ID (_id) del producto basado en su nombre.
+    Si no existe un producto con ese nombre, devuelve None.
+    """
+    producto = COLL_PRO.find_one({'producto': nombre_producto})
+    return producto['_id'] if producto else None
+
 def delete_producto(producto_id):
     '''Elimina un producto de la colección de productos utilizando su ID.'''
     return COLL_PRO.delete_one({'producto': producto_id})

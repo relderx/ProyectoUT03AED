@@ -15,7 +15,7 @@ from utils.db import (
 )
 from models.productos import Producto
 
-
+# Obtiene los datos de los movimientos
 def obtener_datos():
     return tabulate_productos()
 

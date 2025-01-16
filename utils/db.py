@@ -79,6 +79,14 @@ def movimiento_existe(producto):
     '''Verifica si un movimiento con el producto dado ya existe en la base de datos.'''
     return COLL_MOV.find_one({'producto': producto}) is not None
 
+def obtener_id_movimiento(producto_nombre):
+    """
+    Devuelve el ID (_id) del movimiento basado en el nombre del producto.
+    Si no existe un movimiento con ese producto, devuelve None.
+    """
+    movimiento = COLL_MOV.find_one({'producto': producto_nombre})
+    return movimiento['_id'] if movimiento else None
+
 def get_pedidos():
     '''Obtiene todos los documentos de la colección de pedidos.'''
     return COLL_PED.find()

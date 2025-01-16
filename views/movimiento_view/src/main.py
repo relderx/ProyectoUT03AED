@@ -6,7 +6,7 @@ import flet as ft
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
 
 from utils.helpers import tabulate_movimientos
-from utils.db import add_movimiento, delete_movimiento, update_movimiento, movimiento_existe
+from utils.db import add_movimiento, delete_movimiento, update_movimiento, movimiento_existe, obtener_id_movimiento
 from models.movimientos import Movimiento
 
 def obtener_datos():
@@ -87,37 +87,84 @@ def movimiento_view(page: ft.Page):
         page.update()
 
     def guardar_insertar(e):
-        # Obtener los valores del formulario
-        nuevo_movimiento = Movimiento(
-            producto=producto.value.strip(),
-            tipo_movimiento=tipo_movimiento.value.strip(),
-            cantidad=int(cantidad.value.strip()),
-            comentario=comentario.value.strip(),
-        )
+        # Validar si algún campo está vacío o es None
+        if not (producto.value and producto.value.strip()):
+            mostrar_notificacion("El campo 'Producto' no puede estar vacío.")
+            return
+        if not (tipo_movimiento.value and tipo_movimiento.value.strip()):
+            mostrar_notificacion("El campo 'Tipo de Movimiento' no puede estar vacío.")
+            return
+        if not (cantidad.value and cantidad.value.strip()):
+            mostrar_notificacion("El campo 'Cantidad' no puede estar vacío.")
+            return
 
-        # Verificar si el movimiento ya existe basado en el producto
-        if movimiento_existe(nuevo_movimiento.producto):
-            mostrar_notificacion("No se puede añadir, ya existe un movimiento con este producto.")
+        # Validar que la cantidad sea un número entero positivo
+        try:
+            cantidad_valor = int(cantidad.value.strip())
+            if cantidad_valor <= 0:
+                mostrar_notificacion("El campo 'Cantidad' debe ser un número entero positivo.")
+                return
+        except ValueError:
+            mostrar_notificacion("El campo 'Cantidad' debe ser un número entero válido.")
+            return
+
+        # Validar si el movimiento ya existe
+        if movimiento_existe(producto.value.strip()):
+            mostrar_notificacion("No se puede añadir, ya existe un movimiento para este producto.")
             return
 
         # Si no existe, agregar el movimiento
+        nuevo_movimiento = Movimiento(
+            producto=producto.value.strip(),
+            tipo_movimiento=tipo_movimiento.value.strip(),
+            cantidad=cantidad_valor,
+            comentario=comentario.value.strip(),
+        )
         add_movimiento(nuevo_movimiento)
         mostrar_notificacion("Movimiento añadido exitosamente.")
         actualizar_tabla()
         cerrar_dialogo(e)
 
-
     def guardar_modificar(e):
         if movimientos_seleccionados_ids:
             movimiento_id = movimientos_seleccionados_ids[0]
-            datos_actualizados = {
-                "producto": producto.value,
-                "tipo_movimiento": tipo_movimiento.value,
-                "cantidad": int(cantidad.value),
-                "comentario": comentario.value,
-            }
 
+            # Validar si algún campo está vacío o es None
+            if not (producto.value and producto.value.strip()):
+                mostrar_notificacion("El campo 'Producto' no puede estar vacío.")
+                return
+            if not (tipo_movimiento.value and tipo_movimiento.value.strip()):
+                mostrar_notificacion("El campo 'Tipo de Movimiento' no puede estar vacío.")
+                return
+            if not (cantidad.value and cantidad.value.strip()):
+                mostrar_notificacion("El campo 'Cantidad' no puede estar vacío.")
+                return
+
+            # Validar que la cantidad sea un número entero positivo
+            try:
+                cantidad_valor = int(cantidad.value.strip())
+                if cantidad_valor <= 0:
+                    mostrar_notificacion("El campo 'Cantidad' debe ser un número entero positivo.")
+                    return
+            except ValueError:
+                mostrar_notificacion("El campo 'Cantidad' debe ser un número entero válido.")
+                return
+
+            # Validar si ya existe un movimiento con las mismas características
+            if movimiento_existe(producto.value.strip()) and movimiento_id != obtener_id_movimiento(producto.value.strip()):
+                mostrar_notificacion("No se puede modificar, ya existe un movimiento con este producto.")
+                return
+
+            # Actualizar los datos del movimiento
+            datos_actualizados = {
+                "producto": producto.value.strip(),
+                "tipo_movimiento": tipo_movimiento.value.strip(),
+                "cantidad": cantidad_valor,
+                "comentario": comentario.value.strip(),
+            }
             update_movimiento(movimiento_id, datos_actualizados)
+
+            mostrar_notificacion("El movimiento se modificó correctamente.")
             actualizar_tabla()
             cerrar_dialogo(e)
 

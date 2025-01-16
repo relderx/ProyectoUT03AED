@@ -510,7 +510,7 @@ def pedido_view(page: ft.Page):
     tabla = ft.DataTable(
         width=1920,
         border_radius=2,
-        border=ft.border.all(2, "#1e88e5"),
+        border=ft.border.all(2, "red"),
         horizontal_lines=ft.BorderSide(2, "#1e88e5"),
         vertical_lines=ft.BorderSide(2, "#1e88e5"),
         columns=[

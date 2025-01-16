@@ -691,11 +691,18 @@ def producto_view(page: ft.Page):
             ),
             ft.Row(
                 [
-                    boton_borrar,
                     ft.ElevatedButton(
-                        "Insertar", width=100, on_click=mostrar_vent_insertar
+                        "Insertar",
+                        width=120,
+                        height=40,
+                        bgcolor="#007BFF",
+                        color="white",
+                        style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=5)),
+                        icon=ft.Icons.ADD,
+                        on_click=mostrar_vent_insertar,
                     ),
                     boton_modificar,
+                    boton_borrar,
                 ],
                 alignment=ft.MainAxisAlignment.END,
             ),

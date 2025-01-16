@@ -34,6 +34,10 @@ def producto_view(page: ft.Page):
     # Obtener datos originales para usar en filtrado
     datos_originales = obtener_datos()
 
+    # Variable global para controlar el orden
+    global orden_invertido
+    orden_invertido = False
+
     def aplicar_filtro(e):
         filtro_seleccionado = filtro_dropdown.value
         texto_busqueda = texto_buscar.value.lower()
@@ -55,34 +59,50 @@ def producto_view(page: ft.Page):
         tabla.rows.extend(crear_filas(datos_filtrados))
         tabla.update()
 
-    # Aplica el orden seleccionado a los datos de la tabla
+
+   # Aplica el orden seleccionado a los datos de la tabla
     def aplicar_orden(e):
+        global orden_invertido
         orden_seleccionado = orden_dropdown.value
         if orden_seleccionado:
             indice_columna = encabezados_tabla.index(orden_seleccionado) - 1
 
             def obtener_valor_ordenacion(fila):
                 valor = fila[indice_columna]
-                # Verificar si el valor es numérico (para columnas como Stock y Precio)
                 if encabezados_tabla[indice_columna + 1] in [
                     "Stock Disponible",
                     "Precio por Unidad",
                 ]:
                     try:
-                        return float(
-                            valor
-                        )  # Convertir a flotante para ordenación numérica
+                        return float(valor)
                     except ValueError:
-                        return float("inf")  # Si no es numérico, mandarlo al final
-                return str(valor).lower()  # Comparar como cadena para otras columnas
+                        return float("inf")
+                return str(valor).lower()
 
             try:
-                datos_ordenados = sorted(datos_originales, key=obtener_valor_ordenacion)
+                datos_ordenados = sorted(
+                    datos_originales,
+                    key=obtener_valor_ordenacion,
+                    reverse=orden_invertido,
+                )
                 tabla.rows.clear()
                 tabla.rows.extend(crear_filas(datos_ordenados))
                 tabla.update()
             except Exception as ex:
                 mostrar_notificacion(f"Error al ordenar: {ex}")
+
+    # Alternar el estado del orden
+    def alternar_orden(e):
+        global orden_invertido
+        orden_invertido = not orden_invertido
+        aplicar_orden(e)
+
+    # Botón para alternar el orden
+    boton_alternar_orden = ft.IconButton(
+        icon=ft.Icons.SWAP_VERT,
+        tooltip="Invertir Orden",
+        on_click=alternar_orden,
+    )
 
     # Alterna entre los temas claro y oscuro
     def toggle_theme():
@@ -474,7 +494,7 @@ def producto_view(page: ft.Page):
     )
     boton_modificar = ft.ElevatedButton(
         "Modificar", width=100, on_click=mostrar_vent_modificar, disabled=True
-    )
+        )
     botones_inferiores = ft.Row(
         [
             boton_borrar,
@@ -485,12 +505,12 @@ def producto_view(page: ft.Page):
                 bgcolor="#007BFF",
                 color="white",
                 style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=5)),
-                icon=ft.Icons.ADD,
-                on_click=mostrar_vent_insertar,
+                icon=ft.Icons.ADD,  # Icono de "Agregar"
+                on_click=mostrar_vent_insertar,  # Acción al hacer clic
             ),
             boton_modificar,
         ],
-        alignment=ft.MainAxisAlignment.END,
+        alignment=ft.MainAxisAlignment.END,  # Alineación a la derecha
     )
 
     # Gestiona la selección de productos individuales
@@ -631,7 +651,8 @@ def producto_view(page: ft.Page):
 
     # Sección para ordenamiento
     ordenar_filtro = ft.Row(
-        [orden_dropdown, boton_aplicar_orden], alignment=ft.MainAxisAlignment.END
+        [orden_dropdown, boton_aplicar_orden, boton_alternar_orden],
+        alignment=ft.MainAxisAlignment.END,
     )
 
     # Retorna la vista principal del inventario

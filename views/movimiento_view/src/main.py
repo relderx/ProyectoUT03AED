@@ -19,7 +19,6 @@ from models.movimientos import Movimiento
 def obtener_datos():
     return tabulate_movimientos()  # Obtiene los datos tabulados de movimientos
 
-
 # Configuración inicial de la vista de movimientos
 def movimiento_view(page: ft.Page):
     page.title = "Gestión de Movimientos"
@@ -33,6 +32,10 @@ def movimiento_view(page: ft.Page):
 
     # Obtener los datos originales para usar en la tabla y filtros
     datos_originales = obtener_datos()
+
+    # Variable para controlar el orden ascendente o descendente
+    global orden_invertido
+    orden_invertido = False
 
     # Aplica un filtro a los datos en función de los criterios seleccionados
     def aplicar_filtro(e):
@@ -56,21 +59,40 @@ def movimiento_view(page: ft.Page):
         tabla.rows.extend(crear_filas(datos_filtrados))
         tabla.update()
 
-    # Aplica un orden a los datos en la tabla según el criterio seleccionado
+    # Aplica un orden a los datos en la tabla
     def aplicar_orden(e):
+        global orden_invertido
         orden_seleccionado = orden_dropdown.value
         if orden_seleccionado:
             indice_columna = encabezados_tabla.index(orden_seleccionado) - 1
+
+            def obtener_valor_ordenacion(fila):
+                valor = fila[indice_columna]
+                if str(valor).replace(".", "", 1).isdigit():
+                    return float(valor)
+                return str(valor).lower()
+
             datos_ordenados = sorted(
                 datos_originales,
-                key=lambda x: float(x[indice_columna])
-                if str(x[indice_columna]).replace(".", "", 1).isdigit()
-                else str(x[indice_columna]).lower(),
+                key=obtener_valor_ordenacion,
+                reverse=orden_invertido,
             )
-            # Actualizar la tabla con los datos ordenados
             tabla.rows.clear()
             tabla.rows.extend(crear_filas(datos_ordenados))
             tabla.update()
+
+    # Alterna el estado del orden entre ascendente y descendente
+    def alternar_orden(e):
+        global orden_invertido
+        orden_invertido = not orden_invertido
+        aplicar_orden(e)
+
+    # Botón para alternar el orden
+    boton_alternar_orden = ft.IconButton(
+        icon=ft.Icons.SWAP_VERT,
+        tooltip="Invertir Orden",
+        on_click=alternar_orden,
+    )
 
     # Alterna entre los temas claro y oscuro
     def toggle_theme():
@@ -475,13 +497,13 @@ def movimiento_view(page: ft.Page):
         [
             ft.AppBar(
                 title=ft.Text(
-                    "Gestión de Movimientos", weight=ft.FontWeight.BOLD, size=36
+                    "Gestión de Movimientos",
+                    weight=ft.FontWeight.BOLD,
+                    size=36,
                 ),
-                bgcolor=ft.colors.INVERSE_PRIMARY,  # Color azul oscuro
+                bgcolor=ft.colors.INVERSE_PRIMARY,
                 center_title=True,
-                leading=ft.IconButton(
-                    ft.Icons.HOME, on_click=lambda _: page.go("/")
-                ),  # Botón de inicio
+                leading=ft.IconButton(ft.Icons.HOME, on_click=lambda _: page.go("/")),
                 actions=[
                     ft.IconButton(
                         ft.Icons.BRIGHTNESS_6, on_click=lambda _: toggle_theme()
@@ -491,7 +513,9 @@ def movimiento_view(page: ft.Page):
             ft.Row(
                 [
                     ft.Text(
-                        "Gestión de Movimientos", size=30, weight=ft.FontWeight.BOLD
+                        "Gestión de Movimientos",
+                        size=30,
+                        weight=ft.FontWeight.BOLD,
                     ),
                 ],
                 alignment=ft.MainAxisAlignment.END,
@@ -500,14 +524,7 @@ def movimiento_view(page: ft.Page):
                 [
                     boton_borrar,
                     ft.ElevatedButton(
-                        "Insertar",
-                        width=120,
-                        height=40,
-                        bgcolor="#007BFF",
-                        color="white",
-                        style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=5)),
-                        icon=ft.Icons.ADD,
-                        on_click=mostrar_vent_insertar,
+                        "Insertar", width=100, on_click=mostrar_vent_insertar
                     ),
                     boton_modificar,
                 ],
@@ -521,7 +538,9 @@ def movimiento_view(page: ft.Page):
             ),
             ft.Row(
                 [
-                    ordenar_filtro,
+                    orden_dropdown,
+                    boton_aplicar_orden,
+                    boton_alternar_orden,  # Botón para invertir el orden
                 ],
                 alignment=ft.MainAxisAlignment.END,
             ),
@@ -529,7 +548,6 @@ def movimiento_view(page: ft.Page):
         ],
         scroll=ft.ScrollMode.AUTO,
     )
-
 
 if __name__ == "__main__":
     ft.app(target=movimiento_view)

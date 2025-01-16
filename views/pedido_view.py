@@ -3,7 +3,7 @@ import sys
 import flet as ft
 
 # Añadir la carpeta raíz del proyecto al path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from utils.helpers import tabulate_pedidos
 from utils.db import add_pedido, delete_pedido, update_pedido

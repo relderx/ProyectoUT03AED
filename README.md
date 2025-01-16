@@ -97,7 +97,7 @@ Proyecto/
 │ ├───pedido_view.py          # Vistas y formularios para pedidos
 │ └───producto_view.py        # Vistas y formularios para productos
 │
-├─app.py                      # Archivo que ejecuta el main.py
+├─app.py                      # Archivo que ejecuta el main_view.py
 │
 └─README.md                   # Archivo explicatorio de todo el proyecto
 ```

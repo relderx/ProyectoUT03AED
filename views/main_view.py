@@ -1,8 +1,8 @@
 import flet as ft
 
-from views.movimiento_view.src.main import movimiento_view
-from views.producto_view.src.main import producto_view
-from views.pedido_view.src.main import pedido_view
+from views.movimiento_view import movimiento_view
+from views.producto_view import producto_view
+from views.pedido_view import pedido_view
 
 # Configuración principal de la vista de la aplicación
 def main_view(page: ft.Page):

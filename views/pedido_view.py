@@ -6,7 +6,7 @@ import flet as ft
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from utils.helpers import tabulate_pedidos
-from utils.db import add_pedido, delete_pedido, update_pedido, pedido_existe
+from utils.db import add_pedido, delete_pedido, update_pedido, pedido_existe, obtener_id_pedido
 from models.pedidos import Pedido
 
 
@@ -204,7 +204,6 @@ def pedido_view(page: ft.Page):
             try:
                 # Obtener el ID del pedido seleccionado
                 pedido_id = pedidos_seleccionados_ids[0]
-
                 # Validar que todos los campos sean obligatorios
                 if (
                     not pedido.value.strip()
@@ -215,6 +214,15 @@ def pedido_view(page: ft.Page):
                     or not estado.value
                 ):
                     mostrar_notificacion("Todos los campos son obligatorios.")
+                    return
+                
+                # Validar que no exista un duplicado
+                if pedido_existe(
+                    pedido.value.strip()
+                ) and pedido_id != obtener_id_pedido(pedido.value.strip()):
+                    mostrar_notificacion(
+                        "No se puede modificar, ya existe un pedido con este número."
+                    )
                     return
 
                 # Validar formato del email
@@ -305,7 +313,14 @@ def pedido_view(page: ft.Page):
         nombreCliente.value = pedido_seleccionado[1]
         emailCliente.value = pedido_seleccionado[2]
         telefonoCliente.value = pedido_seleccionado[3]
-        productos.value = pedido_seleccionado[4]
+        
+        ori_producto = ""
+        for producto in pedido_seleccionado[4].split(","):
+            ori_producto += f"{producto.split(" x ")[0]} x {producto.split(" x ")[1].split(" (")[0]} x {producto.split(" x ")[1].split(" (")[1]},"
+            ori_producto = ori_producto[:-2] + ","
+        ori_producto = ori_producto[:-1]
+        productos.value = ori_producto
+        
         estado.value = pedido_seleccionado[6]
 
         # Abrir el cuadro de diálogo para modificar

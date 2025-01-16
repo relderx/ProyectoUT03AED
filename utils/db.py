@@ -44,11 +44,11 @@ def update_producto(producto_id, producto_data):
 
 def obtener_id_producto(nombre_producto):
     """
-    Devuelve el ID (_id) del producto basado en su nombre.
+    Devuelve el ID (producto) del producto basado en su nombre.
     Si no existe un producto con ese nombre, devuelve None.
     """
     producto = COLL_PRO.find_one({'producto': nombre_producto})
-    return producto['_id'] if producto else None
+    return producto['producto'] if producto else None
 
 def delete_producto(producto_id):
     '''Elimina un producto de la colección de productos utilizando su ID.'''
@@ -86,11 +86,11 @@ def movimiento_existe(producto):
 
 def obtener_id_movimiento(producto_nombre):
     """
-    Devuelve el ID (_id) del movimiento basado en el nombre del producto.
+    Devuelve el ID (producto) del producto basado en el nombre del producto.
     Si no existe un movimiento con ese producto, devuelve None.
     """
     movimiento = COLL_MOV.find_one({'producto': producto_nombre})
-    return movimiento['_id'] if movimiento else None
+    return movimiento['producto'] if movimiento else None
 
 # ========================== Operaciones sobre pedidos ==========================
 
@@ -118,6 +118,14 @@ def update_pedido(pedido_id, pedido_data):
 def delete_pedido(pedido_id):
     '''Elimina un pedido de la colección de pedidos utilizando su ID.'''
     return COLL_PED.delete_one({'num_pedido': pedido_id})
+
+def obtener_id_pedido(pedido_nombre):
+    """
+    Devuelve el ID (num_pedido) del pedido basado en el nombre del pedido.
+    Si no existe un pedido con ese nombre, devuelve None.
+    """
+    pedido = COLL_PED.find_one({'num_pedido': pedido_nombre})
+    return pedido['num_pedido'] if pedido else None
 
 def pedido_existe(nombre_pedido):
     '''Verifica si un pedido con el nombre dado ya existe en la base de datos.'''

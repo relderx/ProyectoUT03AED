@@ -12,47 +12,48 @@ from utils.db import add_many_movimientos, add_many_productos, add_many_pedidos
 # Crear 10 productos
 # Cada producto tiene un nombre, descripción, stock disponible, precio unitario y una lista de categorías
 productos = [
-    Producto("Producto J", "Descripción J", 1000, 100.0, ["Categoria7"]),
-    Producto("Producto B", "Descripción B", 200, 20.0, ["Categoria1", "Categoria2"]),
-    Producto("Producto I", "Descripción I", 900, 90.0, ["Categoria6"]),
-    Producto("Producto C", "Descripción C", 300, 30.0, ["Categoria2"]),
-    Producto("Producto H", "Descripción H", 800, 80.0, ["Categoria5", "Categoria6"]),
-    Producto("Producto G", "Descripción G", 700, 70.0, ["Categoria5"]),
-    Producto("Producto D", "Descripción D", 400, 40.0, ["Categoria3"]),
-    Producto("Producto A", "Descripción A", 100, 10.0, ["Categoria1"]),
-    Producto("Producto E", "Descripción E", 500, 50.0, ["Categoria3", "Categoria4"]),
-    Producto("Producto F", "Descripción F", 600, 60.0, ["Categoria4"]),
+    Producto("Producto M", "Descripción M", 500, 89.67, ["Categoria3"]),
+    Producto("Producto N", "Descripción N", 732, 45.23, ["Categoria2", "Categoria4"]),
+    Producto("Producto O", "Descripción O", 300, 12.89, ["Categoria1"]),
+    Producto("Producto P", "Descripción P", 654, 67.45, ["Categoria5", "Categoria6"]),
+    Producto("Producto Q", "Descripción Q", 890, 34.78, ["Categoria4"]),
+    Producto("Producto R", "Descripción R", 470, 76.89, ["Categoria2"]),
+    Producto("Producto S", "Descripción S", 240, 89.90, ["Categoria6", "Categoria7"]),
+    Producto("Producto T", "Descripción T", 128, 55.55, ["Categoria3"]),
+    Producto("Producto U", "Descripción U", 910, 30.23, ["Categoria1", "Categoria7"]),
+    Producto("Producto V", "Descripción V", 756, 20.75, ["Categoria2", "Categoria5"]),
 ]
 
 # Crear 10 movimientos
 # Cada movimiento tiene un producto asociado, un tipo de movimiento (entrada, salida, etc.), una cantidad y un comentario
 movimientos = [
-    Movimiento("Producto J", "entrada", 10, "Donación recibida"),
-    Movimiento("Producto C", "entrada", 100, "Compra mayorista"),
-    Movimiento("Producto A", "entrada", 50, "Ingreso inicial"),
-    Movimiento("Producto D", "salida", 5, "Muestra gratis"),
-    Movimiento("Producto I", "salida", 25, "Promoción de ventas"),
-    Movimiento("Producto F", "entrada", 30, "Nueva adquisición"),
-    Movimiento("Producto G", "salida", 15, "Pedido especial"),
-    Movimiento("Producto E", "entrada", 20, "Devolución de cliente"),
-    Movimiento("Producto H", "entrada", 200, "Stock inicial"),
-    Movimiento("Producto B", "salida", 10, "Venta"),
+    Movimiento("Producto M", "entrada", 15, "Donación recibida"),
+    Movimiento("Producto N", "salida", 22, "Venta realizada"),
+    Movimiento("Producto O", "entrada", 50, "Compra mayorista"),
+    Movimiento("Producto P", "salida", 10, "Muestra gratis"),
+    Movimiento("Producto Q", "entrada", 35, "Ingreso inicial"),
+    Movimiento("Producto R", "salida", 5, "Pedido especial"),
+    Movimiento("Producto S", "entrada", 60, "Devolución de cliente"),
+    Movimiento("Producto T", "entrada", 30, "Nueva adquisición"),
+    Movimiento("Producto U", "salida", 12, "Promoción de ventas"),
+    Movimiento("Producto V", "entrada", 45, "Stock inicial"),
 ]
 
 # Crear 10 pedidos
 # Cada pedido incluye un número único, un cliente (con nombre, email y teléfono), una lista de productos comprados, y un estado del pedido
 pedidos = [
-    Pedido(f"P008", {"nombre": "Cliente H", "email": "clienteh@email.com", "telefono": "111222333"}, [{"producto": "Producto H", "unidades": 10, "precio_unidad": 80.0}], "pendiente"),
-    Pedido(f"P004", {"nombre": "Cliente D", "email": "cliented@email.com", "telefono": "321321321"}, [{"producto": "Producto D", "unidades": 2, "precio_unidad": 40.0}], "cancelado"),
-    Pedido(f"P006", {"nombre": "Cliente F", "email": "clientef@email.com", "telefono": "987987987"}, [{"producto": "Producto F", "unidades": 8, "precio_unidad": 60.0}], "enviado"),
-    Pedido(f"P002", {"nombre": "Cliente B", "email": "clienteb@email.com", "telefono": "987654321"}, [{"producto": "Producto B", "unidades": 5, "precio_unidad": 20.0}], "enviado"),
-    Pedido(f"P001", {"nombre": "Cliente A", "email": "clientea@email.com", "telefono": "123456789"}, [{"producto": "Producto A", "unidades": 10, "precio_unidad": 10.0}], "pendiente"),
-    Pedido(f"P007", {"nombre": "Cliente G", "email": "clienteg@email.com", "telefono": "567567567"}, [{"producto": "Producto G", "unidades": 6, "precio_unidad": 70.0}], "entregado"),
-    Pedido(f"P009", {"nombre": "Cliente I", "email": "clientei@email.com", "telefono": "444555666"}, [{"producto": "Producto I", "unidades": 15, "precio_unidad": 90.0}], "enviado"),
-    Pedido(f"P005", {"nombre": "Cliente E", "email": "clientee@email.com", "telefono": "654654654"}, [{"producto": "Producto E", "unidades": 7, "precio_unidad": 50.0}], "pendiente"),
-    Pedido(f"P010", {"nombre": "Cliente J", "email": "clientej@email.com", "telefono": "777888999"}, [{"producto": "Producto J", "unidades": 12, "precio_unidad": 100.0}], "entregado"),
-    Pedido(f"P003", {"nombre": "Cliente C", "email": "clientec@email.com", "telefono": "123123123"}, [{"producto": "Producto C", "unidades": 3, "precio_unidad": 30.0}], "entregado"),
+    Pedido("P045", {"nombre": "Cliente A", "email": "random1@email.com", "telefono": "123456789"}, [{"producto": "Producto M", "unidades": 3, "precio_unidad": 89.67}], "pendiente"),
+    Pedido("P072", {"nombre": "Cliente B", "email": "random2@email.com", "telefono": "987654321"}, [{"producto": "Producto N", "unidades": 8, "precio_unidad": 45.23}], "enviado"),
+    Pedido("P003", {"nombre": "Cliente C", "email": "random3@email.com", "telefono": "111222333"}, [{"producto": "Producto O", "unidades": 5, "precio_unidad": 12.89}], "entregado"),
+    Pedido("P019", {"nombre": "Cliente D", "email": "random4@email.com", "telefono": "222333444"}, [{"producto": "Producto P", "unidades": 2, "precio_unidad": 67.45}], "cancelado"),
+    Pedido("P051", {"nombre": "Cliente E", "email": "random5@email.com", "telefono": "555666777"}, [{"producto": "Producto Q", "unidades": 6, "precio_unidad": 34.78}], "pendiente"),
+    Pedido("P037", {"nombre": "Cliente F", "email": "random6@email.com", "telefono": "888999000"}, [{"producto": "Producto R", "unidades": 4, "precio_unidad": 76.89}], "enviado"),
+    Pedido("P008", {"nombre": "Cliente G", "email": "random7@email.com", "telefono": "444555666"}, [{"producto": "Producto S", "unidades": 7, "precio_unidad": 89.90}], "entregado"),
+    Pedido("P063", {"nombre": "Cliente H", "email": "random8@email.com", "telefono": "333444555"}, [{"producto": "Producto T", "unidades": 5, "precio_unidad": 55.55}], "cancelado"),
+    Pedido("P092", {"nombre": "Cliente I", "email": "random9@email.com", "telefono": "666777888"}, [{"producto": "Producto U", "unidades": 8, "precio_unidad": 30.23}], "pendiente"),
+    Pedido("P014", {"nombre": "Cliente J", "email": "random10@email.com", "telefono": "777888999"}, [{"producto": "Producto V", "unidades": 9, "precio_unidad": 20.75}], "enviado"),
 ]
+
 
 # Insertar los productos y mostrar los IDs generados
 result_productos = add_many_productos(productos)

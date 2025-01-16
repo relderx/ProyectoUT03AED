@@ -98,20 +98,46 @@ def pedido_view(page: ft.Page):
 
     def guardar_insertar(e):
         try:
-            if not pedido.value.strip() or not nombreCliente.value.strip() or not emailCliente.value.strip() or not emailCliente.value.strip() or not productos.value.strip() or not estado.value:
+            # Validar campos obligatorios
+            if not pedido.value.strip() or not nombreCliente.value.strip() or not emailCliente.value.strip() or not telefonoCliente.value.strip() or not productos.value.strip() or not estado.value:
                 mostrar_notificacion("Todos los campos son obligatorios.")
                 return
-            print(nombreCliente.value.strip())
-            products = []
-            for producto in productos.value.split(","):
-                elemento = producto.split(" x ")
-                print(elemento)
-                products.append({"producto":elemento[0],"unidades":int(elemento[1]),"precio_unidad":float(elemento[2])})
+
+            # Validar formato del email
+            if "@" not in emailCliente.value.strip() or "." not in emailCliente.value.strip():
+                mostrar_notificacion("El formato del email no es válido.")
+                return
+
+            # Validar formato del teléfono
+            if not telefonoCliente.value.strip().isdigit() or len(telefonoCliente.value.strip()) < 7 or len(telefonoCliente.value.strip()) > 15:
+                mostrar_notificacion("El teléfono debe contener solo números y tener entre 7 y 15 dígitos.")
+                return
+
+            # Validar formato de productos
+            try:
+                products = []
+                for producto in productos.value.split(","):
+                    elemento = producto.split(" x ")
+                    if len(elemento) != 3:
+                        mostrar_notificacion("Formato de productos incorrecto. Usa: 'nombre x unidades x precio'.")
+                        return
+                    products.append({
+                        "producto": elemento[0].strip(),
+                        "unidades": int(elemento[1].strip()),
+                        "precio_unidad": float(elemento[2].strip())
+                    })
+            except ValueError:
+                mostrar_notificacion("Las unidades y el precio deben ser números válidos.")
+                return
+
+            # Procesar datos del cliente
             cliente = {
-                "nombre":nombreCliente.value.strip(),
-                "email":emailCliente.value.strip(), 
-                "telefono":telefonoCliente.value.strip()
-                }
+                "nombre": nombreCliente.value.strip(),
+                "email": emailCliente.value.strip(),
+                "telefono": telefonoCliente.value.strip()
+            }
+
+            # Crear un nuevo pedido
             nuevo_pedido = Pedido(
                 num_pedido=pedido.value.strip(),
                 cliente=cliente,
@@ -119,6 +145,7 @@ def pedido_view(page: ft.Page):
                 estado=estado.value.strip()
             )
 
+            # Insertar en la base de datos
             add_pedido(nuevo_pedido)
             actualizar_tabla()
             cerrar_dialogo()
@@ -129,24 +156,66 @@ def pedido_view(page: ft.Page):
     def guardar_modificar(e):
         if pedidos_seleccionados_ids:
             try:
+                # Obtener el ID del pedido seleccionado
                 pedido_id = pedidos_seleccionados_ids[0]
+
+                # Validar campos obligatorios
                 if not pedido.value.strip() or not nombreCliente.value.strip() or not emailCliente.value.strip() or not telefonoCliente.value.strip() or not productos.value.strip() or not estado.value:
                     mostrar_notificacion("Todos los campos son obligatorios.")
                     return
 
+                # Validar formato del email
+                if "@" not in emailCliente.value.strip() or "." not in emailCliente.value.strip():
+                    mostrar_notificacion("El formato del email no es válido.")
+                    return
+
+                # Validar formato del teléfono
+                if not telefonoCliente.value.strip().isdigit() or len(telefonoCliente.value.strip()) < 7 or len(telefonoCliente.value.strip()) > 15:
+                    mostrar_notificacion("El teléfono debe contener solo números y tener entre 7 y 15 dígitos.")
+                    return
+
+                # Validar formato de productos
+                try:
+                    products = []
+                    for producto in productos.value.split(","):
+                        elemento = producto.split(" x ")
+                        if len(elemento) != 3:
+                            mostrar_notificacion("Formato de productos incorrecto. Usa: 'nombre x unidades x precio'.")
+                            return
+                        products.append({
+                            "producto": elemento[0].strip(),
+                            "unidades": int(elemento[1].strip()),
+                            "precio_unidad": float(elemento[2].strip())
+                        })
+                except ValueError:
+                    mostrar_notificacion("Las unidades y el precio deben ser números válidos.")
+                    return
+
+                # Procesar datos del cliente
+                cliente = {
+                    "nombre": nombreCliente.value.strip(),
+                    "email": emailCliente.value.strip(),
+                    "telefono": telefonoCliente.value.strip()
+                }
+
+                # Preparar datos actualizados
                 datos_actualizados = {
                     "num_pedido": pedido.value.strip(),
-                    "cliente": nombreCliente.value.strip(),
-                    "productos": productos.value.strip(),
+                    "cliente": cliente,
+                    "productos": products,
                     "estado": estado.value.strip()
                 }
 
+                # Actualizar el pedido en la base de datos
                 update_pedido(pedido_id, datos_actualizados)
+
+                # Refrescar la tabla y cerrar el diálogo
                 actualizar_tabla()
-                cerrar_dialogo(e)
+                cerrar_dialogo()
                 mostrar_notificacion("Pedido modificado correctamente.")
             except Exception as ex:
                 mostrar_notificacion(f"Error al modificar el pedido: {ex}")
+
 
     def abrir_dialogo_modificar(e):
         if len(pedidos_seleccionados_ids) != 1:
@@ -292,6 +361,24 @@ def pedido_view(page: ft.Page):
         boton_modificar.disabled = len(pedidos_seleccionados_ids) != 1
         page.update()
 
+    def seleccionar_todos(e):
+        # Determinar si el checkbox global está marcado o no
+        seleccionar = e.control.value
+        pedidos_seleccionados_ids.clear()
+
+        # Actualizar cada fila de la tabla
+        for row in tabla.rows:
+            checkbox = row.cells[0].content  # Primer contenido de la fila es el checkbox
+            checkbox.value = seleccionar  # Cambiar el estado del checkbox
+            if seleccionar:
+                pedidos_seleccionados_ids.append(checkbox.data)  # Agregar ID del pedido si está seleccionado
+
+        # Habilitar o deshabilitar los botones según la selección
+        boton_borrar.disabled = not pedidos_seleccionados_ids
+        boton_modificar.disabled = len(pedidos_seleccionados_ids) != 1
+        page.update()
+
+
     encabezados_tabla = [
         "Seleccionar",
         "ID Pedido",
@@ -304,6 +391,8 @@ def pedido_view(page: ft.Page):
         "Fecha de Creación",
         "Última Modificación"
     ]
+
+    # Modificar la tabla para incluir el checkbox global
 
     def crear_filas(datos):
         filas = []
@@ -322,7 +411,14 @@ def pedido_view(page: ft.Page):
         border=ft.border.all(2, "#1e88e5"),
         horizontal_lines=ft.BorderSide(2, "#1e88e5"),
         vertical_lines=ft.BorderSide(2, "#1e88e5"),
-        columns=[ft.DataColumn(ft.Text(encabezado)) for encabezado in encabezados_tabla],
+        columns=[
+            ft.DataColumn(
+                ft.Row([
+                    ft.Text("Seleccionar"),
+                    ft.Checkbox(value=False, on_change=seleccionar_todos)  # Checkbox global
+                ])
+            )
+        ] + [ft.DataColumn(ft.Text(encabezado)) for encabezado in encabezados_tabla[1:]],
         rows=crear_filas(datos_tabla),
     )
 

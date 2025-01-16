@@ -92,13 +92,12 @@ Proyecto/
 │ └───validators.py           # Funciones de validación de datos
 │
 ├─views/                      # Interfaces de usuario y vistas
+│ ├───main_view               # Vista principal que inicia la aplicación
 │ ├───movimiento_view.py      # Vistas y formularios para movimientos de inventario
 │ ├───pedido_view.py          # Vistas y formularios para pedidos
 │ └───producto_view.py        # Vistas y formularios para productos
 │
 ├─app.py                      # Archivo que ejecuta el main.py
-│
-├─main.py                     # Archivo principal que inicia la aplicación
 │
 └─README.md                   # Archivo explicatorio de todo el proyecto
 ```

@@ -10,6 +10,7 @@ from models.pedidos import Pedido
 from utils.db import add_many_movimientos, add_many_productos, add_many_pedidos
 
 # Crear 10 productos
+# Cada producto tiene un nombre, descripción, stock disponible, precio unitario y una lista de categorías
 productos = [
     Producto("Producto A", "Descripción A", 100, 10.0, ["Categoria1"]),
     Producto("Producto B", "Descripción B", 200, 20.0, ["Categoria1", "Categoria2"]),
@@ -24,6 +25,7 @@ productos = [
 ]
 
 # Crear 10 movimientos
+# Cada movimiento tiene un producto asociado, un tipo de movimiento (entrada, salida, etc.), una cantidad y un comentario
 movimientos = [
     Movimiento("Producto A", "entrada", 50, "Ingreso inicial"),
     Movimiento("Producto B", "salida", 10, "Venta"),
@@ -38,6 +40,7 @@ movimientos = [
 ]
 
 # Crear 10 pedidos
+# Cada pedido incluye un número único, un cliente (con nombre, email y teléfono), una lista de productos comprados, y un estado del pedido
 pedidos = [
     Pedido(f"P001", {"nombre": "Cliente A", "email": "clientea@email.com", "telefono": "123456789"}, [{"producto": "Producto A", "unidades": 10, "precio_unidad": 10.0}], "pendiente"),
     Pedido(f"P002", {"nombre": "Cliente B", "email": "clienteb@email.com", "telefono": "987654321"}, [{"producto": "Producto B", "unidades": 5, "precio_unidad": 20.0}], "enviado"),
@@ -51,12 +54,14 @@ pedidos = [
     Pedido(f"P010", {"nombre": "Cliente J", "email": "clientej@email.com", "telefono": "777888999"}, [{"producto": "Producto J", "unidades": 12, "precio_unidad": 100.0}], "entregado")
 ]
 
-# Agregar productos, movimientos y pedidos a la base de datos
+# Insertar los productos y mostrar los IDs generados
 result_productos = add_many_productos(productos)
 print(f"Se han insertado los productos con los IDs: {result_productos.inserted_ids}")
 
+# Insertar los movimientos y mostrar los IDs generados
 result_movimientos = add_many_movimientos(movimientos)
 print(f"Se han insertado los movimientos con los IDs: {result_movimientos.inserted_ids}")
 
+# Insertar los pedidos y mostrar los IDs generados
 result_pedidos = add_many_pedidos(pedidos)
 print(f"Se han insertado los pedidos con los IDs: {result_pedidos.inserted_ids}")

@@ -10,14 +10,16 @@ from models.productos import Producto
 from models.movimientos import Movimiento
 from models.pedidos import Pedido
 
-# Establece la conexión a MongoDB
-CLIENT = MongoClient('localhost', 27017)
-DB = CLIENT['proyecto_aed_mongodb']
+# Establecer la conexión con MongoDB
+CLIENT = MongoClient('localhost', 27017)  # Conecta al servidor MongoDB en el puerto 27017
+DB = CLIENT['proyecto_aed_mongodb']  # Selecciona la base de datos 'proyecto_aed_mongodb'
 
-# Definir las colecciones de la base de datos
-COLL_PRO = DB['productos']
-COLL_MOV = DB['movimientos']
-COLL_PED = DB['pedidos']
+# Definir las colecciones dentro de la base de datos
+COLL_PRO = DB['productos']  # Colección de productos
+COLL_MOV = DB['movimientos']  # Colección de movimientos
+COLL_PED = DB['pedidos']  # Colección de pedidos
+
+# ========================== Operaciones sobre productos ==========================
 
 def get_productos():
     '''Obtiene todos los documentos de la colección de productos.'''
@@ -33,6 +35,7 @@ def add_many_productos(producto: list[Producto]):
 
 def update_producto(producto_id, producto_data):
     '''Actualiza un producto existente en la colección de productos.'''
+    # Agrega o actualiza la fecha de modificación
     producto_data['fecha_modificacion'] = producto_data.get(
         'fecha_modificacion', 
         datetime.now(timezone.utc).isoformat()
@@ -54,6 +57,8 @@ def delete_producto(producto_id):
 def producto_existe(nombre_producto):
     '''Verifica si un producto con el nombre dado ya existe en la base de datos.'''
     return COLL_PRO.find_one({'producto': nombre_producto}) is not None
+
+# ========================== Operaciones sobre movimientos ==========================
 
 def get_movimientos():
     '''Obtiene todos los documentos de la colección de movimientos de inventario.'''
@@ -87,6 +92,8 @@ def obtener_id_movimiento(producto_nombre):
     movimiento = COLL_MOV.find_one({'producto': producto_nombre})
     return movimiento['_id'] if movimiento else None
 
+# ========================== Operaciones sobre pedidos ==========================
+
 def get_pedidos():
     '''Obtiene todos los documentos de la colección de pedidos.'''
     return COLL_PED.find()
@@ -101,6 +108,11 @@ def add_many_pedidos(pedidos: list[Pedido]):
 
 def update_pedido(pedido_id, pedido_data):
     '''Actualiza un pedido existente en la colección de pedidos.'''
+    # Agrega o actualiza la fecha de modificación
+    pedido_data['fecha_modificacion'] = pedido_data.get(
+        'fecha_modificacion',
+        datetime.now(timezone.utc).isoformat()
+    )
     return COLL_PED.update_one({'num_pedido': pedido_id}, {'$set': pedido_data})
 
 def delete_pedido(pedido_id):

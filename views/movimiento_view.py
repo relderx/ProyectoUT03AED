@@ -441,11 +441,6 @@ def movimiento_view(page: ft.Page):
             ft.DataColumn(
                 ft.Row(
                     [
-                        ft.Text(
-                            "Check Todos",
-                            weight=ft.FontWeight.BOLD,  # Texto en negrita
-                            size=14,  # Tamaño del texto para encabezado
-                        ),
                         ft.Checkbox(value=False, on_change=seleccionar_todos),
                     ]
                 )

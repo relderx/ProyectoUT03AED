@@ -518,7 +518,6 @@ def pedido_view(page: ft.Page):
             ft.DataColumn(
                 ft.Row(
                     [
-                        ft.Text("Check Todos"),
                         ft.Checkbox(value=False, on_change=seleccionar_todos),
                     ]
                 )

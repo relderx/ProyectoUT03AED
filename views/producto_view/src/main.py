@@ -39,36 +39,40 @@ def producto_view(page: ft.Page):
     orden_invertido = False
 
     def aplicar_filtro(e):
+        datos_filtrados = obtener_datos()  # Siempre obtener datos actuales
         filtro_seleccionado = filtro_dropdown.value
         texto_busqueda = texto_buscar.value.lower()
 
         if filtro_seleccionado == "Ningún filtro" or not texto_busqueda:
-            # Si no hay filtro o búsqueda, restablecer datos originales
-            datos_filtrados = datos_originales
+            # Si no hay filtro o búsqueda, mostrar todos los datos
+            tabla.rows.clear()
+            tabla.rows.extend(crear_filas(datos_filtrados))
         else:
-            # Filtrar los datos según el criterio seleccionado (omitiendo la columna "Seleccionar")
+            # Filtrar los datos según el criterio seleccionado
             indice_columna = encabezados_tabla.index(filtro_seleccionado) - 1
             datos_filtrados = [
                 fila
-                for fila in datos_originales
+                for fila in datos_filtrados
                 if texto_busqueda in str(fila[indice_columna]).lower()
             ]
-
-        # Actualizar la tabla con los datos filtrados
-        tabla.rows.clear()
-        tabla.rows.extend(crear_filas(datos_filtrados))
+            tabla.rows.clear()
+            tabla.rows.extend(crear_filas(datos_filtrados))
         tabla.update()
-
 
    # Aplica el orden seleccionado a los datos de la tabla
     def aplicar_orden(e):
         global orden_invertido
         orden_seleccionado = orden_dropdown.value
+
         if orden_seleccionado:
+            # Obtener los datos actualizados desde la base de datos
+            datos_actualizados = obtener_datos()
+
             indice_columna = encabezados_tabla.index(orden_seleccionado) - 1
 
             def obtener_valor_ordenacion(fila):
                 valor = fila[indice_columna]
+                # Si la columna es "Stock Disponible" o "Precio por Unidad", convertir a número
                 if encabezados_tabla[indice_columna + 1] in [
                     "Stock Disponible",
                     "Precio por Unidad",
@@ -80,11 +84,13 @@ def producto_view(page: ft.Page):
                 return str(valor).lower()
 
             try:
+                # Ordenar los datos basados en la columna seleccionada
                 datos_ordenados = sorted(
-                    datos_originales,
+                    datos_actualizados,
                     key=obtener_valor_ordenacion,
                     reverse=orden_invertido,
                 )
+                # Actualizar las filas de la tabla
                 tabla.rows.clear()
                 tabla.rows.extend(crear_filas(datos_ordenados))
                 tabla.update()
@@ -217,6 +223,10 @@ def producto_view(page: ft.Page):
             )
         )
         mostrar_notificacion("Producto añadido exitosamente.")
+
+        # Actualizar los datos originales y la tabla
+        global datos_originales
+        datos_originales = obtener_datos()  # Refleja los nuevos datos
         actualizar_tabla()
         cerrar_dialogo(e)
 
